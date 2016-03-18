@@ -25,7 +25,7 @@ class Signal:
 class Poincare:
     def __init__(self, signal):
         xi, xii = self.filter(signal)
-        
+
     def filter(self, quotient=-1, square=(0, 8000), annotation=(1,0,0,0)):
         ### this function defines the filter method. It accepts the following parameters:
         ### quotient - parameters of the quotient filter - the rejectance ratio - the initial value of -1 means "do not filter"
