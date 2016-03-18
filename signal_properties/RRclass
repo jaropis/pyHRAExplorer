@@ -1,0 +1,34 @@
+class Signal:
+    def __init__(self, path_to_file, column_signal, column_annot):
+        self.signal, self.annotation = self.read_data(path_to_file, column_signal, column_annot)
+        #spectrum = Spectrum(self)
+        poincare = Poincare(self)
+        runs = Runs(self)
+
+    def read_data(self, path_to_file, column_signal, column_annot):
+        reafile_current = open(path_to_file, 'r')
+        reafile_current.readline()
+        signal = []  # this variable contains the signal for spectral analysis
+        annotation = []
+        # here the reading of the file starts
+        for line in reafile_current:
+            line_content = findall(r'\b[0-9\.]+', line)
+            signal.append(float(line_content[column_signal-1]))
+            if column_signal != column_annot:  # see below - similar condition
+                annotation.append(int(float(line_content[column_annot-1])))
+        signal = array(signal)
+        if column_signal == column_annot:
+            annotation = 0*signal
+        annotation = array(annotation)
+        return signal, annotation
+
+class Poincare:
+    def __init__(self, signal):
+        xi, xii = self.filter(signal)
+        
+    def filter(self, quotient=-1, square=(0, 8000), annotation=(1,0,0,0)):
+        ### this function defines the filter method. It accepts the following parameters:
+        ### quotient - parameters of the quotient filter - the rejectance ratio - the initial value of -1 means "do not filter"
+        ### square - parameters of the square filter
+        ### annotation - parameters of the annotation filter - 1 means "leave in analysis" and refers to
+        ### (sinus, ventricular, supraventricular, artifact) respectivelyz
