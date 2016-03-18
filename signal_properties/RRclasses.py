@@ -32,3 +32,4 @@ class Poincare:
         ### square - parameters of the square filter
         ### annotation - parameters of the annotation filter - 1 means "leave in analysis" and refers to
         ### (sinus, ventricular, supraventricular, artifact) respectivelyz
+        ### the method follows "Filtering Poincare plots", Piskorski, Guzik, Computational methods in science and technology 11 (1), 39-48
