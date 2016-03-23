@@ -13,7 +13,9 @@ class Signal:
         # runs = Runs(self)
         # spectrum = Spectrum(self)
 
-    def read_data(self, path_to_file, column_signal, column_annot):
+    def read_data(self, path_to_file, column_signal=0, column_annot=0): ## 0 are there to facilitate the construction of signals from console
+        if type(path_to_file) == list:
+            return array(path_to_file[0]), array(path_to_file[1]) ## this is the possibility to pass a list with signal and annotation vector as its elements
         reafile_current = open(path_to_file, 'r')
         reafile_current.readline()
         signal = []  # this variable contains the signal for spectral analysis
@@ -58,6 +60,18 @@ class Poincare:
         # now the square filter
         signal.annotation[where(signal.signal < signal.square_filter[0])[0]] = 16
         signal.annotation[where(signal.signal > signal.square_filter[1])[0]] = 16
+
+        # now removing bad beats from the beginning and the end of the recording
+        try:
+            while signal.annotation[0]!=0:
+                signal.signal=signal.signal[1:-1]
+                signal.annotation=signal.annotation[1:-1]
+            #removing nonsinus beats from the end
+            while signal.annotation[-1]!=0:
+                signal.signal=signal.signal[0:-2]
+                signal.annotation=signal.annotation[0:-2]
+        except IndexError:
+            print("no good beats")
 
         bad_beats = where(signal.annotation == 16)[0]
         bad_beats_minus_one = bad_beats - 1
