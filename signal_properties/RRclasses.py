@@ -3,7 +3,8 @@ from re import findall
 from numpy import concatenate, delete
 
 class Signal:
-    def __init__(self, path_to_file, column_signal, column_annot, quotient_filter=-1, square_filter=(0, 8000), annotation_filter=()):
+    def __init__(self, path_to_file, column_signal=0, column_annot=0, quotient_filter=-1, square_filter=(0, 8000), annotation_filter=()):
+        # 0 are there to facilitate the construction of signals from console
         self.signal, self.annotation = self.read_data(path_to_file, column_signal, column_annot)
         self.quotient_filter = quotient_filter
         self.square_filter = square_filter
@@ -13,9 +14,10 @@ class Signal:
         # runs = Runs(self)
         # spectrum = Spectrum(self)
 
-    def read_data(self, path_to_file, column_signal=0, column_annot=0): ## 0 are there to facilitate the construction of signals from console
+    def read_data(self, path_to_file, column_signal, column_annot):
         if type(path_to_file) == list:
-            return array(path_to_file[0]), array(path_to_file[1]) ## this is the possibility to pass a list with signal and annotation vector as its elements
+            # this is the possibility to pass a list with signal and annotation vector as its elements
+            return array(path_to_file[0]), array(path_to_file[1])
         reafile_current = open(path_to_file, 'r')
         reafile_current.readline()
         signal = []  # this variable contains the signal for spectral analysis
@@ -42,15 +44,11 @@ class Poincare:
         this function defines the filter method. It accepts the following parameters:
         quotient - parameters of the quotient filter - the rejectance ratio - the initial value of -1 means "do not filter"
         square - parameters of the square filter
-        annotation - parameters of the annotation filter - 1 means "leave in analysis" and refers to
+        annotation - parameters of the annotation filter - 1 means "remove from analysis" and refers to
         (sinus, ventricular, supraventricular, artifact) respectively
         a filtered Poincare plot is returned
         the method follows "Filtering Poincare plots", Piskorski, Guzik, Computational methods in science and technology 11 (1), 39-48
         """
-
-        xi = signal.signal[0:(len(signal.signal)-1)]
-        xii = signal.signal[1:len(signal.signal)]
-
         # beginning with the annotation filter
         # 16 henceforth means "bad"
         if len(signal.annotation_filter)>0:
@@ -64,14 +62,19 @@ class Poincare:
         # now removing bad beats from the beginning and the end of the recording
         try:
             while signal.annotation[0]!=0:
-                signal.signal=signal.signal[1:-1]
-                signal.annotation=signal.annotation[1:-1]
-            #removing nonsinus beats from the end
+                signal.signal=signal.signal[1:]
+                signal.annotation=signal.annotation[1:]
+
+            # removing nonsinus beats from the end
             while signal.annotation[-1]!=0:
-                signal.signal=signal.signal[0:-2]
-                signal.annotation=signal.annotation[0:-2]
+                signal.signal=signal.signal[0:-1]
+                signal.annotation=signal.annotation[0:-1]
         except IndexError:
             print("no good beats")
+
+        # preparing the Poincare plot auxiliary vectors (see Filtering Poincare Plots)
+        xi = signal.signal[0:(len(signal.signal)-1)]
+        xii = signal.signal[1:len(signal.signal)]
 
         bad_beats = where(signal.annotation == 16)[0]
         bad_beats_minus_one = bad_beats - 1
