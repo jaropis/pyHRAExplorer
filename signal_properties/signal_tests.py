@@ -18,6 +18,7 @@ class TestPoincareFiltering(unittest.TestCase):
                               square_filter = (300, 2000)) # testing square filter in the middle
         self.signal6 = Signal([[751, 802, 753, 804, 755, 806, 757, 808, 7059, 8010], [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]],
                   square_filter = (300, 2000), annotation_filter = (1,)) # testing square filter in the middle
+        self.signal_real = Signal("../0001.rea", 2, 3, annotation_filter = (2,))
 
 
     def test_the_middle(self):
@@ -43,6 +44,8 @@ class TestPoincareFiltering(unittest.TestCase):
     def test_square_end_mixed(self):
         self.assertTrue((self.signal6.poincare.xi == array([751, 802, 755, 806, 757])).all())
         self.assertTrue((self.signal6.poincare.xii == array([802, 753, 806, 757, 808])).all())
-        
+
+    def test_classic_descriptors(self): # the results are calculated according to the hrstruct.org tutorial, using the datafile from this same source
+        pass
 if __name__ == '__main__':
     unittest.main()

@@ -1,7 +1,7 @@
 from scipy import array, where
 from re import findall
 from numpy import concatenate, delete
-
+from scipy import var, sqrt
 class Signal:
     def __init__(self, path_to_file, column_signal=0, column_annot=0, quotient_filter=-1, square_filter=(0, 8000), annotation_filter=()):
         # 0 are there to facilitate the construction of signals from console
@@ -36,8 +36,12 @@ class Signal:
 
 class Poincare:
     def __init__(self, signal):
-        ### signal is object of Signal class
+        # signal is object of Signal class
         self.xi, self.xii = self.filter_and_prepare(signal)
+        # descriptors will be capital, functions lower case
+        self.SD1 = self.sd1()
+        self.SD2 = self.sd2()
+        self.SDNN = self.sdnn()
 
     def filter_and_prepare(self, signal):
         """
@@ -85,3 +89,12 @@ class Poincare:
         xii = delete(xii, all_bad_beats)
 
         return xi, xii
+
+    def sd1(self):
+        return(sqrt(var(self.xii - self.xi)/2))
+
+    def sd2(self):
+        return(sqrt(var(self.xii + self.xi)/2))
+
+    def sdnn(self):
+        return(sqrt((self.SD1**2 + self.SD2**2)/2))
