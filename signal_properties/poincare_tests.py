@@ -29,6 +29,13 @@ class TestPoincareFiltering(unittest.TestCase):
         self.assertTrue(round(self.signal_real1.poincare.SD1a, 3) == 25.630)
         self.assertTrue(round(self.signal_real1.poincare.C1a, 2) == 0.48)
 
+    def test_long_term_asymmetry(self):
+        print(self.signal_real1.poincare.SD2d)
+        self.assertTrue(round(self.signal_real1.poincare.SD2d, 2) == 59.36)
+        self.assertTrue(round(self.signal_real1.poincare.C2d, 2) == 0.47)
+        self.assertTrue(round(self.signal_real1.poincare.SD2a, 2) == 62.58)
+        self.assertTrue(round(self.signal_real1.poincare.C2a, 2) == 0.53)
+
 
 if __name__ == '__main__':
     unittest.main()
