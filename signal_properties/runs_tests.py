@@ -19,7 +19,7 @@ class TestPoincareFiltering(unittest.TestCase):
         self.assertTrue(allclose(self.signal3.runs.sinus_segments, [array([1.1, 1.2, 1.8]),  array([1.3, 0.5, 1.1])]))
 
     def test_count_runs_exception(self):
-        self.assertRaises(TooShortSignal, Signal([[1,2], [0,1]]))
+        self.assertRaises(TooShortSignal, Signal, [[1,2], [0,1]])
 
 if __name__ == '__main__':
     unittest.main()
