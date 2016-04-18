@@ -62,13 +62,21 @@ class Poincare:
         return xi, xii
 
     def sd1(self):
-        return(sqrt(var(self.xii - self.xi)/2))
+        try:
+            result = sqrt(var(self.xii - self.xi)/2)
+        except ZeroDivisionError:
+            result = None
+        return result
         # CAREFUL HERE AND BELOW!!! the definition of variance used in scipy has the denominator equal to n, NOT (n-1)!
         # this seems to be more appropriate for what we do here, so
         # if you want to get the result you would get in R or Matlab comment the line above, uncomment the lines below and go to the
         # and change the values in the test
         # n = len(self.xi)
-        # return(sqrt(var(self.xii - self.xi)/2 * (n/(n-1))))
+        # try:
+        #   result = sqrt(var(self.xii - self.xi)/2 * (n/(n-1)))
+        #   return(result)
+        # except Exception:
+        #   return None
 
     def sd2(self):
         return(sqrt(var(self.xii + self.xi)/2))
@@ -80,25 +88,39 @@ class Poincare:
         #return(sqrt(var(self.xii - self.xi)/2 * (n/(n-1))))
 
     def sdnn(self):
-        #return(sqrt((self.SD1**2 + self.SD2**2)/2))
+        return(sqrt((self.SD1**2 + self.SD2**2)/2))
         # CAREFUL HERE!!! the definition of variance used in scipy has the denominator equal to n, NOT (n-1)!
         # this seems to be more appropriate for what we do here, so
         # if you want to get the result you would get in R or Matlab comment the line above, uncomment the lines below and go to the
         # and change the values in the test
-        n = len(self.xii)
-        return(sqrt((self.SD1**2 + self.SD2**2)/2*(n/(n-1))))
+        # n = len(self.xii)
+        #
+        #    SDNN = sqrt((self.SD1**2 + self.SD2**2)/2*(n/(n-1)))
+        #except ZeroDivisionError:
+        #    SDNN = None
+        #return(SDNN)
 
     def short_term_asymmetry(self):
         n = len(self.xii)
         auxilary = (self.xii - self.xi) / sqrt(2)
         decelerating_indices = where(auxilary > 0)[0]
         accelerating_indices = where(auxilary < 0)[0]
-        SD1d = sqrt(1 / n * sum(auxilary[decelerating_indices]**2))
-        SD1a = sqrt(1 / n * sum(auxilary[accelerating_indices]**2))
-        SD1I = sqrt(SD1d**2 + SD1a**2)
-        C1d = SD1d**2/SD1I**2
-        C1a = SD1a**2/SD1I**2
-        return(SD1d, C1d, SD1a, C1a, SD1I)
+        failed = False
+        try:
+            SD1d = sqrt(1 / n * sum(auxilary[decelerating_indices]**2))
+        except ZeroDivisionError:
+            failed = True
+        try:
+            SD1a = sqrt(1 / n * sum(auxilary[accelerating_indices]**2))
+        except ZeroDivisionError:
+            failed = True
+        if failed:
+            return None, None, None, None, None
+        else:
+            SD1I = sqrt(SD1d**2 + SD1a**2)
+            C1d = SD1d**2/SD1I**2
+            C1a = SD1a**2/SD1I**2
+            return(SD1d, C1d, SD1a, C1a, SD1I)
 
     def long_term_asymmetry(self):
         n = len(self.xii)
@@ -108,19 +130,30 @@ class Poincare:
         accelerating_indices = where(auxilary_updown < 0)[0]
         nochange_indices = where(auxilary_updown == 0)[0]
         auxilary = (self.xii + self.xi - mean(self.xi) - mean(self.xii)) / sqrt(2)
-
-        SD2d = sqrt(1/n * (sum(auxilary[decelerating_indices]**2) + 1/2 * sum(auxilary[nochange_indices]**2)))
-        SD2a = sqrt(1/n * (sum(auxilary[accelerating_indices]**2) + 1/2 * sum(auxilary[nochange_indices]**2)))
-        SD2I = sqrt(SD2d**2 + SD2a**2)
-        C2d = (SD2d/SD2I)**2
-        C2a = (SD2a/SD2I)**2
-
+        failed = False
+        try:
+            SD2d = sqrt(1/n * (sum(auxilary[decelerating_indices]**2) + 1/2 * sum(auxilary[nochange_indices]**2)))
+            SD2a = sqrt(1/n * (sum(auxilary[accelerating_indices]**2) + 1/2 * sum(auxilary[nochange_indices]**2)))
+        except ZeroDivisionError:
+            failed = True
+        if failed:
+            return None, None, None, None, None
+        else:
+            SD2I = sqrt(SD2d**2 + SD2a**2)
+            C2d = (SD2d/SD2I)**2
+            C2a = (SD2a/SD2I)**2
         return(SD2d, C2d, SD2a, C2a, SD2I)
 
     def total_asymmetry(self):
-        SDNNd = sqrt(1/2 * (self.SD1d**2 + self.SD2d**2))
-        SDNNa = sqrt(1/2 * (self.SD1a**2 + self.SD2a**2))
-        Cd = SDNNd**2 / self.SDNN**2
-        Ca = SDNNa**2 / self.SDNN**2
-
-        return(SDNNd, Cd, SDNNa, Ca)
+        failed = False
+        try:
+            SDNNd = sqrt(1/2 * (self.SD1d**2 + self.SD2d**2))
+            SDNNa = sqrt(1/2 * (self.SD1a**2 + self.SD2a**2))
+            Cd = SDNNd**2 / self.SDNN**2
+            Ca = SDNNa**2 / self.SDNN**2
+        except TypeError:
+            failed = True
+        if failed:
+            return None, None, None, None
+        else:
+            return(SDNNd, Cd, SDNNa, Ca)

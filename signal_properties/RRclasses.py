@@ -1,6 +1,8 @@
 from re import findall
-from Poincare import Poincare
 from scipy import array
+from Poincare import Poincare
+from runs import Runs
+
 
 
 class Signal:
@@ -13,7 +15,7 @@ class Signal:
         self.annotation_filter = annotation_filter
         self.poincare = Poincare(self)
         self.runs = Runs(self)
-        # runs = Runs(self)
+        runs = Runs(self)
         # spectrum = Spectrum(self)
 
     def read_data(self, path_to_file, column_signal, column_annot):

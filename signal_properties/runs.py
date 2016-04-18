@@ -6,6 +6,7 @@ class Runs:
 
     def __init__(self, signal):
         self.sinus_segments = self.split_on_annot(signal)
+        try_count = self.count_runs(self.sinus_segments[0])
         # signal is an object of the "Signal" class
         # the algorithm is the same I used in the PCSS time series suit
         #self.runs_decelerations = self.get_runs(signal)[0] # get_runs returns a list of lists, with the first element being the deceleration runs
@@ -42,7 +43,7 @@ class Runs:
         # directions - this list keeps the designations - thether the run in the "all_runs" list is a decelerating list (1) or an accelerating list (-1) or no_change list (0)
         if (len(signal_segment) < 2):
             raise TooShortSignal
-        #TUTU
+        return True
 
     def split_all_into_runs(self, signal):
         # this function splits the chunks of sinus origin (or "correct") beats (samples) into separate runs and directions of these runs
