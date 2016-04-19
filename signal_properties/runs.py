@@ -1,4 +1,3 @@
-from numpy import concatenate, delete
 from scipy import where
 from my_exceptions import WrongSignal
 
@@ -6,7 +5,6 @@ class Runs:
 
     def __init__(self, signal):
         self.sinus_segments = self.split_on_annot(signal)
-        try_count = self.count_runs(self.sinus_segments[0])
         # signal is an object of the "Signal" class
         # the algorithm is the same I used in the PCSS time series suit
         #self.runs_decelerations = self.get_runs(signal)[0] # get_runs returns a list of lists, with the first element being the deceleration runs
@@ -92,10 +90,7 @@ class Runs:
         separate_runs_and_directions = {"all_runs":[], "directions":[]}
         for segment in list_of_separate_segments:
             if len(segment) > 0:
-                temp = self.count_runs(segment)
-                separate_runs_and_directions["all_runs"].append(temp["all_runs"])
-                separate_runs_and_directions["directions"].append(temp["directions"])
+                temp = self.count_runs(segment) # see what self.count_runs returns - it is a list with separate runs and directions
+                separate_runs_and_directions["all_runs"].extend(temp[0])
+                separate_runs_and_directions["directions"].extend(temp[1])
         return separate_runs_and_directions
-
-
-
