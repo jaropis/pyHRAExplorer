@@ -94,3 +94,51 @@ class Runs:
                 separate_runs_and_directions["all_runs"].extend(temp[0])
                 separate_runs_and_directions["directions"].extend(temp[1])
         return separate_runs_and_directions
+
+    def count_for_all(self, signal):
+        # THIS IS THE MAIN FUNCTION OF THIS SOURCEFILE
+        ## this functon counts all the runs of a specific type (decelerations, accelerations, no change)
+        ## up to the maximum values
+        ## e.g. if there is only one deceleration run of the type 1 2 3 4 5, the result will be
+        ## decelerations = [0,0,0,0,1], accelerations = NULL, neutral = NULL
+        split_signal = self.split_all_into_runs(signal)
+        directions = split_signal["directions"]
+        dec_runs = [split_signal["all_runs"][i] for i in range(len(directions])) if directions[i] == "dec"]
+        # list comprehension to extract deceleration runs
+        # example a = [1, 2, 1, 1]; b = ["dec", "acc", "dec", "acc"]; [a[i] for i in range(len(b)) if b[i] == "dec"; [1, 2, 1]
+        acc_runs = [split_signal["all_runs"][i] for i in range(len(directions])) if directions[i] == "acc"] # like above
+        neutral_runs = [split_signal["all_runs"][i] for i in range(len(directions])) if directions[i] == "neutral"]
+
+        dec_runs_count = [len(a) for a in dec_runs]
+        acc_runs_count = [len(a) for a in acc_runs]
+        neutral_runs_count = [len(a) for a in neutral_runs]
+
+        try:
+            max_dec = max(dec_runs_count)
+        except ValueError:
+            max_dec = 0
+
+        try:
+            max_acc = max(acc_runs_count)
+        except ValueError:
+            max_acc = 0
+
+        try:
+            max_neutral = max(neutral_runs_count)
+        except ValueError:
+            max_neutral = 0
+
+        dec_runs_all = []
+        acc_runs_all = []
+        neutral_runs_all = []
+
+        for idx_dec in range(max_dec):
+            dec_runs_all.extend(sum([dec_runs_count[i] for i in range(len([dec_runs_count])) if dec_runs_count[i] == idx_dec]))
+        
+        for idx_acc in range(max_acc):
+            acc_runs_all.extend(sum([acc_runs_count[i] for i in range(len([acc_runs_count])) if acc_runs_count[i] == idx_acc]))
+        
+        for idx_neutral in range(max_neutral):
+            neutral_runs_all.extend(sum([neutral_runs_count[i] for i in range(len([neutral_runs_count])) if neutral_runs_count[i] == idx_neutral]))
+
+        return dec_runs_all, acc_runs_all, neutral_runs_all
