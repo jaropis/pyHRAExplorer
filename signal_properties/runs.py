@@ -1,6 +1,6 @@
 from numpy import concatenate, delete
 from scipy import where
-from my_exceptions import TooShortSignal
+from my_exceptions import WrongSignal
 
 class Runs:
 
@@ -36,14 +36,55 @@ class Runs:
 
         return signal_segments
 
-    def count_runs(self, signal_segment):
+    def count_runs(self, signal_segment, all_runs = [], directions = []):
         # this function accepts a signal without annotations - this signal comes from the segmentation into "normal" (correct) beats ("samples") segments
         # it return dictionary with two keys: all_runs and directions
         # all_runs - this list keeps all the runs in order
         # directions - this list keeps the designations - thether the run in the "all_runs" list is a decelerating list (1) or an accelerating list (-1) or no_change list (0)
         if (len(signal_segment) < 2):
-            raise TooShortSignal
-        return True
+            raise WrongSignal
+        # signal must be length 2 or more for runs to make sense
+        if signal_segment[0] == signal_segment[1]
+            last = 0
+        else:
+            if signal_segment[0] < signal_segment[1]
+                last = 1
+            else:
+                last = -1
+        for index in range(2, (len(signal_segment)-2)):
+            if signal_segment[index] == signal_segment[index + 1]:
+                current = 0
+            else:
+                if signal_segment[index] < signal_segment[index + 1]:
+                    current = 1
+                else:
+                    current = -1
+
+            if current != last:
+                if last == -1:
+                    all_runs.append([signal_segment[begin:index]])
+                    directions.append("acc")
+                if last == 0:
+                    all_runs.append([signal_segment[begin:index]])
+                    directions.append("neutral")
+                if last == 1:
+                    all_runs.append([signal_segment[begin:index]])
+                    directions.append("dec")
+
+                begin = index + 1
+                last = current
+        # now check the last run
+        if last == -1:
+            all_runs.append([signal_segment[begin:index]])
+            directions.append("acc")
+        if last == 0:
+            all_runs.append([signal_segment[begin:index]])
+            directions.append("neutral")
+        if last == 1:
+            all_runs.append([signal_segment[begin:index]])
+            directions.append("dec")
+        return [all_runs, directions]
+
 
     def split_all_into_runs(self, signal):
         # this function splits the chunks of sinus origin (or "correct") beats (samples) into separate runs and directions of these runs
