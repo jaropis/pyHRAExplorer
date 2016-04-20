@@ -51,7 +51,6 @@ class Runs:
             else:
                 last = -1
         begin = 0 # we are dropping the first sample - this is just a reference and cannot be a part of a run
-        print(last)
         for index in range(1, len(signal_segment)):
             if signal_segment[index] == signal_segment[index - 1]:
                 current = 0
@@ -90,12 +89,10 @@ class Runs:
     def split_all_into_runs(self, signal):
         # this function splits the chunks of sinus origin (or "correct") beats (samples) into separate runs and directions of these runs
         list_of_separate_segments = self.split_on_annot(signal)
-        print(list_of_separate_segments)
         separate_runs_and_directions = {"all_runs":[], "directions":[]}
         for segment in list_of_separate_segments:
             if len(segment) > 0:
-                temp = self.split_segments_into_runs(segment) # see what self.split_segments_into_runs returns - it is a list with separate runs and directions
-                print(temp)
+                temp = self.split_segments_into_runs(segment, all_runs=[], directions=[]) # see what self.split_segments_into_runs returns - it is a list with separate runs and directions
                 separate_runs_and_directions["all_runs"].extend(temp[0])
                 separate_runs_and_directions["directions"].extend(temp[1])
         return separate_runs_and_directions
@@ -107,7 +104,6 @@ class Runs:
         ## e.g. if there is only one deceleration run of the type 1 2 3 4 5, the result will be
         ## decelerations = [0,0,0,0,1], accelerations = NULL, neutral = NULL
         split_signal = self.split_all_into_runs(signal)
-        #print(split_signal)
         directions = split_signal["directions"]
         dec_runs = [split_signal["all_runs"][i] for i in range(len(directions)) if directions[i] == "dec"]
         # list comprehension to extract deceleration runs
@@ -140,12 +136,12 @@ class Runs:
 
 
         for idx_dec in range(max_dec):
-            dec_runs_all.extend(sum([dec_runs_count[i] for i in range(len([dec_runs_count])) if dec_runs_count[i] == idx_dec]))
+            dec_runs_all.append(sum([dec_runs_count[i] for i in range(len([dec_runs_count])) if dec_runs_count[i] == idx_dec]))
         
         for idx_acc in range(max_acc):
-            acc_runs_all.extend(sum([acc_runs_count[i] for i in range(len([acc_runs_count])) if acc_runs_count[i] == idx_acc]))
+            acc_runs_all.append(sum([acc_runs_count[i] for i in range(len([acc_runs_count])) if acc_runs_count[i] == idx_acc]))
         
         for idx_neutral in range(max_neutral):
-            neutral_runs_all.extend(sum([neutral_runs_count[i] for i in range(len([neutral_runs_count])) if neutral_runs_count[i] == idx_neutral]))
+            neutral_runs_all.append(sum([neutral_runs_count[i] for i in range(len([neutral_runs_count])) if neutral_runs_count[i] == idx_neutral]))
 
         return dec_runs_all, acc_runs_all, neutral_runs_all
