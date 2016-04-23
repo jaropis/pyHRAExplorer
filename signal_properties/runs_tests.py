@@ -14,9 +14,16 @@ class TestPoincareFiltering(unittest.TestCase):
         # decelerating run [3], then an accelerating run [2], then a decelerating run [3], then an accelerating run [2]
         # then a decelerating run [3], then an accelerating run - so, 1 accelerating run of length 2, 3 accelerating
         # runs of length 1 and 3 decelerating runs of length 1
+        self.signal4 = Signal([[1, 2, 3, 3, 3, 2, 1], [0, 0, 0, 0, 0, 0, 0]])
+        self.signal5 = Signal([[1, 2, 3, 4, 3, 2, 1], [0, 0, 0, 1, 0, 0, 0]])
+        self.signal6 = Signal([[10, 9, 8, 7, 6, 6, 6, 6, 5, 4, 3, 4, 5, 6], [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1]])
+        # 1 acceleration of length 3, then 1 nutral run of length 2, then an acceleration run of length 3, then
+        # a deceleration run of length 2 => dec_runs = [0, 1], acc_runs = [0, 0, 2], neutral_runs = [0, 1]
+
 
         #self.signal4 = Signal([[0,3,2,3,2,3,2,3,2], [0]*10]) # 4 accelerating runs of length 2
 
+    # uncomment to test some internal methods - you will also need to uncomment them in the constructor
     # def test_segmentation(self): # uncomment to test the segmentation - also, in the constructor of the Runs class uncomment self.sinus_segments = self.split_on_annot(signal)
     #     # this method tests segmentation into segements of RRs of sinus origin (or "correct", if you are doing some other kind of analysis).
     #     #self.assertTrue((self.signal3.runs.sinus_segments == [array([3, 3.3, 3, 3.3, 3])]).all())
@@ -41,6 +48,19 @@ class TestPoincareFiltering(unittest.TestCase):
         self.assertTrue(self.signal3.runs.dec_runs == [3])
         self.assertTrue(self.signal3.runs.acc_runs == [3, 1])
         self.assertTrue(self.signal3.runs.neutral_runs == [])
+
+        self.assertTrue(self.signal4.runs.dec_runs == [0, 1])
+        self.assertTrue(self.signal4.runs.acc_runs == [0, 1])
+        self.assertTrue(self.signal4.runs.neutral_runs == [0, 1])
+
+    def test_runs_with_annotations(self):
+        self.assertTrue(self.signal5.runs.dec_runs == [0, 1])
+        self.assertTrue(self.signal5.runs.acc_runs == [0, 1])
+        self.assertTrue(self.signal5.runs.neutral_runs == [])
+
+        self.assertTrue(self.signal6.runs.dec_runs == [0, 1])
+        self.assertTrue(self.signal6.runs.acc_runs == [0, 0, 2])
+        self.assertTrue(self.signal6.runs.neutral_runs == [0, 1])
 
 if __name__ == '__main__':
     unittest.main()
