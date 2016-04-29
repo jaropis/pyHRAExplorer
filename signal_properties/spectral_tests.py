@@ -30,9 +30,18 @@ class TestPoincareFiltering(unittest.TestCase):
         A = 8.
         B = 1.
         nin = 1000
-        x = scipy.linspace(0.01, 2*scipy.pi, nin, dtype='float64')
-        y = A * scipy.sin(B*x)
-        self.signal4 = Signal([y, y*0, x]) # this is for the constructor that takes 3 elements
+        x = scipy.linspace(0.01, 2*scipy.pi, nin)
+        y = A * scipy.sin(B*(x + 0.5 * scipy.pi))
+        self.signal4 = Signal([y, scipy.absolute(y*0), x]) # this is for the constructor that takes 3 elements
+        # below is the integral over all the frequencies
+        total_power = sum(self.signal4.LS_spectrum.periodogram) * (self.signal4.LS_spectrum.frequency[1] -  self.signal4.LS_spectrum.frequency[0])
+        variance = scipy.var(self.signal4.signal)
+        print(total_power, variance)
+        self.assertAlmostEqual(total_power, variance, places=-1) # these should be VERY roughly equal
+        # the variance of this signal should be \frac{1}{2\pi}\int_{-\pi}^{\pi} 8^2*sin^2(x) = 32
+        # we can compare this result to both total power and total variance calculated from the data
+
+
 
 if __name__ == '__main__':
     unittest.main()
