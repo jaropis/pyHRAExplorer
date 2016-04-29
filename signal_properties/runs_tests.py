@@ -35,7 +35,8 @@ class TestPoincareFiltering(unittest.TestCase):
         self.assertRaises(WrongSignal, Signal, [[3,2], [0,3]]) # this is how constructor of a class should be tested for exceptions!
 
     def test_runs_simple(self):
-        #print(self.signal1.runs.dec_runs)
+        # in the tests below we do not actually need .all(), because we are comparing regular lists - in the case of
+        # scipy.array the comparisone is element-wise and we need .all()
         self.assertTrue(self.signal1.runs.dec_runs == [0, 0, 0, 1])
         self.assertTrue(self.signal1.runs.acc_runs == [])
         self.assertTrue(self.signal1.runs.neutral_runs == [])

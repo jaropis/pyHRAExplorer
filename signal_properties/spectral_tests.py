@@ -28,20 +28,43 @@ class TestPoincareFiltering(unittest.TestCase):
 
     def test_full_signal_spectrum(self):
         A = 8.
-        B = 1.
+        omega = 1.
         nin = 1000
         x = scipy.linspace(0.01, 2*scipy.pi, nin)
-        y = A * scipy.sin(B*(x + 0.5 * scipy.pi))
+        y = A * scipy.sin(omega*(x + 0.5 * scipy.pi))
         self.signal4 = Signal([y, scipy.absolute(y*0), x]) # this is for the constructor that takes 3 elements
         # below is the integral over all the frequencies
         total_power = sum(self.signal4.LS_spectrum.periodogram) * (self.signal4.LS_spectrum.frequency[1] -  self.signal4.LS_spectrum.frequency[0])
         variance = scipy.var(self.signal4.signal)
         print(total_power, variance)
-        self.assertAlmostEqual(total_power, variance, places=-1) # these should be VERY roughly equal
+        self.assertAlmostEqual(total_power, variance, places=-1)  # these should be VERY roughly equal
         # the variance of this signal should be \frac{1}{2\pi}\int_{-\pi}^{\pi} 8^2*sin^2(x) = 32
         # we can compare this result to both total power and total variance calculated from the data
 
-
+    def test_spectrum_bands(self):
+        A1 = 8.
+        A2 = 2.
+        omega1 = 1
+        omega2 = 2
+        nin = 1000
+        x = scipy.linspace(0.01, 2*scipy.pi, nin)
+        y1 = A1 * scipy.sin(omega1*(x))
+        y2 = A2 * scipy.sin(omega2*(x))
+        y = y1+y2
+        print(scipy.var(y))
+        self.signal5 = Signal([y, scipy.absolute(y*0), x])
+        self.signal51 = Signal([y1, scipy.absolute(y*0), x])
+        self.signal52 = Signal([y2, scipy.absolute(y*0), x])
+        variance = scipy.var(y)
+        variance1 = scipy.var(y1)
+        variance2 = scipy.var(y2)
+        spectral_content = sum(self.signal5.LS_spectrum.periodogram[(self.signal5.LS_spectrum.frequency < 2) & (self.signal5.LS_spectrum.frequency > 0.2)]) * (self.signal5.LS_spectrum.frequency[1] -  self.signal5.LS_spectrum.frequency[0])
+        # this should be equal to the variance of the whole signal - the peaks are quite broad here, so wide integration interval
+        spectral_content1 = sum(self.signal51.LS_spectrum.periodogram[(self.signal51.LS_spectrum.frequency < 2) & (self.signal51.LS_spectrum.frequency > 0.2)]) * (self.signal51.LS_spectrum.frequency[1] -  self.signal51.LS_spectrum.frequency[0])
+        spectral_content2 = sum(self.signal52.LS_spectrum.periodogram[(self.signal52.LS_spectrum.frequency < 2.5) & (self.signal52.LS_spectrum.frequency > 0.2)]) * (self.signal52.LS_spectrum.frequency[1] -  self.signal52.LS_spectrum.frequency[0])
+        self.assertAlmostEqual(spectral_content, variance, places = -1)
+        self.assertAlmostEqual(spectral_content1, variance1, places = -1)
+        self.assertAlmostEqual(spectral_content2, variance2, places = -1)
 
 if __name__ == '__main__':
     unittest.main()

@@ -5,7 +5,7 @@ from scipy import mean, var, sqrt, where
 class Poincare:
     def __init__(self, signal):
         # signal is object of Signal class
-        self.xi, self.xii = self.filter_and_prepare(signal)
+        self.xi, self.xii = self.prepare_PP(signal)
         # descriptors will be capital, functions lower case
         self.SD1 = self.sd1()
         self.SD2 = self.sd2()
@@ -14,38 +14,15 @@ class Poincare:
         self.SD2d, self.C2d, self.SD2a, self.C2a, self.SD2I = self.long_term_asymmetry()
         self.SDNNd, self.Cd, self.SDNNa, self.Ca = self.total_asymmetry()
 
-    def filter_and_prepare(self, signal):
+    def prepare_PP(self, signal):
         """
-        this function defines the filter method. It accepts the following parameters:
-        quotient - parameters of the quotient filter - the rejectance ratio - the initial value of -1 means "do not filter"
-        square - parameters of the square filter
-        annotation - parameters of the annotation filter - 1 means "remove from analysis" and refers to
-        (sinus, ventricular, supraventricular, artifact) respectively
-        a filtered Poincare plot is returned
-        the method follows "Filtering Poincare plots", Piskorski, Guzik, Computational methods in science and technology 11 (1), 39-48
+        this function prepares the auxiliary vectors for Poincare Plot:
+
+        a filtered Poincare plot is returned, the filtering method follows
+        "Filtering Poincare plots", Piskorski, Guzik, Computational methods in science and technology 11 (1), 39-48
         """
-        # beginning with the annotation filter
-        # 16 henceforth means "bad"
-        if len(signal.annotation_filter)>0:
-            for beat_type in signal.annotation_filter:
-                signal.annotation[where(signal.annotation == beat_type)] = 16
-
-        # now the square filter
-        signal.annotation[where(signal.signal < signal.square_filter[0])[0]] = 16
-        signal.annotation[where(signal.signal > signal.square_filter[1])[0]] = 16
-
-        # now removing bad beats from the beginning and the end of the recording
-        try:
-            while signal.annotation[0]!=0:
-                signal.signal=signal.signal[1:]
-                signal.annotation=signal.annotation[1:]
-
-            # removing nonsinus beats from the end
-            while signal.annotation[-1]!=0:
-                signal.signal=signal.signal[0:-1]
-                signal.annotation=signal.annotation[0:-1]
-        except IndexError:
-            print("no good beats")
+        # the signal has already been filtered in the constructor of the Signal class - i.e. all places which should
+        # be removed were marked in signal.annotation as 16
 
         # preparing the Poincare plot auxiliary vectors (see Filtering Poincare Plots)
         xi = signal.signal[0:(len(signal.signal)-1)]

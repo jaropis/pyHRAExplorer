@@ -1,7 +1,6 @@
 import unittest
-from numpy import array
+from RRclasses import *
 
-from signal_properties.RRclasses import *
 
 class TestPoincareFiltering(unittest.TestCase):
 
@@ -18,7 +17,6 @@ class TestPoincareFiltering(unittest.TestCase):
                               square_filter = (300, 2000)) # testing square filter in the middle
         self.signal6 = Signal([[751, 802, 753, 804, 755, 806, 757, 808, 7059, 8010], [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]],
                   square_filter = (300, 2000), annotation_filter = (1,)) # testing square filter in the middle
-        self.signal_real = Signal("../0001.rea", 2, 3, annotation_filter = (2,))
 
 
     def test_the_middle(self):

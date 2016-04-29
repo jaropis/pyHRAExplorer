@@ -1,15 +1,15 @@
 from scipy import where
 from my_exceptions import WrongSignal
 
+
 class Runs:
 
     def __init__(self, signal):
-        self.sinus_segments = self.split_on_annot(signal)
+        #self.sinus_segments = self.split_on_annot(signal) # - uncomment here and in tests
         self.runs = self.count_for_all(signal)
+        self.dec_runs, self.acc_runs, self.neutral_runs = self.count_for_all(signal)
         # signal is an object of the "Signal" class
         # the algorithm is the same I used in the PCSS time series suit
-        #self.runs_decelerations = self.get_runs(signal)[0] # get_runs returns a list of lists, with the first element being the deceleration runs
-        #self.runs_accelerations = self.get_runs(signal)[0]
 
     def split_on_annot(self, signal):
         # this function splits the signal time series into disjoint subseries, breaking the signal on annotations which are not 0
@@ -40,9 +40,8 @@ class Runs:
         # it return dictionary with two keys: all_runs and directions
         # all_runs - this list keeps all the runs in order
         # directions - this list keeps the designations - thether the run in the "all_runs" list is a decelerating list (1) or an accelerating list (-1) or no_change list (0)
-        if (len(signal_segment) < 2):
+        if (len(signal_segment) < 2): # the length of the signal must be sufficient
             raise WrongSignal
-        # signal must be length 2 or more for runs to make sense
         if signal_segment[0] == signal_segment[1]:
             last = 0
         else:
@@ -50,7 +49,9 @@ class Runs:
                 last = 1
             else:
                 last = -1
-        begin = 0 # we are dropping the first sample - this is just a reference and cannot be a part of a run
+        begin = 1 # we are dropping the first sample - this is just a reference and cannot be a part of a run - this
+        # could happen either after the beginning of a signal or after an "incorrect" (e.g. extrasystolic) sample
+        # well, perhaps the run after the beginning or after the incorrect beat should be rejected altogether ...
         for index in range(1, len(signal_segment)):
             if signal_segment[index] == signal_segment[index - 1]:
                 current = 0
@@ -98,6 +99,8 @@ class Runs:
         return separate_runs_and_directions
 
     def count_for_all(self, signal):
+        if (len(signal.signal) < 2):
+            raise WrongSignal
         # THIS IS THE MAIN FUNCTION OF THIS SOURCEFILE
         ## this functon counts all the runs of a specific type (decelerations, accelerations, no change)
         ## up to the maximum values
@@ -111,6 +114,8 @@ class Runs:
         acc_runs = [split_signal["all_runs"][i] for i in range(len(directions)) if directions[i] == "acc"] # like above
         neutral_runs = [split_signal["all_runs"][i] for i in range(len(directions)) if directions[i] == "neutral"]
 
+        # these variables are lists of lengths of runs, so if dec runs is [[1,2], [1,2,3]] then the dec_runs_count
+        # will be [2, 3]
         dec_runs_count = [len(a) for a in dec_runs]
         acc_runs_count = [len(a) for a in acc_runs]
         neutral_runs_count = [len(a) for a in neutral_runs]
@@ -130,18 +135,25 @@ class Runs:
         except ValueError:
             max_neutral = 0
 
-        dec_runs_all = []
-        acc_runs_all = []
-        neutral_runs_all = []
+        dec_runs_all = [0] * max_dec
+        acc_runs_all = [0] * max_acc
+        neutral_runs_all = [0] * max_neutral
 
+        for idx_dec in range(1, max_dec + 1):
+            # basically, return 1 if a given deceleration run in dec_runs_count is of idx_dec length and then sum
+            # the ones, in this way the deceleration runs of length idx_dec will be counted
+            for i in range(len(dec_runs_count)):
+                if dec_runs_count[i] == idx_dec:
+                    dec_runs_all[idx_dec-1] += 1 # necessary to address the list element correctly
+        
+        for idx_acc in range(1, max_acc + 1):
+            for i in range(len(acc_runs_count)):
+                if acc_runs_count[i] == idx_acc:
+                    acc_runs_all[idx_acc-1] += 1
 
-        for idx_dec in range(max_dec):
-            dec_runs_all.append(sum([dec_runs_count[i] for i in range(len([dec_runs_count])) if dec_runs_count[i] == idx_dec]))
-        
-        for idx_acc in range(max_acc):
-            acc_runs_all.append(sum([acc_runs_count[i] for i in range(len([acc_runs_count])) if acc_runs_count[i] == idx_acc]))
-        
-        for idx_neutral in range(max_neutral):
-            neutral_runs_all.append(sum([neutral_runs_count[i] for i in range(len([neutral_runs_count])) if neutral_runs_count[i] == idx_neutral]))
+        for idx_neutral in range(1, max_neutral + 1):
+            for i in range(len(neutral_runs_count)):
+                    if neutral_runs_count[i] == idx_neutral:
+                        neutral_runs_all[idx_neutral - 1] += 1
 
         return dec_runs_all, acc_runs_all, neutral_runs_all
