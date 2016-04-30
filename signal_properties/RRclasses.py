@@ -15,15 +15,13 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
         self.signal, self.annotation, self.timetrack = self.read_data(path_to_file, column_signal, column_annot,
                                                                              column_sample_to_sample)
         # here the data is filtered - this filtration will apply throughout the whole application
-        print("filtrowanie")
         self.filter_data()
 
         # now the HRV and HRA methods are being applied
-        print("Poincare")
-        self.poincare = Poincare(self)
-        #self.runs = Runs(self)
-        print("lombscargle")
-        self.LS_spectrum = LombScargleSpectrum(self)
+
+        self.poincare = None
+        self.runs = None
+        self.LS_spectrum = None
 
     def read_data(self, path_to_file, column_signal, column_annot, column_sample_to_sample):
         if type(path_to_file) == list:
@@ -95,3 +93,12 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
             print("no good beats")
 
         return None
+
+    def set_poincare(self):
+        self.poincare = Poincare(self)
+
+    def set_runs(self):
+        self.runs = Runs(self)
+
+    def set_LS_spectrum(self):
+        self.LS_spectrum = LombScargleSpectrum(self)

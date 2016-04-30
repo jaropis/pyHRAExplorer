@@ -7,6 +7,7 @@ class TestPoincareFiltering(unittest.TestCase):
 
     def setUp(self):
         self.signal_real1 = Signal("RR1.csv", 1, 2, annotation_filter=(2,))
+        self.signal_real1.set_poincare()
 
     def test_first_signal_SD1(self):
         self.assertTrue(round(self.signal_real1.poincare.SD1, 3) == 36.807)  # this is an example from our tutorial
