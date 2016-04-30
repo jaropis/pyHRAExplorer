@@ -33,6 +33,7 @@ class TestPoincareFiltering(unittest.TestCase):
         x = scipy.linspace(0.01, 2*scipy.pi, nin)
         y = A * scipy.sin(omega*(x + 0.5 * scipy.pi))
         self.signal4 = Signal([y, scipy.absolute(y*0), x]) # this is for the constructor that takes 3 elements
+        self.signal4.set_LS_spectrum()
         # below is the integral over all the frequencies
         total_power = sum(self.signal4.LS_spectrum.periodogram) * (self.signal4.LS_spectrum.frequency[1] -  self.signal4.LS_spectrum.frequency[0])
         variance = scipy.var(self.signal4.signal)
@@ -40,6 +41,23 @@ class TestPoincareFiltering(unittest.TestCase):
         self.assertAlmostEqual(total_power, variance, places=-1)  # these should be VERY roughly equal
         # the variance of this signal should be \frac{1}{2\pi}\int_{-\pi}^{\pi} 8^2*sin^2(x) = 32
         # we can compare this result to both total power and total variance calculated from the data
+
+    def test_get_bands(self):
+        A1 = 8.
+        omega1 = 1
+        nin = 11
+        x = scipy.linspace(0.01, 2*scipy.pi, nin)
+        y1 = A1 * scipy.sin(omega1*(x))
+        self.signal3 = Signal([y1, scipy.absolute(y1*0), x])
+        self.signal3.set_LS_spectrum()
+        # this signal will NOT be used - this is just to start somewhere
+        self.signal3.LS_spectrum.periodogram = scipy.linspace(0.0, 1.0, nin) * 0 + 1.0/(nin-1) # this is just to test
+        # if the segments add up to 0.5, as they should
+        # so, the periodogram is [ 0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1]
+        self.signal3.LS_spectrum.frequency = scipy.linspace(0.0, 1.0, nin)
+        # and the frequencies are [ 0.   0.1  0.2  0.3  0.4  0.5  0.6  0.7  0.8  0.9  1. ]
+        cuts = [0.0, 0.5, 1]
+        self.assertEqual(self.signal3.LS_spectrum.get_bands(cuts), [0.5, 0.5])
 
     def test_spectrum_bands(self):
         A1 = 8.
@@ -51,10 +69,12 @@ class TestPoincareFiltering(unittest.TestCase):
         y1 = A1 * scipy.sin(omega1*(x))
         y2 = A2 * scipy.sin(omega2*(x))
         y = y1+y2
-        print(scipy.var(y))
         self.signal5 = Signal([y, scipy.absolute(y*0), x])
+        self.signal5.set_LS_spectrum()
         self.signal51 = Signal([y1, scipy.absolute(y*0), x])
+        self.signal51.set_LS_spectrum()
         self.signal52 = Signal([y2, scipy.absolute(y*0), x])
+        self.signal52.set_LS_spectrum()
         variance = scipy.var(y)
         variance1 = scipy.var(y1)
         variance2 = scipy.var(y2)
