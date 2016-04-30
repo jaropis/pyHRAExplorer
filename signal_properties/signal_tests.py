@@ -43,7 +43,5 @@ class TestPoincareFiltering(unittest.TestCase):
         self.assertTrue((self.signal6.poincare.xi == array([751, 802, 755, 806, 757])).all())
         self.assertTrue((self.signal6.poincare.xii == array([802, 753, 806, 757, 808])).all())
 
-    def test_classic_descriptors(self): # the results are calculated according to the hrstruct.org tutorial, using the datafile from this same source
-        pass
 if __name__ == '__main__':
     unittest.main()
