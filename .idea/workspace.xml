@@ -2,16 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e8addb1d-70fc-4964-8c8c-8bd1d7517521" name="Default" comment="added classic Poincare descriptors">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/signal_properties/RR.csv" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/signal_properties/Poincare.py" afterPath="$PROJECT_DIR$/signal_properties/Poincare.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/signal_properties/poincare_tests.py" afterPath="$PROJECT_DIR$/signal_properties/tests/poincare_tests.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/signal_properties/runs_tests.py" afterPath="$PROJECT_DIR$/signal_properties/tests/runs_tests.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/signal_properties/signal_tests.py" afterPath="$PROJECT_DIR$/signal_properties/tests/signal_tests.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/signal_properties/spectral_tests.py" afterPath="$PROJECT_DIR$/signal_properties/tests/spectral_tests.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/signal_properties/RRclasses.py" afterPath="$PROJECT_DIR$/signal_properties/RRclasses.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/signal_properties/my_exceptions.py" afterPath="$PROJECT_DIR$/signal_properties/my_exceptions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/signal_properties/poincare_tests.py" afterPath="$PROJECT_DIR$/signal_properties/poincare_tests.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/signal_properties/runs.py" afterPath="$PROJECT_DIR$/signal_properties/runs.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/signal_properties/runs_tests.py" afterPath="$PROJECT_DIR$/signal_properties/runs_tests.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/signal_properties/signal_tests.py" afterPath="$PROJECT_DIR$/signal_properties/signal_tests.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/signal_properties/spectral.py" afterPath="$PROJECT_DIR$/signal_properties/spectral.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/signal_properties/spectral_tests.py" afterPath="$PROJECT_DIR$/signal_properties/spectral_tests.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="HRAexplorer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,67 +33,31 @@
       <file leaf-file-name="RRclasses.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/signal_properties/RRclasses.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.730769">
-              <caret line="29" column="17" selection-start-line="29" selection-start-column="17" selection-end-line="29" selection-end-column="17" />
-              <folding>
-                <element signature="e#0#22#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="spectral.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/signal_properties/spectral.py">
-          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="10" column="112" selection-start-line="10" selection-start-column="112" selection-end-line="10" selection-end-column="112" />
-              <folding>
-                <element signature="e#0#37#0" expanded="true" />
-              </folding>
+              <caret line="4" column="31" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="spectral_tests.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/signal_properties/spectral_tests.py">
+      <file leaf-file-name="spectral_tests.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/signal_properties/tests/spectral_tests.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.53586495">
-              <caret line="34" column="110" selection-start-line="34" selection-start-column="23" selection-end-line="34" selection-end-column="110" />
+            <state vertical-scroll-proportion="-1.1538461">
+              <caret line="2" column="5" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="32" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="poincare_tests.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/signal_properties/tests/poincare_tests.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.22820513">
+              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="case.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/anaconda3/lib/python3.4/unittest/case.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="297" column="35" selection-start-line="297" selection-start-column="35" selection-end-line="297" selection-end-column="35" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="see_lomb.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/signal_properties/see_lomb.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.0">
-              <caret line="26" column="36" selection-start-line="26" selection-start-column="36" selection-end-line="26" selection-end-column="36" />
-              <folding>
-                <element signature="e#67#85#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="poincare_tests.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/signal_properties/poincare_tests.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="44" column="19" selection-start-line="43" selection-start-column="0" selection-end-line="44" selection-end-column="19" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -104,33 +66,29 @@
         <entry file="file://$PROJECT_DIR$/signal_properties/runs.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
+              <caret line="1" column="23" selection-start-line="1" selection-start-column="23" selection-end-line="1" selection-end-column="23" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="runs_tests.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/signal_properties/runs_tests.py">
+        <entry file="file://$PROJECT_DIR$/signal_properties/tests/runs_tests.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
+              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Poincare.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/signal_properties/Poincare.py">
+      <file leaf-file-name="signal_tests.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/signal_properties/tests/signal_tests.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+              <caret line="17" column="41" selection-start-line="17" selection-start-column="41" selection-end-line="17" selection-end-column="41" />
               <folding>
-                <element signature="e#0#37#0" expanded="true" />
+                <element signature="e#0#15#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -156,18 +114,22 @@
         <option value="$PROJECT_DIR$/signal_properties/RRclass" />
         <option value="$PROJECT_DIR$/signal_properties/RRclasses" />
         <option value="$PROJECT_DIR$/signal_properties/RR1.csv" />
-        <option value="$PROJECT_DIR$/signal_properties/my_exceptions.py" />
-        <option value="$PROJECT_DIR$/signal_properties/poincare_tests.py" />
         <option value="$PROJECT_DIR$/signal_properties/test_runs_2.py" />
         <option value="$PROJECT_DIR$/signal_properties/lomb_discovery.py" />
         <option value="$PROJECT_DIR$/signal_properties/Poincare.py" />
-        <option value="$PROJECT_DIR$/signal_properties/runs_tests.py" />
-        <option value="$PROJECT_DIR$/signal_properties/runs.py" />
-        <option value="$PROJECT_DIR$/signal_properties/signal_tests.py" />
         <option value="$PROJECT_DIR$/signal_properties/see_lomb.py" />
-        <option value="$PROJECT_DIR$/signal_properties/RRclasses.py" />
-        <option value="$PROJECT_DIR$/signal_properties/spectral.py" />
+        <option value="$PROJECT_DIR$/signal_properties/poincare_tests.py" />
+        <option value="$PROJECT_DIR$/signal_properties/signal_tests.py" />
+        <option value="$PROJECT_DIR$/signal_properties/my_exceptions.py" />
+        <option value="$PROJECT_DIR$/signal_properties/runs_tests.py" />
         <option value="$PROJECT_DIR$/signal_properties/spectral_tests.py" />
+        <option value="$PROJECT_DIR$/signal_properties/tests/spectral_tests.py" />
+        <option value="$PROJECT_DIR$/signal_properties/RRclasses.py" />
+        <option value="$PROJECT_DIR$/signal_properties/runs.py" />
+        <option value="$PROJECT_DIR$/signal_properties/spectral.py" />
+        <option value="$PROJECT_DIR$/signal_properties/tests/poincare_tests.py" />
+        <option value="$PROJECT_DIR$/signal_properties/tests/runs_tests.py" />
+        <option value="$PROJECT_DIR$/signal_properties/tests/signal_tests.py" />
       </list>
     </option>
   </component>
@@ -175,9 +137,9 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1280" />
-    <option name="width" value="1920" />
-    <option name="height" value="1200" />
+    <option name="y" value="23" />
+    <option name="width" value="1280" />
+    <option name="height" value="729" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -203,7 +165,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -236,18 +197,42 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HRAexplorer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HRAexplorer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="signal_properties" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tests" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/signal_properties/RR.csv" />
-    <property name="FullScreen" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="recentsLimit" value="5" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="ToolWindowStructure.ShowToolbar" value="false" />
+    <property name="FullScreen" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/signal_properties/tests" />
+    </key>
   </component>
   <component name="RunManager" selected="Python.spectral_tests">
     <configuration default="false" name="signal_tests" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -262,7 +247,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="HRAexplorer" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/signal_properties/signal_tests.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/signal_properties/tests/signal_tests.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -277,29 +262,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="HRAexplorer" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/signal_properties/poincare_tests.py" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Unittests in runs_tests" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/signal_properties" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="HRAexplorer" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/signal_properties/runs_tests.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/signal_properties/tests/poincare_tests.py" />
       <option name="CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
       <option name="FOLDER_NAME" value="" />
@@ -340,7 +303,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="HRAexplorer" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/signal_properties/spectral_tests.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/signal_properties/tests/spectral_tests.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -467,20 +430,41 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
+    <configuration default="false" name="Unittests in runs_tests" type="tests" factoryName="Unittests" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/signal_properties" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="HRAexplorer" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/signal_properties/tests/runs_tests.py" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.signal_tests" />
-      <item index="1" class="java.lang.String" itemvalue="Python tests.poincare_tests" />
-      <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in runs_tests" />
+      <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests in runs_tests" />
+      <item index="1" class="java.lang.String" itemvalue="Python.signal_tests" />
+      <item index="2" class="java.lang.String" itemvalue="Python tests.poincare_tests" />
       <item index="3" class="java.lang.String" itemvalue="Python.see_lomb" />
       <item index="4" class="java.lang.String" itemvalue="Python.spectral_tests" />
     </list>
     <recent_temporary>
-      <list size="5">
+      <list size="4">
         <item index="0" class="java.lang.String" itemvalue="Python.spectral_tests" />
-        <item index="1" class="java.lang.String" itemvalue="Python.see_lomb" />
-        <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in runs_tests" />
-        <item index="3" class="java.lang.String" itemvalue="Python.signal_tests" />
-        <item index="4" class="java.lang.String" itemvalue="Python tests.poincare_tests" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.poincare_tests" />
+        <item index="2" class="java.lang.String" itemvalue="Python.signal_tests" />
+        <item index="3" class="java.lang.String" itemvalue="Python.see_lomb" />
       </list>
     </recent_temporary>
   </component>
@@ -717,11 +701,35 @@
       <option name="project" value="LOCAL" />
       <updated>1461912218318</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="switched to setting poincare, runs, LS_spectrum atributes through methods rather than directly in the constructor">
+      <created>1461997420691</created>
+      <option name="number" value="00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1461997420691</updated>
+    </task>
+    <task id="LOCAL-00039" summary="built a method for getting power within a sequence of bands and wrote a test">
+      <created>1462044755355</created>
+      <option name="number" value="00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1462044755355</updated>
+    </task>
+    <task id="LOCAL-00040" summary="added conditions for the frequency cuts in calculating power within bands, added tests for these conditions, corrected the assertRaises test in runs_tests.py">
+      <created>1462046422621</created>
+      <option name="number" value="00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1462046422621</updated>
+    </task>
+    <task id="LOCAL-00041" summary="generalized the get_bands method so as to add the integration measure df and rewrote the bands tests so as to use the get_bands method rather than relying on integrating within the test method">
+      <created>1462130665763</created>
+      <option name="number" value="00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1462130665763</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1280" y="0" width="1920" height="1200" extended-state="6" />
+    <frame x="0" y="23" width="1280" height="729" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -729,20 +737,20 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2494043" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1263823" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17474186" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39554796" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15044248" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34690267" sideWeight="0.49679488" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286385" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34536892" sideWeight="0.49679488" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.86290324" sideWeight="0.5032051" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32967034" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32967034" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -757,10 +765,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added classic Poincare descriptors tests for one signal - this signal has only beats of sinus origin" />
-    <MESSAGE value="added short term asymmetry, added tests for short term asymmetry" />
-    <MESSAGE value="added long term asymmetry Poincare indices, added tests for those indices" />
-    <MESSAGE value="added total asymmetry Poincare descriptors, added tests for those indices" />
     <MESSAGE value="started doing runs" />
     <MESSAGE value="added runs to the signal class" />
     <MESSAGE value="added some code to the Runs class" />
@@ -782,7 +786,11 @@
     <MESSAGE value="started tests for non-deleted time series with known Fourier transform" />
     <MESSAGE value="finally some working tests for Lomb-Scargle spectrum" />
     <MESSAGE value="the variance == total_power test is working" />
-    <option name="LAST_COMMIT_MESSAGE" value="the variance == total_power test is working" />
+    <MESSAGE value="switched to setting poincare, runs, LS_spectrum atributes through methods rather than directly in the constructor" />
+    <MESSAGE value="built a method for getting power within a sequence of bands and wrote a test" />
+    <MESSAGE value="added conditions for the frequency cuts in calculating power within bands, added tests for these conditions, corrected the assertRaises test in runs_tests.py" />
+    <MESSAGE value="generalized the get_bands method so as to add the integration measure df and rewrote the bands tests so as to use the get_bands method rather than relying on integrating within the test method" />
+    <option name="LAST_COMMIT_MESSAGE" value="generalized the get_bands method so as to add the integration measure df and rewrote the bands tests so as to use the get_bands method rather than relying on integrating within the test method" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -808,21 +816,17 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/signal_properties/runs_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/Poincare.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="135" selection-start-line="21" selection-start-column="135" selection-end-line="21" selection-end-column="135" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/poincare_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/poincare_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -830,9 +834,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -847,9 +848,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -857,9 +856,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -870,28 +866,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/signal_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/signal_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="23" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/runs_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/runs_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/poincare_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/poincare_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -899,9 +891,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="9" column="29" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -916,9 +905,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="39" selection-start-line="15" selection-start-column="39" selection-end-line="15" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -926,9 +913,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="40" selection-start-line="2" selection-start-column="40" selection-end-line="2" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -939,28 +923,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/signal_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/signal_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="23" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/runs_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/runs_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="13" column="140" selection-start-line="13" selection-start-column="140" selection-end-line="13" selection-end-column="140" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/poincare_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/poincare_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -968,9 +948,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="9" column="29" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -985,9 +962,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="6" column="43" selection-start-line="6" selection-start-column="43" selection-end-line="6" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -995,24 +970,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="85" column="59" selection-start-line="85" selection-start-column="59" selection-end-line="85" selection-end-column="59" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/signal_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/signal_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/poincare_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/poincare_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1027,9 +998,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="6" column="43" selection-start-line="6" selection-start-column="43" selection-end-line="6" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1037,24 +1006,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="85" column="59" selection-start-line="85" selection-start-column="59" selection-end-line="85" selection-end-column="59" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/signal_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/signal_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/poincare_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/poincare_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="27" column="19" selection-start-line="27" selection-start-column="19" selection-end-line="27" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1069,13 +1034,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="90" column="19" selection-start-line="90" selection-start-column="19" selection-end-line="90" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/signal_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/signal_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1086,13 +1049,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="83" column="17" selection-start-line="83" selection-start-column="17" selection-end-line="83" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/signal_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/signal_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1103,9 +1064,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1113,9 +1072,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1123,9 +1080,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1133,44 +1088,59 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/signal_properties/test_runs_2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.06696428">
+        <state vertical-scroll-proportion="0.0">
           <caret line="2" column="28" selection-start-line="1" selection-start-column="23" selection-end-line="2" selection-end-column="28" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/signal_properties/RR1.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.76804125">
+        <state vertical-scroll-proportion="0.0">
           <caret line="1944" column="0" selection-start-line="1944" selection-start-column="0" selection-end-line="1944" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/my_exceptions.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/see_lomb.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.077319585">
-          <caret line="2" column="8" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="27" column="23" selection-start-line="27" selection-start-column="23" selection-end-line="27" selection-end-column="23" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.4/unittest/case.py">
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydev_import_hook.py" />
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/spectral_tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.1538461">
+          <caret line="2" column="5" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/signal_properties/RRclasses.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="297" column="35" selection-start-line="297" selection-start-column="35" selection-end-line="297" selection-end-column="35" />
+          <caret line="4" column="31" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/signal_properties/spectral.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="36" selection-start-line="0" selection-start-column="36" selection-end-line="0" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/signal_properties/Poincare.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="1.4230769">
           <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
@@ -1178,27 +1148,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/runs_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/my_exceptions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.1923077">
+          <caret line="5" column="8" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/signal_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <caret line="17" column="41" selection-start-line="17" selection-start-column="41" selection-end-line="17" selection-end-column="41" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/signal_tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.69072163">
-          <caret line="46" column="12" selection-start-line="46" selection-start-column="12" selection-end-line="46" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/poincare_tests.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/runs_tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="44" column="19" selection-start-line="43" selection-start-column="0" selection-end-line="44" selection-end-column="19" />
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1206,47 +1177,15 @@
     <entry file="file://$PROJECT_DIR$/signal_properties/runs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
+          <caret line="1" column="23" selection-start-line="1" selection-start-column="23" selection-end-line="1" selection-end-column="23" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/see_lomb.py">
+    <entry file="file://$PROJECT_DIR$/signal_properties/tests/poincare_tests.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.0">
-          <caret line="26" column="36" selection-start-line="26" selection-start-column="36" selection-end-line="26" selection-end-column="36" />
-          <folding>
-            <element signature="e#67#85#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/RRclasses.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.730769">
-          <caret line="29" column="17" selection-start-line="29" selection-start-column="17" selection-end-line="29" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/spectral.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="112" selection-start-line="10" selection-start-column="112" selection-end-line="10" selection-end-column="112" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/signal_properties/spectral_tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.53586495">
-          <caret line="34" column="110" selection-start-line="34" selection-start-column="23" selection-end-line="34" selection-end-column="110" />
+        <state vertical-scroll-proportion="0.22820513">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>

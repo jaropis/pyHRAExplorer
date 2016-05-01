@@ -1,7 +1,7 @@
 import unittest
 import scipy
-from RRclasses import Signal
-from my_exceptions import WrongCuts
+from signal_properties.RRclasses import Signal
+from signal_properties.my_exceptions import WrongCuts
 
 # I learned something - each test calls setup
 

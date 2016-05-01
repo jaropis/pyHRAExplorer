@@ -1,5 +1,6 @@
 import unittest
-from RRclasses import *
+from signal_properties.RRclasses import Signal
+from scipy import array
 
 
 class TestPoincareFiltering(unittest.TestCase):
@@ -7,16 +8,22 @@ class TestPoincareFiltering(unittest.TestCase):
     def setUp(self):
         self.signal1 = Signal([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]],
                             annotation_filter = (1,)) # testing annotation filter inside
+        self.signal1.set_poincare()
         self.signal2 = Signal([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [1, 1, 0, 0, 0, 0, 0, 0 , 0 ,0]],
                             annotation_filter = (1,)) # testing annotation filter in the beginning
+        self.signal2.set_poincare()
         self.signal3 = Signal([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [0, 0, 0, 0, 0, 0, 0, 0 , 1 ,1]],
                             annotation_filter = (1,)) # testing annotation filter in the beginning
+        self.signal3.set_poincare()
         self.signal4 = Signal([[751, 802, 753, 804, 755, 8006, 757, 808, 759, 810], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
                               square_filter = (0, 2000)) # testing square filter in the middle
+        self.signal4.set_poincare()
         self.signal5 = Signal([[7051, 200, 753, 804, 755, 806, 757, 808, 759, 810], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
                               square_filter = (300, 2000)) # testing square filter in the middle
+        self.signal5.set_poincare()
         self.signal6 = Signal([[751, 802, 753, 804, 755, 806, 757, 808, 7059, 8010], [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]],
                   square_filter = (300, 2000), annotation_filter = (1,)) # testing square filter in the middle
+        self.signal6.set_poincare()
 
 
     def test_the_middle(self):

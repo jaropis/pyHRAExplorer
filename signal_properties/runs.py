@@ -1,5 +1,5 @@
 from scipy import where
-from my_exceptions import WrongSignal
+from signal_properties.my_exceptions import WrongSignal
 
 
 class Runs:

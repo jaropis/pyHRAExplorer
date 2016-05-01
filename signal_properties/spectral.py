@@ -1,4 +1,4 @@
-from my_exceptions import WrongCuts
+from signal_properties.my_exceptions import WrongCuts
 import scipy
 import scipy.signal as scisignal
 

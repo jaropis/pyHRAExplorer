@@ -1,8 +1,8 @@
 from re import findall
 from scipy import array, where, cumsum
-from Poincare import Poincare
-from runs import Runs
-from spectral import LombScargleSpectrum
+from signal_properties.Poincare import Poincare
+from signal_properties.runs import Runs
+from signal_properties.spectral import LombScargleSpectrum
 
 
 

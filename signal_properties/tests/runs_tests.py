@@ -1,8 +1,6 @@
 import unittest
-from scipy import array
-from RRclasses import Signal
-from numpy import allclose
-from my_exceptions import WrongSignal
+from signal_properties.RRclasses import Signal
+from signal_properties.my_exceptions import WrongSignal
 
 # I learned something - each test calls setup
 
