@@ -20,9 +20,10 @@ class LombScargleSpectrum:
         periodogram = scisignal.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*scipy.pi) / 2
         return periodogram, frequency
 
-    def get_bands(self, cuts):
+    def get_bands(self, cuts, df):
         self.test_cuts(cuts)
         # cuts is a list holding the frequency bands of interest
+        # df is the integration measure
         first = cuts[0]
         power_in_bands = []
         for second in cuts[1:]:
@@ -37,7 +38,7 @@ class LombScargleSpectrum:
                 break
             else:
                 break
-        return power_in_bands
+        return scipy.array(power_in_bands) * df
 
     def test_cuts(self, cuts):
         if len(cuts) != len(scipy.unique(cuts)) or (cuts != sorted(cuts)):

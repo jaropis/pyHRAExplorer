@@ -55,7 +55,7 @@ class TestPoincareFiltering(unittest.TestCase):
         self.signal3.LS_spectrum.frequency = scipy.linspace(0.0, 1.0, nin)
         # and the frequencies are [ 0.   0.1  0.2  0.3  0.4  0.5  0.6  0.7  0.8  0.9  1. ]
         cuts = [0.0, 0.5, 1]
-        self.assertEqual(self.signal3.LS_spectrum.get_bands(cuts), [0.5, 0.5])
+        self.assertTrue((self.signal3.LS_spectrum.get_bands(cuts, 1) == scipy.array([0.5, 0.5])).all())
 
     def test_test_cuts(self):
         cuts = [0.0, 0.5, 0.5, 1]
@@ -72,7 +72,7 @@ class TestPoincareFiltering(unittest.TestCase):
         # so, the periodogram is [ 0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1  0.1]
         self.signal3.LS_spectrum.frequency = scipy.linspace(0.0, 1.0, nin)
         # and the frequencies are [ 0.   0.1  0.2  0.3  0.4  0.5  0.6  0.7  0.8  0.9  1. ]
-        self.assertRaises(WrongCuts, self.signal3.LS_spectrum.get_bands, [0.5, 0.5])
+        self.assertRaises(WrongCuts, self.signal3.LS_spectrum.get_bands, [0.5, 0.5], df=1)
 
     def test_spectrum_bands(self):
         A1 = 8.
@@ -93,13 +93,15 @@ class TestPoincareFiltering(unittest.TestCase):
         variance = scipy.var(y)
         variance1 = scipy.var(y1)
         variance2 = scipy.var(y2)
-        spectral_content = sum(self.signal5.LS_spectrum.periodogram[(self.signal5.LS_spectrum.frequency < 2) & (self.signal5.LS_spectrum.frequency > 0.2)]) * (self.signal5.LS_spectrum.frequency[1] -  self.signal5.LS_spectrum.frequency[0])
+        df = (self.signal5.LS_spectrum.frequency[1] -  self.signal5.LS_spectrum.frequency[0])
+        print(df)
+        spectral_content = self.signal5.LS_spectrum.get_bands(cuts=[0.2, 2.0], df=df)
         # this should be equal to the variance of the whole signal - the peaks are quite broad here, so wide integration interval
-        spectral_content1 = sum(self.signal51.LS_spectrum.periodogram[(self.signal51.LS_spectrum.frequency < 2) & (self.signal51.LS_spectrum.frequency > 0.2)]) * (self.signal51.LS_spectrum.frequency[1] -  self.signal51.LS_spectrum.frequency[0])
-        spectral_content2 = sum(self.signal52.LS_spectrum.periodogram[(self.signal52.LS_spectrum.frequency < 2.5) & (self.signal52.LS_spectrum.frequency > 0.2)]) * (self.signal52.LS_spectrum.frequency[1] -  self.signal52.LS_spectrum.frequency[0])
-        self.assertAlmostEqual(spectral_content, variance, places = -1)
-        self.assertAlmostEqual(spectral_content1, variance1, places = -1)
-        self.assertAlmostEqual(spectral_content2, variance2, places = -1)
+        spectral_content1 = self.signal51.LS_spectrum.get_bands(cuts=[0.2, 2.0], df=df)
+        spectral_content2 = self.signal52.LS_spectrum.get_bands(cuts=[0.2, 2.5], df=df)
+        self.assertAlmostEqual(spectral_content[0], variance, places = -1)
+        self.assertAlmostEqual(spectral_content1[0], variance1, places = -1)
+        self.assertAlmostEqual(spectral_content2[0], variance2, places = -1)
 
 if __name__ == '__main__':
     unittest.main()
