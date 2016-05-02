@@ -3,7 +3,7 @@ from numpy import round
 from signal_properties.RRclasses import Signal
 
 
-class TestPoincareFiltering(unittest.TestCase):
+class TestPoincare(unittest.TestCase):
 
     def setUp(self):
         self.signal_real1 = Signal("RR1.csv", 1, 2, annotation_filter=(2,))

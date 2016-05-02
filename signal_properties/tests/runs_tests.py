@@ -4,7 +4,7 @@ from signal_properties.my_exceptions import WrongSignal
 
 # I learned something - each test calls setup
 
-class TestPoincareFiltering(unittest.TestCase):
+class TestRuns(unittest.TestCase):
     def setUp(self):
         self.signal1 = Signal([[0, 2, 3, 4, 5], [0, 0, 0, 0, 0]]) # one decelerating run of length 4
         self.signal2 = Signal([[0, 2, 3, 4, 5, 4, 3, 2, 1], [0]*9]) # should be one dec run of lenght 4 and one acc of length 4

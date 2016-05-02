@@ -5,7 +5,7 @@ from signal_properties.my_exceptions import WrongCuts
 
 # I learned something - each test calls setup
 
-class TestPoincareFiltering(unittest.TestCase):
+class TestLombSpectrum(unittest.TestCase):
     def setUp(self):
         pass
         # this needs to be cleaned up - these tests need to run only for certain classes, so the consturctor of Signal

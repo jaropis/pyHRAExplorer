@@ -10,6 +10,6 @@ class TestProject(unittest.TestCase):
         self.test_project.get_files_list()
         local_files_list = [item.split("/")[-1] for item in self.test_project.files_list]
         self.assertEqual(local_files_list, ['firest.rea', 'second.rea', 'third.rea'])
-        
+
 if __name__ == '__main__':
     unittest.main()
