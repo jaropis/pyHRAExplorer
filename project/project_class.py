@@ -5,6 +5,8 @@ class Project:
     """
     This class separates the data from the GUI and from the mathematics. It operates on the mathematics and communicates
     with the GUI.
+    The main method of the Class is the step_thorugh_project class which goes over all the files in a project (folder
+    with files), and calculates the HRV/HRA properties of the files
     """
     def __init__(self, path, file_extension):
         self.path = path
@@ -103,3 +105,43 @@ class Project:
                 temp_LS_spectrum = None
             temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "LS_spectrum": temp_LS_spectrum}
             self.project_results.append[file, temp_file_results]
+
+    # methods to finish
+    def read_state(self):
+        """
+        this method checks if the project already exists, reads from the .project files the state of the project, and,
+        if some of the calculations have already been performed, it prevents the Project from re-doing them
+        :return:
+        """
+        pass
+
+    def write_state(self):
+        """
+        this method writes the state of the project to the drive
+        :return:
+        """
+        pass
+
+    def dump_Poincare(self):
+        """
+        this method writes a csv/xlsx/ods file to the disk - this file contains the Poincare plot descriptors for each
+        file in the project
+        :return:
+        """
+        pass
+
+    def dump_runs(self):
+        """
+        this method writes a csv/xlsx/ods file to the disk - this file contains the monotonic runs for each
+        file in the project
+        :return:
+        """
+        pass
+
+    def dump_LS_spectrum(self):
+        """
+        this method writes a csv/xlsx/ods file to the disk - this file contains the LS_spectrum for each
+        file in the project
+        :return:
+        """
+        pass
