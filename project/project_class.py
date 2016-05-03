@@ -1,4 +1,5 @@
 from glob import glob
+from signal_properties.RRclasses import  Signal
 
 class Project:
     """
@@ -16,12 +17,14 @@ class Project:
         self.annotation_filter=()
         self.files_list = []
 
-        self.Poincare_state = 0
-        self.runs_state = 0
-        self.LS_spectrum_state = 0
+        # these three flags say whether or not the specific method should be used
+        self.Poincare_state = False
+        self.runs_state = False
+        self.LS_spectrum_state = False
 
-        self.results = {Poincare: [], runs: [], LS_spectrum: []}
-        
+        self.project_results = [] # this list of lists will hold the name of the file and the self.file_results for
+        # each file eg. [[filename1, {Poincare: , runs: , LS_spectrum}], [filename2, {Poincare: , runs: , LS_spectrum}}
+
     def get_files_list(self):
         """
         build a list of the files associated with the project, i.e. in the correct directory, with the correct
@@ -33,27 +36,27 @@ class Project:
         """
         this means: calculate the Poincare descriptors
         """
-        self.Poincare_state = 1
+        self.Poincare_state = True
 
     def set_runs(self):
         """
         this means: calculate runs
         """
-        self.runs_state = 1
+        self.runs_state = True
 
     def set_LS_spectrum(self):
         """
         this means: calculate Lomb-Scargle spectrum
         """
-        self.LS_spectrum_state = 1
+        self.LS_spectrum_state = True
 
     def set_columns(self, column_signal=None, column_annotation=None, column_sample_to_sample=None):
         """
         sets the columns in the files
-        :param column_signal: the number of the column holding the signal
-        :param column_annotation: the number of the column holdng the annotations
-        :param column_sample_to_sample: the number of the column holding the sample-to-sample values
-        :return:
+        :column_signal: the number of the column holding the signal
+        :column_annotation: the number of the column holdng the annotations
+        :column_sample_to_sample: the number of the column holding the sample-to-sample values
+        :: - does not return anything - just modifies the arguments
         """
         self.column_signal = column_signal
         self.column_annot = column_annotation
@@ -78,4 +81,25 @@ class Project:
         :return: dictionary with results, results = {Poincare: [], runs: [], LS_spectrum: []} - a list may be empty if the user
          does not want a specific type of result
         """
-        pass
+        for file in self.files_list:
+            temp_path = self.path + "/" + file
+            temp_signal = Signal(path_to_file=temp_path, column_annot=self.column_annot, column_signal=self.column_signal,
+                                 column_sample_to_sample=self.column_sample_to_sample, annotation_filter=self.annotation_filter,
+                                 square_filter=self.square_filter, quotient_filter=self.quotient_filter)
+            if self.Poincare_state:
+                temp_signal.set_poincare()
+                temp_poincare = temp_signal.poincare
+            else:
+                temp_poincare = None
+
+            if self.runs_state:
+                temp_signal.set_runs()
+                temp_runs = temp_signal.runs
+            else:
+                temp_runs = None
+
+            if self.LS_spectrum_state:
+                temp_signal.set_LS_spectrum()
+                temp_LS_spectrum = None
+            temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "LS_spectrum": temp_LS_spectrum}
+            self.project_results.append[file, temp_file_results]
