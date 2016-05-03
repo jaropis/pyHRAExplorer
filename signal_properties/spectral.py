@@ -6,6 +6,9 @@ class LombScargleSpectrum:
     def __init__(self, signal):
         self.filtered_signal, self.filtered_time_track = self.filter_and_timetrack(signal)
         self.periodogram, self.frequency = self.build_spectrum()
+        self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) # this
+        # is basically the result which is expected in HRV - depending on the length of the recording the first two
+        # entries may be combined to VLF in short recordings
 
     def filter_and_timetrack(self, signal):
         # this function prepares data for Lomb-Scargle - i.e. filtered cumulative sum of time,   filtered signal
