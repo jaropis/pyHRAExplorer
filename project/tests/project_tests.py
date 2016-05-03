@@ -11,5 +11,9 @@ class TestProject(unittest.TestCase):
         local_files_list = [item.split("/")[-1] for item in self.test_project.files_list]
         self.assertEqual(local_files_list, ['firest.rea', 'second.rea', 'third.rea'])
 
+    def test_project_runs(self):
+        self.test_project.step_through_project_files()
+        self.assertTrue(True)
+
 if __name__ == '__main__':
     unittest.main()
