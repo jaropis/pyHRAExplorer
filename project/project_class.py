@@ -9,6 +9,7 @@ class Project:
     with files), and calculates the HRV/HRA properties of the files
     """
     def __init__(self, path, file_extension):
+        self.project_name = None
         self.path = path
         self.file_extension = file_extension
         self.column_signal = None
@@ -104,7 +105,8 @@ class Project:
                 temp_signal.set_LS_spectrum()
                 temp_LS_spectrum = None
             temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "LS_spectrum": temp_LS_spectrum}
-            self.project_results.append[file, temp_file_results]
+            self.project_results.append[file, temp_file_results] ## question to self - do I need to keep the whole objects
+            # in the resulting list??? - correct
 
     # methods to finish
     def read_state(self):
@@ -120,7 +122,25 @@ class Project:
         this method writes the state of the project to the drive
         :return:
         """
-        pass
+        try:
+            output_file = open(self.path+"/.HRAproject", 'w')
+
+            output_line = "project name:" + str(self.project_name) + "\n"
+            output_line += "number of files:"+ str(len(self.files_list)) + "\n"
+            output_line += "column signal:" + str(self.column_signal) + "\n"
+            output_line += "column annotation:" + str(self.column_annot) + "\n"
+            output_line += "column sample to sample:" + str(self.column_sample_to_sample) + "\n"
+            output_line += "annotation filter:" + str(self.annotation_filter) + "\n"
+            output_line += "square filter:" + str(self.square_filter) + "\n"
+            output_line += "quotient filter:" + str(self.quotient_filter) + "\n"
+            output_line += "Poincare state:" + str(self.Poincare_state) + "\n"
+            output_line += "runs state:" + str(self.runs_state) + "\n"
+            output_line += "LS_spectrum state:" + str(self.LS_spectrum_state) + "\n"
+            output_file.write(output_line)
+            output_file.close()
+            return True
+        except Exception:
+            return False
 
     def dump_Poincare(self):
         """
@@ -138,7 +158,7 @@ class Project:
         """
         pass
 
-    def dump_LS_spectrum(self):
+    def dump_LS_spectrum(self, bands):
         """
         this method writes a csv/xlsx/ods file to the disk - this file contains the LS_spectrum for each
         file in the project
