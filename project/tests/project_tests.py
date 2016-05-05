@@ -15,5 +15,11 @@ class TestProject(unittest.TestCase):
         self.test_project.step_through_project_files()
         self.assertTrue(True)
 
+    def test_write_state(self):
+        self.assertTrue(self.test_project.write_state())
+        temp = self.test_project.path
+        self.test_project.path = "/"
+        self.assertFalse(self.test_project.write_state())
+        self.test_project.path = temp
 if __name__ == '__main__':
     unittest.main()
