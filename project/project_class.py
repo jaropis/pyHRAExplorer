@@ -8,17 +8,17 @@ class Project:
     The main method of the Class is the step_thorugh_project class which goes over all the files in a project (folder
     with files), and calculates the HRV/HRA properties of the files
     """
-    def __init__(self, path, file_extension):
+    def __init__(self, path, file_extension, column_signal, column_annot, column_sample_to_sample):
         self.project_name = None
         self.path = path
         self.file_extension = file_extension
-        self.column_signal = None
-        self.column_annot = None
-        self.column_sample_to_sample = None
+        self.column_signal = column_signal
+        self.column_annot = column_annot
+        self.column_sample_to_sample = column_sample_to_sample
         self.quotient_filter = -1
         self.square_filter=(-8000, 8000)
         self.annotation_filter=()
-        self.files_list = []
+        self.files_list = self.get_files_list()
 
         # these three flags say whether or not the specific method should be used
         self.Poincare_state = False
@@ -33,7 +33,7 @@ class Project:
         build a list of the files associated with the project, i.e. in the correct directory, with the correct
         extension
         """
-        self.files_list = glob(self.path+'/*'+self.file_extension)
+        return [item.split("/")[-1] for item in glob(self.path+'/*'+self.file_extension)]
 
     def set_Poincare(self):
         """
@@ -108,6 +108,7 @@ class Project:
             self.project_results.append[file, temp_file_results] ## question to self - do I need to keep the whole objects
             # in the resulting list??? - correct
 
+
     # methods to finish
     def read_state(self):
         """
@@ -115,7 +116,25 @@ class Project:
         if some of the calculations have already been performed, it prevents the Project from re-doing them
         :return:
         """
-        pass
+        try:
+            input_file = open(self.path + "/.HRAproject", 'r')
+            self.project_name = input_file.readline().split(':')[1].rstrip()
+            print(self.project_name)
+            self.files_no = int(input_file.readline().split(':')[1].rstrip())
+            print(self.files_no)
+            self.column_signal = int(input_file.readline().split(':')[1].rstrip())
+            self.column_annot = int(input_file.readline().split(':')[1].rstrip())
+            self.column_sample_to_sample = int(input_file.readline().split(':')[1].rstrip())
+            self.annotation_filter = eval(input_file.readline().split(':')[1].rstrip())
+            self.square_filter = eval(input_file.readline().split(':')[1].rstrip())
+            self.quotient_filter = int(input_file.readline().split(':')[1].rstrip())
+            self.Poincare_state = bool(input_file.readline().split(':')[1].rstrip())
+            self.runs_state = bool(input_file.readline().split(':')[1].rstrip())
+            self.LS_spectrum_state = bool(input_file.readline().split(':')[1].rstrip())
+            input_file.close()
+            return(True)
+        except Exception:
+            return(False)
 
     def write_state(self):
         """
@@ -123,7 +142,7 @@ class Project:
         :return:
         """
         try:
-            output_file = open(self.path+"/.HRAproject", 'w')
+            output_file = open(self.path + "/.HRAproject", 'w')
 
             output_line = "project name:" + str(self.project_name) + "\n"
             output_line += "number of files:"+ str(len(self.files_list)) + "\n"
@@ -133,9 +152,9 @@ class Project:
             output_line += "annotation filter:" + str(self.annotation_filter) + "\n"
             output_line += "square filter:" + str(self.square_filter) + "\n"
             output_line += "quotient filter:" + str(self.quotient_filter) + "\n"
-            output_line += "Poincare state:" + str(self.Poincare_state) + "\n"
-            output_line += "runs state:" + str(self.runs_state) + "\n"
-            output_line += "LS_spectrum state:" + str(self.LS_spectrum_state) + "\n"
+            output_line += "Poincare state:" + str(int(self.Poincare_state)) + "\n"
+            output_line += "runs state:" + str(int(self.runs_state)) + "\n"
+            output_line += "LS_spectrum state:" + str(int(self.LS_spectrum_state)) + "\n"
             output_file.write(output_line)
             output_file.close()
             return True

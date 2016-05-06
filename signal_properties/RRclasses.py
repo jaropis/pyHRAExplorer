@@ -40,11 +40,11 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
 
         for line in reafile_current:
             line_content = findall(r'\b[0-9\.]+', line)
-            signal.append(float(line_content[column_signal-1]))
+            signal.append(float(line_content[column_signal]))
             if column_signal != column_annot:  # see below - similar condition
-                annotation.append(int(float(line_content[column_annot-1])))
+                annotation.append(int(float(line_content[column_annot])))
             if column_sample_to_sample !=0 and column_sample_to_sample != column_signal:
-                sample_to_sample.append(float(line_content[column_sample_to_sample-1]))
+                sample_to_sample.append(float(line_content[column_sample_to_sample]))
         signal = array(signal)
 
         if column_sample_to_sample == column_signal:
