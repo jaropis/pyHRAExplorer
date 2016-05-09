@@ -103,9 +103,11 @@ class Project:
 
             if self.LS_spectrum_state:
                 temp_signal.set_LS_spectrum()
-                temp_LS_spectrum = None
+                temp_LS_spectrum = temp_signal.LS_spectrum
             temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "LS_spectrum": temp_LS_spectrum}
-            #self.project_results.append[file, temp_file_results] ## question to self - do I need to keep the whole objects
+            #print(file, temp_file_results)
+            self.project_results.append([file, temp_file_results]) ## question to self - do I need to keep the whole objects
+            print(self.project_results)
             # in the resulting list??? - correct
 
 
