@@ -105,7 +105,7 @@ class Project:
                 temp_signal.set_LS_spectrum()
                 temp_LS_spectrum = None
             temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "LS_spectrum": temp_LS_spectrum}
-            self.project_results.append[file, temp_file_results] ## question to self - do I need to keep the whole objects
+            #self.project_results.append[file, temp_file_results] ## question to self - do I need to keep the whole objects
             # in the resulting list??? - correct
 
 

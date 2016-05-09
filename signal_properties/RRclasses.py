@@ -46,15 +46,15 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
             if column_sample_to_sample !=0 and column_sample_to_sample != column_signal:
                 sample_to_sample.append(float(line_content[column_sample_to_sample]))
         signal = array(signal)
-
         if column_sample_to_sample == column_signal:
-            sample_to_sample = column_signal
+            sample_to_sample = signal
 
         timetrack = cumsum(sample_to_sample)
 
         if column_signal == column_annot:
             annotation = 0*signal
         annotation = array(annotation)
+        reafile_current.close()
         return signal, annotation, timetrack
 
     def filter_data(self):
