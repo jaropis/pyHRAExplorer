@@ -5,6 +5,10 @@ from project.project_class import Project
 class TestProject(unittest.TestCase):
     def setUp(self):
         self.test_project = Project(path=os.getcwd()+"/test_files", file_extension=".rea", column_signal=1, column_annot=2, column_sample_to_sample=1)
+        self.test_project.set_Poincare()
+        self.test_project.set_runs()
+        self.test_project.set_LS_spectrum()
+        self.test_project.step_through_project_files()
 
     def test_files_list(self):
         self.test_project.get_files_list()
@@ -12,10 +16,6 @@ class TestProject(unittest.TestCase):
         self.assertEqual(local_files_list, ['firest.rea', 'second.rea', 'third.rea'])
 
     def test_project_runs(self):
-        self.test_project.set_Poincare()
-        self.test_project.set_runs()
-        self.test_project.set_LS_spectrum()
-        self.test_project.step_through_project_files()
         self.assertTrue(True)
 
     # def test_write_state(self):
@@ -29,5 +29,9 @@ class TestProject(unittest.TestCase):
     #     self.test_write_state()
     #     self.assertTrue(self.test_project.read_state())
     #     self.assertEqual(self.test_project.Poincare_state, 0)
+
+    def test_wdump_Poincare(self):
+        self.test_project.dump_Poincare()
+        self.assertTrue(True)
 if __name__ == '__main__':
     unittest.main()
