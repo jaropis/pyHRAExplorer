@@ -105,10 +105,8 @@ class Project:
                 temp_signal.set_LS_spectrum()
                 temp_LS_spectrum = temp_signal.LS_spectrum
             temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "LS_spectrum": temp_LS_spectrum}
-            #print(file, temp_file_results)
-            self.project_results.append([file, temp_file_results]) ## question to self - do I need to keep the whole objects
-            print(self.project_results)
-            # in the resulting list??? - correct
+            self.project_results.append([file, temp_file_results])
+
 
 
     # methods to finish
@@ -169,7 +167,21 @@ class Project:
         file in the project
         :return:
         """
-        pass
+        results_first_line = "filename\tSDNN\tSD1\tSD2\tSD1d\tSD1a\tC1d\tC1a\tSD2d\tSD2a\tC2d\tC2a\tSDNNd\tSDNNa\tCd\tCa\n"
+        results_file = self.build_name(prefix="Poincare_")
+        results = open(results_file, 'w')
+        results.write(results_first_line)
+        for file_result in self.project_results:
+            file_name = file_result[0]
+            temp_poincare_object = file_result[1]['Poincare'] # this is a dictionary - I select key Poincare
+            res_line = file_name + "\t"
+            res_line += str(temp_poincare_object.SDNN) + "\t" + str(temp_poincare_object.SD1) + "\t" + str(temp_poincare_object.SD2) + "\t" + \
+                        str(temp_poincare_object.SD1d) + "\t" + str(temp_poincare_object.SD1a) + "\t" + str(temp_poincare_object.C1d) + "\t" + \
+                        str(temp_poincare_object.C1a) + "\t" + str(temp_poincare_object.SD2d) + "\t" + str(temp_poincare_object.SD2a) + "\t" + \
+                        str(temp_poincare_object.C2d) + "\t" + str(temp_poincare_object.C2a) + "\t" + str(temp_poincare_object.SDNNd) + "\t" + \
+                        str(temp_poincare_object.SDNNa) + "\t" + str(temp_poincare_object.Cd) + "\t" + str(temp_poincare_object.Ca) + "\n"
+            results.write(res_line)
+        results.close()
 
     def dump_runs(self):
         """
@@ -186,3 +198,19 @@ class Project:
         :return:
         """
         pass
+
+    def build_name(self, prefix=""):
+        import datetime
+        import os
+        """
+        this function builds the name of the results file - the aim is to leave the existing results files_list
+        """
+        current_name = self.path + "/" + prefix + "results"+str(datetime.date.today())+".csv"
+        i = 1
+        while (True):
+            if os.path.exists(current_name):
+                current_name = self.path + "/" + prefix + "results" + str(datetime.date.today()) + "_" + str(i) + ".csv"
+            else:
+                break
+            i += 1
+        return current_name
