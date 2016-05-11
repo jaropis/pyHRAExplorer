@@ -107,8 +107,6 @@ class Project:
             temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "LS_spectrum": temp_LS_spectrum}
             self.project_results.append([file, temp_file_results])
 
-
-
     # methods to finish
     def read_state(self):
         """
@@ -189,7 +187,7 @@ class Project:
         file in the project
         :return:
         """
-        pass
+        max_dec, max_acc, max_neutral = self.find_longest_runs()
 
     def dump_LS_spectrum(self, bands):
         """
@@ -216,8 +214,11 @@ class Project:
         return current_name
 
     def find_longest_runs(self):
-        longest_dec_run = max([_.dec_runs_all for _ in self.project_results[1]["runs"]]) # _ is obviously dumb
-        longest_acc_run = max([_.acc_runs_all for _ in self.project_results[1]["runs"]])
-        longest_neutral_run = max([_.neutral_runs_all for _ in self.project_results[1]["runs"]])
+        """
+        this function looks for the longest run of a type WITHIN a PROJECT
+        """
+        longest_dec_run = max([_[1]["runs"].dec_runs_all for _ in self.project_results]) # _ is obviously dumb
+        longest_acc_run = max([_[1]["runs"].acc_runs_all for _ in self.project_results])
+        longest_neutral_run = max([_[1]["runs"].neutral_runs_all for _ in self.project_results])
         return longest_dec_run, longest_acc_run, longest_neutral_run
 
