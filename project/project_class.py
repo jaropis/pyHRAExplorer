@@ -214,3 +214,10 @@ class Project:
                 break
             i += 1
         return current_name
+
+    def find_longest_runs(self):
+        longest_dec_run = max([_.dec_runs_all for _ in self.project_results[1]["runs"]]) # _ is obviously dumb
+        longest_acc_run = max([_.acc_runs_all for _ in self.project_results[1]["runs"]])
+        longest_neutral_run = max([_.neutral_runs_all for _ in self.project_results[1]["runs"]])
+        return longest_dec_run, longest_acc_run, longest_neutral_run
+
