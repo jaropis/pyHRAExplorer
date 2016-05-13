@@ -84,6 +84,10 @@ class Project:
         :return: dictionary with results, results = {Poincare: [], runs: [], LS_spectrum: []} - a list may be empty if the user
          does not want a specific type of result
         """
+        temp_poincare = None
+        temp_LS_spectrum = None
+        temp_runs = None
+        # above: just to begin with something
         for file in self.files_list:
             temp_path = self.path + "/" + file
             temp_signal = Signal(path_to_file=temp_path, column_annot=self.column_annot, column_signal=self.column_signal,
@@ -117,9 +121,7 @@ class Project:
         try:
             input_file = open(self.path + "/.HRAproject", 'r')
             self.project_name = input_file.readline().split(':')[1].rstrip()
-            print(self.project_name)
             self.files_no = int(input_file.readline().split(':')[1].rstrip())
-            print(self.files_no)
             self.column_signal = int(input_file.readline().split(':')[1].rstrip())
             self.column_annot = int(input_file.readline().split(':')[1].rstrip())
             self.column_sample_to_sample = int(input_file.readline().split(':')[1].rstrip())
@@ -187,7 +189,7 @@ class Project:
         file in the project
         :return:
         """
-        max_dec, max_acc, max_neutral = self.find_longest_runs()
+        max_dec_len, max_acc_len, max_neutral_len = self.find_longest_runs()
 
     def dump_LS_spectrum(self, bands):
         """
@@ -217,8 +219,8 @@ class Project:
         """
         this function looks for the longest run of a type WITHIN a PROJECT
         """
-        longest_dec_run = max([_[1]["runs"].dec_runs_all for _ in self.project_results]) # _ is obviously dumb
-        longest_acc_run = max([_[1]["runs"].acc_runs_all for _ in self.project_results])
-        longest_neutral_run = max([_[1]["runs"].neutral_runs_all for _ in self.project_results])
-        return longest_dec_run, longest_acc_run, longest_neutral_run
+        longest_dec_run = max([_[1]["runs"].dec_runs for _ in self.project_results]) # _ is obviously dummy
+        longest_acc_run = max([_[1]["runs"].acc_runs for _ in self.project_results])
+        longest_neutral_run = max([_[1]["runs"].neutral_runs for _ in self.project_results])
+        return len(longest_dec_run), len(longest_acc_run), len(longest_neutral_run)
 

@@ -48,7 +48,7 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
         signal = array(signal)
         if column_sample_to_sample == column_signal:
             sample_to_sample = signal
- 
+
         timetrack = cumsum(sample_to_sample)
 
         if column_signal == column_annot:

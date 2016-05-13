@@ -11,6 +11,7 @@ class TestProject(unittest.TestCase):
         self.test_project.step_through_project_files()
         self.test_project2 = Project(path=os.getcwd()+"/test_files2", file_extension=".rea", column_signal=1, column_annot=2, column_sample_to_sample=1)
         self.test_project2.set_runs()
+        self.test_project2.step_through_project_files()
 
     def test_files_list(self):
         self.test_project.get_files_list()
@@ -61,13 +62,15 @@ class TestProject(unittest.TestCase):
     #     self.test_project.dump_Poincare()
     #     self.assertTrue(True)
 
-    # def test_longest_runs(self):
-    #     """
-    #
-    #     :return:
-    #     """
-    #     print(self.test_project2.find_longest_runs())
-    #     self.assertTrue(True)
+    def test_longest_runs(self):
+        """
+
+        :return:
+        """
+        max_dec, max_acc, max_neutral = self.test_project2.find_longest_runs()
+        self.assertTrue(max_dec, 3)
+        self.assertTrue(max_acc, 4)
+        self.assertTrue(max_neutral, 2)
 
 if __name__ == '__main__':
     unittest.main()
