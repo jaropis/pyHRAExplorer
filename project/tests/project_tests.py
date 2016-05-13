@@ -72,5 +72,14 @@ class TestProject(unittest.TestCase):
         self.assertTrue(max_acc, 4)
         self.assertTrue(max_neutral, 2)
 
+    def test_dump_runs(self):
+        import os
+        self.test_project.dump_runs()
+        local_path = self.test_project.build_name(prefix="rruns_")  # double 'r' so as to fool the build_name method
+        # into NOT adding _1 to the name
+        local_path = local_path.replace("rruns", "runs")
+        self.assertTrue(os.path.exists(local_path))
+        os.remove(local_path)
+
 if __name__ == '__main__':
     unittest.main()

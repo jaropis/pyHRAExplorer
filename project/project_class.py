@@ -190,6 +190,21 @@ class Project:
         :return:
         """
         max_dec_len, max_acc_len, max_neutral_len = self.find_longest_runs()
+        results_first_line = "file_name" + "\t" + "\t".join(["dec"+str(_+1) for _ in range(max_dec_len)]) + "\t"+ \
+                     "\t".join(["acc" + str(_ + 1) for _ in range(max_acc_len)]) + "\t" + \
+                     "\t".join(["neutral" + str(_ + 1) for _ in range(max_neutral_len)]) + "\n"
+        results_file = self.build_name(prefix="runs_")
+        results = open(results_file, 'w')
+        results.write(results_first_line)
+        for file_result in self.project_results:
+            file_name = file_result[0]
+            temp_runs_object = file_result[1]['runs']  # this is a dictionary - I select key 'runs'
+            res_line = file_name + "\t"
+            res_line += "\t".join([str(_) for _ in (temp_runs_object.dec_runs + [0] * (max_dec_len - len(temp_runs_object.dec_runs)))]) + "\t" + \
+                       "\t".join([str(_) for _ in (temp_runs_object.acc_runs + [0] * (max_acc_len - len(temp_runs_object.acc_runs)))]) + "\t" + \
+                        "\t".join([str(_) for _ in (temp_runs_object.neutral_runs + [0] * (max_neutral_len - len(temp_runs_object.neutral_runs)))]) + "\n"
+            results.write(res_line)
+        results.close()
 
     def dump_LS_spectrum(self, bands):
         """
