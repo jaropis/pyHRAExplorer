@@ -212,7 +212,14 @@ class Project:
         file in the project
         :return:
         """
-        pass
+        results_first_line = "VLF\tULF\tLF\tHF\tTP\n"
+        results_file = self.build_name(prefix="LS_spectrum_")
+        results = open(results_file, 'w')
+        results.write(results_first_line)
+        for file_result in self.project_results:
+            file_name = file_result[0]
+            temp_spectral_results_object = file_result[1]['LS_spectrum']
+            temp_spectral_results_object = temp_spectral_results_object.get_bands()
 
     def build_name(self, prefix=""):
         import datetime
