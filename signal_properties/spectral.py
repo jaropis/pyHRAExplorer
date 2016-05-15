@@ -34,7 +34,7 @@ class LombScargleSpectrum:
             first_index = scipy.where(self.frequency <= first)[0]
             second_index = scipy.where(self.frequency <= second)[0]
             print(first_index, second_index, self.frequency[0])
-            if len(first_index) == 0 or len(second_index) == 0: # in case no power is present 
+            if len(first_index) == 0 or 
             elif len(second_index > 0):
                 power_in_bands.append(sum(self.periodogram[first_index[-1]:second_index[-1]]))
                 first = second
