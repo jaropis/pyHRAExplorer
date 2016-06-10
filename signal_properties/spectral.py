@@ -34,13 +34,14 @@ class LombScargleSpectrum:
             first_index = scipy.where(self.frequency >= first)[0]
             second_index = scipy.where(self.frequency >= second)[0]
             print(first_index, second_index, self.frequency[0])
-            if first_index >= second_index[0]:
+            if first_index[0] == second_index[0]: ## here, if there is no power in the first band, and there is some in the following one, this condition must hold
                 power_in_bands.append(0.0)
-            elif len(second_index > 0):
-                power_in_bands.append(sum(self.periodogram[first_index[-1]:second_index[-1]]))
+                first = second # go to the next band
+            elif len(second_index > 0): # if there is any power in the band above the current band
+                power_in_bands.append(sum(self.periodogram[first_index[-1]:second_index[0]]))
                 first = second
-            elif first_index[0] < len(self.periodogram):
-                power_in_bands.append(sum(self.periodogram[first_index[-1]:len(self.periodogram)]))
+            elif len(first_index) >= 1: # so, there is no power in the band above - is there any power
+                power_in_bands.append(sum(self.periodogram[first_index[0]:first_index[-1]]))
                 break
             else:
                 break

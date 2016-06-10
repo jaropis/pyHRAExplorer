@@ -219,8 +219,9 @@ class Project:
         for file_result in self.project_results:
             file_name = file_result[0]
             temp_spectral_results_object = file_result[1]['LS_spectrum']
-            temp_spectral_results_object = temp_spectral_results_object.get_bands(cuts=bands,
+            temp_spectral_results_for_file = temp_spectral_results_object.get_bands(cuts=bands,
                                                                                   df=temp_spectral_results_object.frequency[1]-temp_spectral_results_object.frequency[0])
+            results.write("\t".join(map(str, temp_spectral_results_for_file))+"\n")
         results.close()
 
     def build_name(self, prefix=""):
