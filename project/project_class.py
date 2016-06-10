@@ -206,7 +206,7 @@ class Project:
             results.write(res_line)
         results.close()
 
-    def dump_LS_spectrum(self, bands):
+    def dump_LS_spectrum(self, bands=[0, 0.003, 0.04, 0.15, 0.4]):
         """
         this method writes a csv/xlsx/ods file to the disk - this file contains the LS_spectrum for each
         file in the project
@@ -219,7 +219,9 @@ class Project:
         for file_result in self.project_results:
             file_name = file_result[0]
             temp_spectral_results_object = file_result[1]['LS_spectrum']
-            temp_spectral_results_object = temp_spectral_results_object.get_bands()
+            temp_spectral_results_object = temp_spectral_results_object.get_bands(cuts=bands,
+                                                                                  df=temp_spectral_results_object.frequency[1]-temp_spectral_results_object.frequency[0])
+        results.close()
 
     def build_name(self, prefix=""):
         import datetime

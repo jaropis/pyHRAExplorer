@@ -31,10 +31,11 @@ class LombScargleSpectrum:
         power_in_bands = []
         for second in cuts[1:]:
             # no interpolation since the frequencies are closely spaced in self.frequency (see the build_spectrum method)
-            first_index = scipy.where(self.frequency <= first)[0]
-            second_index = scipy.where(self.frequency <= second)[0]
+            first_index = scipy.where(self.frequency >= first)[0]
+            second_index = scipy.where(self.frequency >= second)[0]
             print(first_index, second_index, self.frequency[0])
-            if len(first_index) == 0 or 
+            if first_index >= second_index[0]:
+                power_in_bands.append(0.0)
             elif len(second_index > 0):
                 power_in_bands.append(sum(self.periodogram[first_index[-1]:second_index[-1]]))
                 first = second

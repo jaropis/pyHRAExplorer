@@ -46,6 +46,9 @@ class TestProject(unittest.TestCase):
         self.assertTrue(os.path.exists(local_path))
         os.remove(local_path)
 
+    def test_dump_spectrum(self):
+        self.test_project.dump_LS_spectrum()
+
     def test_build_name(self):
         """
         this is a pseudo test - I just want to know if it fails
