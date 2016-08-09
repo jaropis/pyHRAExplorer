@@ -33,7 +33,7 @@ class LombScargleSpectrum:
             # no interpolation since the frequencies are closely spaced in self.frequency (see the build_spectrum method)
             first_index = scipy.where(self.frequency >= first)[0]
             second_index = scipy.where(self.frequency >= second)[0]
-            print(first_index, second_index, self.frequency[0])
+            #print(first_index, second_index, self.frequency[0])
             if first_index[0] == second_index[0]: ## here, if there is no power in the first band, and there is some in the following one, this condition must hold
                 power_in_bands.append(0.0)
                 first = second # go to the next band
@@ -45,6 +45,7 @@ class LombScargleSpectrum:
                 break
             else:
                 break
+        print("dupa", power_in_bands * df)
         return scipy.array(power_in_bands) * df
 
     def test_cuts(self, cuts):
