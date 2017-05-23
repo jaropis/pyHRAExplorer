@@ -1,6 +1,7 @@
 from signal_properties.my_exceptions import WrongCuts
 import scipy
-import scipy.signal as scisignal
+import scipy.signal as sc
+import numpy as np
 
 class LombScargleSpectrum:
     def __init__(self, signal):
@@ -51,3 +52,47 @@ class LombScargleSpectrum:
     def test_cuts(self, cuts):
         if len(cuts) != len(scipy.unique(cuts)) or (cuts != sorted(cuts)):
             raise WrongCuts
+class FFTSpectrum:
+    def __init__(self, signal, resampling_rate):
+        self.filtered_signal, self.filtered_time_track = self.filter_and_timetrack(signal)
+        self.resampling_rate = resampling_rate # this is the resampling FREQUENCY (in Hz)
+        self.periodogram, self.frequency = self.build_spectrum(self.filtered_signal, self.filtered_time_track, self.resampling_rate)
+        # self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) this
+        # is basically the result which is expected in HRV - depending on the length of the recording the first two
+        # entries may be combined to VLF in short recordings
+
+    def filter_and_timetrack(self, signal):
+        # this function prepares data for Lomb-Scargle and FFT periodograms - i.e. filtered cumulative sum of time,
+        # filtered signal
+        bad_beats = scipy.where(signal.annotation != 0)[0]
+        filtered_timetrack = scipy.delete(signal.timetrack, bad_beats)
+        filtered_signal = scipy.delete(signal.signal, bad_beats)
+        return filtered_signal, filtered_timetrack
+
+    def resample(self, signal, time_track, resampling_rate):
+        from scipy.interpolate import interp1d
+        f_interp = interp1d(time_track, signal)
+        time_step = 1 / resampling_rate * 1000
+        time_track_resampled = np.arange(np.min(time_track), np.max(time_track), step=time_step)
+        signal_resampled = f_interp(time_track_interpolated)
+        return signal_resampled, time_track_resampled
+
+    def build_fft_spectrum(self, signal, time_track, resampling_rate):
+        # fft method, uses resampling for fft calculations with resampling rate passed to the function
+        # ARGUMENTS
+        # signal - the signal after filtering, e.g. RR intervals time series after filtering
+        # time_track - the time track  after filtering, effectively cumsummed filtered
+        #     RR intervals time series
+        # resampling rate - the rate (in Hz) at which the signal (and the time - track) is to be resampled
+        # RETURNS
+        # magnitude - magnitude of the fft
+        # phase - phase of the fft
+        # frequency axis - frequency axis (from minimu to maximum (in the middle, and back)
+
+        signal_resampled, time_track_resampled = self.resample(signal, time_track, resampling_rate)
+        X = np.fft.fft(signal_resampled)
+        fundamental_frequency = 1 / time_track_resampled[-1]
+        frequency_axis = np.cumsum(np.arange(len(time_track_resampled))) * fundamental_frequency
+        magnitude = np.abs(X)
+        phase = np.angle(X)
+        return magnitude, phase, frequency_axis
