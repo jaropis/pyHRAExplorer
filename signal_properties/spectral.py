@@ -3,11 +3,12 @@ import scipy
 import scipy.signal as sc
 import numpy as np
 
+
 class LombScargleSpectrum:
     def __init__(self, signal):
         self.filtered_signal, self.filtered_time_track = self.filter_and_timetrack(signal)
         self.periodogram, self.frequency = self.build_spectrum()
-        #self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) # this
+        # self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) # this
         # is basically the result which is expected in HRV - depending on the length of the recording the first two
         # entries may be combined to VLF in short recordings
 
@@ -19,7 +20,8 @@ class LombScargleSpectrum:
         return filtered_signal, filtered_timetrack
 
     def build_spectrum(self):
-        frequency = scipy.linspace(0.01, 2*scipy.pi, len(self.filtered_time_track)) # here the asumption is that the frequenices are below 1Hz
+        frequency = scipy.linspace(0.01, 2*scipy.pi, len(self.filtered_time_track))
+        # here the assumption is that the frequencies are below 1Hz
         # which obviously may not be true
         periodogram = scisignal.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*scipy.pi) / 2
         return periodogram, frequency
@@ -31,11 +33,13 @@ class LombScargleSpectrum:
         first = cuts[0]
         power_in_bands = []
         for second in cuts[1:]:
-            # no interpolation since the frequencies are closely spaced in self.frequency (see the build_spectrum method)
+            # no interpolation since th frequencies are closely spaced in self.frequency (see the build_spectrum method)
             first_index = scipy.where(self.frequency >= first)[0]
             second_index = scipy.where(self.frequency >= second)[0]
-            #print(first_index, second_index, self.frequency[0])
-            if first_index[0] == second_index[0]: ## here, if there is no power in the first band, and there is some in the following one, this condition must hold
+            # print(first_index, second_index, self.frequency[0])
+            if first_index[0] == second_index[0]:
+                # here, if there is no power in the first band, and there is some in the following one,
+                # this condition must hold
                 power_in_bands.append(0.0)
                 first = second # go to the next band
             elif len(second_index > 0): # if there is any power in the band above the current band
@@ -52,16 +56,20 @@ class LombScargleSpectrum:
     def test_cuts(self, cuts):
         if len(cuts) != len(scipy.unique(cuts)) or (cuts != sorted(cuts)):
             raise WrongCuts
+
+
 class FFTSpectrum:
+
     def __init__(self, signal, resampling_rate):
-        self.filtered_signal, self.filtered_time_track = self.filter_and_timetrack(signal)
+        self.filtered_signal, self.filtered_time_track = FFTSpectrum.filter_and_timetrack(signal)
         self.resampling_rate = resampling_rate # this is the resampling FREQUENCY (in Hz)
-        self.periodogram, self.frequency = self.build_spectrum(self.filtered_signal, self.filtered_time_track, self.resampling_rate)
+        self.magnitude, self.phase, self.frequency = FFTSpectrum.build_fft_spectrum(self.filtered_signal, self.filtered_time_track, self.resampling_rate)
         # self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) this
         # is basically the result which is expected in HRV - depending on the length of the recording the first two
         # entries may be combined to VLF in short recordings
 
-    def filter_and_timetrack(self, signal):
+    @staticmethod
+    def filter_and_timetrack(signal):
         # this function prepares data for Lomb-Scargle and FFT periodograms - i.e. filtered cumulative sum of time,
         # filtered signal
         bad_beats = scipy.where(signal.annotation != 0)[0]
@@ -69,27 +77,33 @@ class FFTSpectrum:
         filtered_signal = scipy.delete(signal.signal, bad_beats)
         return filtered_signal, filtered_timetrack
 
-    def resample(self, signal, time_track, resampling_rate):
+    @staticmethod
+    def resample(signal, time_track, resampling_rate):
+        # this method does not use the object in which it is enclosed, so I am making it static
         from scipy.interpolate import interp1d
         f_interp = interp1d(time_track, signal)
         time_step = 1 / resampling_rate * 1000
+        print(time_step)
         time_track_resampled = np.arange(np.min(time_track), np.max(time_track), step=time_step)
-        signal_resampled = f_interp(time_track_interpolated)
+        signal_resampled = f_interp(time_track_resampled)
         return signal_resampled, time_track_resampled
 
-    def build_fft_spectrum(self, signal, time_track, resampling_rate):
+    @staticmethod
+    def build_fft_spectrum(signal, time_track, resampling_rate):
         # fft method, uses resampling for fft calculations with resampling rate passed to the function
         # ARGUMENTS
         # signal - the signal after filtering, e.g. RR intervals time series after filtering
-        # time_track - the time track  after filtering, effectively cumsummed filtered
+        # time_track - the time track  after filtering, effectively cum summed filtered
         #     RR intervals time series
         # resampling rate - the rate (in Hz) at which the signal (and the time - track) is to be resampled
         # RETURNS
         # magnitude - magnitude of the fft
         # phase - phase of the fft
-        # frequency axis - frequency axis (from minimu to maximum (in the middle, and back)
+        # frequency axis - frequency axis (from minimum to maximum (in the middle, and back)
 
-        signal_resampled, time_track_resampled = self.resample(signal, time_track, resampling_rate)
+        # now, since we want this to be a static method, we will call the resample function form the class
+        signal_resampled, time_track_resampled = FFTSpectrum.resample(signal, time_track, resampling_rate)
+        print(len(signal_resampled))
         X = np.fft.fft(signal_resampled)
         fundamental_frequency = 1 / time_track_resampled[-1]
         frequency_axis = np.cumsum(np.arange(len(time_track_resampled))) * fundamental_frequency
