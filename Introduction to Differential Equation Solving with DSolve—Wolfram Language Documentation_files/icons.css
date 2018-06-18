@@ -1,0 +1,44 @@
+/* ICON STYLES FOR REFERENCE DOCS
+
+   developer:   suef
+   requires:    /common/framework/css/framework.en.css
+                /language-assets/css/global.css
+   ========================================================================== */
+
+/* ==========================================================================
+   ICONS
+   ========================================================================== */
+.menu:after { content: ''; background-image: url('/language-assets/img/dropdown-menu2x.png'); background-size: 10px 20px; width: 10px; height: 6px; display: inline-block; }
+.desktop:before { content: ''; background-position: center center; background-image: url('/language-assets/img/desktop-available2x.png'); background-size: 20px 20px; width: 20px; height: 20px; display: inline-block; }
+.mobile:before { content: ''; background-position: center center; background-image: url('/language-assets/img/mobile-available2x.png'); background-size: 20px 20px; width: 20px; height: 20px; display: inline-block; }
+.cloud:before { content: ''; background-position: center center; background-image: url('/language-assets/img/cloud-available2x.png'); background-size: 20px 20px; width: 20px; height: 20px; display: inline-block; }
+.desktop.unknown:before { background-image: url('/language-assets/img/desktop-unknown2x.png'); }
+.mobile.unknown:before { background-image: url('/language-assets/img/mobile-unknown2x.png'); }
+.cloud.unknown:before { background-image: url('/language-assets/img/cloud-unknown2x.png'); }
+.desktop.unavailable:before { background-image: url('/language-assets/img/desktop-unavailable2x.png'); }
+.mobile.unavailable:before { background-image: url('/language-assets/img/mobile-unavailable2x.png'); }
+.cloud.unavailable:before { background-image: url('/language-assets/img/cloud-unavailable2x.png'); }
+.clipboard:before { content: ''; background-image: url('/language-assets/img/clipboard2x.png'); background-size: 25px 16px; width: 12px; height: 16px; display: inline-block; }
+#search-button { background-image: url('/language-assets/img/search2x.png'); background-size: 14px 14px; width: 14px; height: 14px; display: inline-block; }
+.toplink:before { content: ''; background-image: url('/language-assets/img/back-to-top2x.png'); background-size: 11px 15px; width: 11px; height: 15px; display: inline-block; }
+.get-started:before { content: ''; background-image: url('/language-assets/img/open-cloud2x.png'); background-size: 30px 30px; width: 30px; height: 30px; display: inline-block; }
+.new-in:before { content: ''; background-image: url('/language-assets/img/v112x.png'); background-size: 30px 30px; width: 30px; height: 30px; display: inline-block; }
+.products:before { content: ''; background-image: url('/language-assets/img/wolfram-language2x.png'); background-size: 30px 30px; width: 30px; height: 30px; display: inline-block; }
+.feedback:before { content: ''; background: url('/language-assets/img/feedback2x.png') no-repeat center center; background-size: 20px 16px; width: 22px; height: 18px; display: inline-block; margin: 0 3px 0 0; top: .2rem; position: relative; right: .2rem; }
+.NotesThumbnails:before { content: ''; background: url('/language-assets/img/details-magnify2x.png'); background-size: 25px 50px; width: 25px; height: 25px; display: inline-block; bottom: 0; left: 3rem; top: 0; margin: auto; position: absolute; z-index: 11; }
+#DetailsAndOptions:hover .NotesThumbnails:before { background-position: left bottom; }
+.animation:hover .playAnimation + span:before { content: ''; background: url('/language-assets/img/animation2x.png'); background-size: 52px; width: 25px; height: 25px; display: inline-block; position: absolute; left: -15px; top: 0; bottom: 0; margin: auto; }
+.service-credit:before { content: ''; background-image: url('/language-assets/img/service-credit2x.png'); background-size: 20px 20px; width: 20px; height: 20px; display: inline-block; }
+.AwaitingReviewNote:before, .ObsolescenceNote:before { content: ''; position: relative; right: 6px; display: table-cell; width: 24px; height: 21px; background: url('/language-assets/img/warning2x.png') no-repeat center center; background-size: 24px 21px; }
+.footer-links .icon:before { content: ''; height: 22px; display: inline-block; vertical-align: middle; right: .3rem; position: relative; }
+#languageRootGuide .fast-intro:before { width: 30px; background-size: 22px 20px; background-image: url('/language-assets/img/fast-intro2x.png'); }
+#languageRootGuide .elementary-intro:before { width: 30px; background-size: 17px 20px; background-image: url('/language-assets/img/elementary-intro2x.png'); }
+#languageRootGuide .quick-reference:before { width: 30px; background-size: 30px 30px; background-image: url('/language-assets/img/cloud-quick-reference2x.png'); }
+#languageRootGuide .new-features:before { width: 30px; background-size: 22px 20px; background-image: url('/language-assets/img/new-features2x.png'); }
+#languageRootGuide .language-products:before { width: 30px; background-size: 20px 20px; background-image: url('/language-assets/img/language-products2x.png'); }
+.footer-links .icon:before { background-repeat: no-repeat; background-position: right center; }
+.fast-intro:before { width: 30px; background-size: 22px 20px; background-image: url('/language-assets/img/fast-intro-red2x.png'); }
+.elementary-intro:before { width: 30px; background-size: 17px 20px; background-image: url('/language-assets/img/elementary-intro-red2x.png'); }
+.quick-reference:before { width: 30px; background-size: 30px 30px; background-image: url('/language-assets/img/cloud-quick-reference-red2x.png'); }
+.new-features:before { width: 30px; background-size: 22px 20px; background-image: url('/language-assets/img/new-features-red2x.png'); }
+.language-products:before { width: 30px; background-size: 20px 20px; background-image: url('/language-assets/img/language-products-red2x.png'); }

@@ -1,0 +1,103 @@
+/* HEADER STYLES FOR REFERENCE DOCS
+
+   developer:   suef
+   requires:    /common/framework/css/framework.en.css
+                /language-assets/css/global.css
+   ========================================================================== */
+
+.main #searchlink p, .inner { max-width: 957px; margin: 0 auto; position: relative; padding: 0 1rem; outline: 1px solid transparent; }
+.topContentWrap { height: 36px; }
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+.header { background: #414141; overflow: hidden; outline: 1px solid transparent; }
+.header .inner { padding: 1.4rem 1rem; }
+.header .header-link { display: inline-block; vertical-align: middle; }
+.header .header-link span { font-size: 2.2rem; font-weight: 300; line-height: 1.26; display: block; }
+.header .heading1 { color: #fff; }
+.header .heading2 { color: #b7b7b7; }
+.header .header-link:hover span { color: #fff; }
+.header .right { float: right; top: .7rem; position: relative; text-align: right; width: 40.5%; }
+.header a.language-home, a.language-home { background: url('/language-assets/img/wolf-icon2x.png') no-repeat; background-size: 20px 40px; text-align: right; display: inline-block; color: #939393; font-weight: 300; font-size: .82rem; margin: .8rem 0 0 0; padding: 0 .8rem 0 27px; line-height: 20px; }
+a.language-home:hover { color: #fff; background-position: 0 -20px; }
+.header .search { display: block; position: relative; height: 32px; margin: auto; }
+.header .search #query { color: #888; font-weight: 300; width: 100%; padding: 5px 10px 5px 27px; background: #555; border: 1px solid #676767; border-radius: 4px; }
+.header .search #query:focus, .header .search #query.term-found { color: #fff; }
+.header .search #query::-ms-input-placeholder { color: #888; font-weight: 400; }
+#search-button { background-color: transparent; position: absolute; border: 0; font-size: 0; left: 7px; top: 0; bottom: 0; margin: auto; opacity: .4; }
+#search-button:hover { opacity: 1; }
+
+#searchlink { text-align: left; line-height: 27px; background: #676767; padding: 5px 0; }
+#searchlink p { font-size: 13px; color: #fff; font-family: Arial, Verdana, sans-serif; }
+#searchlink a { text-decoration: underline; color: #fff; font-family: Arial, Verdana, sans-serif; }
+
+/* ==========================================================================
+   BADGE
+   ========================================================================== */
+.badge { display: inline-block; padding: 6px 20px; font-size: .75rem; text-transform: uppercase; color: #fff; vertical-align: top; background: #848484; }
+.function .badge { background: #136eb7; }
+#guide .badge, .howto .badge { background: #d96500; }
+#techNote .badge, .tutorial .badge, #tutorialOverview .badge { background: #be5324; }
+.message .badge { background: #dd1100; }
+.c .badge { background: #3f7f1f; }
+.program .badge { background: #42821f; }
+.package .badge, #package .badge { background: #608bab; }
+
+/* ==========================================================================
+   NAVIGATION
+   ========================================================================== */
+.dropdown { float: right; outline: 1px solid transparent; }
+.dropdown > li { display: inline-block; list-style: none; }
+.dropdown .sub_menu { display: none; }
+.dropdown a.menu { color: #d96500; display: inline-block; padding: 6px 15px 6px 10px; line-height: 1; }
+.dropdown a.menu:hover { color: #f77700; }
+.dropdown a.menu:after { right: -4px; top: -2px; position: relative; background-position: 0 -7px; }
+.dropdown a.menu:hover:after { background-position: 0 -14px; }
+
+.dropdown .menu:before { display: none; }
+.dropdown li:hover .menu:after { background-position: 0 -14px; }
+.dropdown .hover .menu, .dropdown .hover .menu:hover { color: #fff; background-color: #d96500; }
+.dropdown .hover:hover .menu:after { background-position: 0 0; }
+.dropdown .hover .sub_menu { background: #fff; font-size: .94rem; position: absolute; display: block; border: 1px solid #d9d9d9; padding: .35rem 0 .6rem; z-index: 10; min-width: 150px; }
+.dropdown .sub_menu a { display: block; padding: .37rem 1.04rem; white-space: nowrap; }
+.dropdown .sub_menu a:hover { color: #d96500; }
+.dropdown .edge { position: relative; }
+.dropdown .edge .sub_menu { right: 0; }
+.dropdown .see-also + .sub_menu a, .dropdown .functions + .sub_menu a { font-weight: 600; }
+
+.sticky { position: fixed; top: 42px; left: 0; right: 0; margin: auto; max-width: 925px; }
+
+/* ==========================================================================
+   responsive breakpoint styles
+   ========================================================================== */
+
+/* styles for large screens (1200px)
+   ========================================================================== */
+
+@media all and (max-width: 1200px) {
+    .header .inner { padding: 1.5rem 1rem; }
+    .header .header-link span { font-size: 2.36rem; }
+    .badge { font-size: .8rem; }
+    .header a.language-home, a.language-home { font-size: .875rem; }
+}
+/* styles for medium screens (900px)
+   ========================================================================== */
+
+@media all and (max-width: 900px) {
+    .header .header-link span { font-size: 2.08rem; }
+    .header .right { width: 37%; }
+    .header a.language-home { background: transparent; }
+}
+
+/* styles for small screens (600px)
+   ========================================================================== */
+
+@media all and (max-width: 600px) {
+    /* header */
+    .header .inner { padding: 1rem 2% 2rem; }
+    .header .right { display: none; }
+    .header a.language-home { display: inline-block; top: 0; margin: 0 0 0 .5rem; position: absolute; right: 0; }
+    .header .search #query { width: 100%; }
+    .header .right a.language-home { display: none; }
+}

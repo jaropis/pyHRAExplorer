@@ -1,0 +1,11 @@
+project name:None
+number of files:3
+column signal:1
+column annotation:2
+column sample to sample:1
+annotation filter:()
+square filter:(-8000, 8000)
+quotient filter:-1
+Poincare state:1
+runs state:1
+LS_spectrum state:1

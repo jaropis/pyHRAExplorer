@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<!-- saved from url=(0070)http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html -->
+<html lang="en" class="js-enabled __full _header-thick _header-sticky"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<!-- begin framework head en -->
+
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    <link rel="stylesheet" href="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/css">
+    <link rel="stylesheet" href="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/framework.en.css">
+    <link rel="stylesheet" href="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/gui.en.css">
+    <script async="" src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/wal.js"></script><script src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/walLoad.js"></script>
+    <script src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/head.en.js"></script>
+    <script src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/jquery.min.js"></script>
+    <script src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/hoverintent.min.js"></script>
+    <script src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/analytics.js"></script>
+
+<!-- end framework head en -->
+
+
+
+<title>Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation</title>
+<meta name="buildnumber" content="95">
+<meta name="historydata" content="{XX, , , }">
+<meta name="keywords" content="html">
+<meta name="synonyms" content="dsolve">
+<meta name="description" content="The Wolfram Language function DSolve finds symbolic solutions to differential equations. (The Wolfram Language function NDSolve, on the other hand, is a general numerical differential equation solver.) DSolve can handle the following types of equations: Finding symbolic solutions to ordinary differential equations. DSolve returns results as lists of rules. This makes it possible to return multiple solutions to an equation. For a system of equations, possibly multiple solution sets are grouped together. You can use the rules to substitute the solutions into other calculations.">
+<link rel="stylesheet" href="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/global.css">
+<link rel="stylesheet" href="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/header.css">
+<link rel="stylesheet" href="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/icons.css">
+<link rel="stylesheet" href="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/root-guide.css">
+<link rel="stylesheet" href="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/special-styles.css">
+<link rel="stylesheet" href="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/language-specific.css">
+<script>var baselang = 'DSolveIntroduction.en';</script>
+</head>
+
+<body id="techNote">
+  
+<!-- begin framework header en -->
+
+<header id="_header" style="top: 0px; left: 0px;">
+    <div id="_header-t" class="_page-width hide__600">
+        <ul class="font-size-3-4 padding-t-1-2 heirs-bar-between heirs-display-ib">
+            <li><a href="http://www.wolframalpha.com/?source=nav" data-walid="GUIHeader">WolframAlpha.com</a>
+            </li><li><a href="http://www.wolframcloud.com/?source=nav" data-walid="GUIHeader">WolframCloud.com</a>
+            </li><li><a href="http://www.wolfram.com/resources/?source=nav" data-walid="GUIHeader">All Sites &amp; Public Resources...</a>
+        </li></ul>
+    </div>
+    <div id="_header-b" class="_page-width cf">
+        <h1 id="_logo">
+            <a href="http://www.wolfram.com/?source=nav" data-walid="GUIHeader" class="cf display-b">
+                <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/spikey.en.png" alt="" width="48" height="50" id="_logo-spikey">
+                <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/wolfram.en.png" alt="Wolfram" width="160" height="22" id="_logo-wolfram">
+                <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/slogan.en.png" alt="Computation Meets Knowledge" width="160" height="7" id="_logo-slogan">
+            </a>
+        </h1>
+        <nav id="_nav" class="heirs-float-l show">
+
+            <div id="_nav-products" class="_nav-tab">
+                <a href="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html" data-walid="GUIHeader" class="_nav-l1">Products<span class="hide__1200 display-i__600"> &amp; Services</span><i class="_icon-r1-c1 hide__900"></i></a>
+                <div class="_nav-tab-content">
+                    <div class="_page-width padding-bt-1">
+                        <div class="table width-full">
+                            <div class="heirs-width-1-4 heirs-width-1-3__900">
+                                <ul class="_nav-c1 _nav-hover">
+                                    <li><a href="http://www.wolfram.com/wolfram-one/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r1-c12"></i></span><span>Wolfram|One</span></a>
+                                    </li><li><a href="http://www.wolfram.com/mathematica/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r2-c1"></i></span><span>Mathematica</span></a>
+                                    </li><li><a href="http://www.wolfram.com/development-platform/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r2-c2"></i></span><span>Development Platform</span></a>
+                                    </li><li><a href="http://www.wolfram.com/programming-lab/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r2-c3"></i></span><span>Programming Lab</span></a>
+                                    </li><li><a href="http://www.wolfram.com/data-science-platform/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r2-c5"></i></span><span>Data Science Platform</span></a>
+                                    </li><li><a href="http://www.wolfram.com/finance-platform/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r2-c6"></i></span><span>Finance Platform</span></a>
+                                    </li><li><a href="http://www.wolfram.com/system-modeler/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r2-c7"></i></span><span>SystemModeler</span></a>
+                                </li></ul>
+                                <ul class="_nav-c2">
+                                    <li class="_nav-c1 _nav-hover">
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/enterprise-private-cloud/?source=nav" data-walid="GUIHeader" class="mini _nav-l2 _nav-has-line"><span><i class="_icon-r1-c8"></i></span><span>Enterprise Private Cloud</span></a>
+                                            </li><li><a href="http://www.wolfram.com/mathematica-enterprise-edition/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r1-c9"></i></span><span>Enterprise Mathematica</span></a>
+                                            </li><li><a href="http://products.wolframalpha.com/appliance/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r1-c10"></i></span><span>Wolfram|Alpha Appliance</span></a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                    </li><li class="_nav-hover"><span class="mini _nav-l2"><span><i class="_icon-r1-c11"></i></span><span>Enterprise Solutions</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolframsolutions.com/?source=nav" data-walid="GUIHeader" class="_nav-l3">Corporate Consulting</a></li>
+                                            <li><a href="http://www.wolfram.com/support/technical-services/?source=nav" data-walid="GUIHeader" class="_nav-l3">Technical Services</a></li>
+                                            <li><a href="http://products.wolframalpha.com/business/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram|Alpha Business Solutions</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="_nav-hover hide show__900"><a href="http://www.wolfram.com/education/?source=nav" data-walid="GUIHeader" class="mini _nav-l2 _exclude-from-burger"><span><i class="_icon-r2-c10"></i></span><span>Products for Education</span></a>
+                                    </li><li class="_nav-hover hide show__900"><a href="http://datadrop.wolframcloud.com/?source=nav" data-walid="GUIHeader" class="mini _nav-l2 _exclude-from-burger"><span><i class="_icon-r2-c9"></i></span><span>Data Drop</span></a>
+                                    </li><li class="_nav-hover hide show__900"><a href="https://datarepository.wolframcloud.com/?source=nav" data-walid="GUIHeader" class="mini _nav-l2 _exclude-from-burger"><span><i class="_icon-r3-c10"></i></span><span>Data Repository</span></a>
+                                </li></ul>
+                                <ul class="_nav-c3 border-r-n__900">
+                                    <li class="_nav-hover hide__900"><a href="http://www.wolfram.com/education/?source=nav" data-walid="GUIHeader" class="mini _nav-l2 _nav-has-line"><span><i class="_icon-r2-c10"></i></span><span>Products for Education</span></a>
+                                    </li><li class="_nav-hover"><a href="http://www.wolframalpha.com/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r2-c8"></i></span><span>Wolfram|Alpha</span></a>
+                                        <ul>
+                                            <li><a href="http://www.wolframalpha.com/pro/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram|Alpha Pro</a>
+                                            </li><li><a href="http://www.wolframalpha.com/pro/problem-generator/?source=nav" data-walid="GUIHeader" class="_nav-l3">Problem Generator</a>
+                                            </li><li><a href="http://products.wolframalpha.com/api/?source=nav" data-walid="GUIHeader" class="_nav-l3">API</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                    </li><li class="_nav-hover hide__900"><a href="http://datadrop.wolframcloud.com/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r2-c9"></i></span><span>Data Drop</span></a>
+                                    </li><li class="_nav-hover hide__900"><a href="https://datarepository.wolframcloud.com/?source=nav" data-walid="GUIHeader" class="mini _nav-l2"><span><i class="_icon-r3-c10"></i></span><span>Data Repository</span></a>
+                                    </li><li class="_nav-hover hide show__900"><span class="mini _nav-l2 _exclude-from-burger"><span><i class="_icon-r2-c11"></i></span><span>Mobile Apps</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/cloud-app/?source=nav" target="_blank" data-walid="GUIHeader" class="_nav-l3">Wolfram Cloud App</a>
+                                            </li><li><a href="http://products.wolframalpha.com/mobile/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram|Alpha for Mobile</a>
+                                            </li><li><a href="http://products.wolframalpha.com/mobile/?source=nav#wapowered" data-walid="GUIHeader" class="_nav-l3">Wolfram|Alpha-Powered Apps</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                    </li><li class="_nav-hover hide show__900"><span class="mini _nav-l2 _exclude-from-burger"><span><i class="_icon-r2-c12"></i></span><span>Services</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/support/technical-services/?source=nav" data-walid="GUIHeader" class="_nav-l3">Paid Project Support</a>
+                                            </li><li><a href="http://www.wolfram.com/training/?source=nav" data-walid="GUIHeader" class="_nav-l3">Training</a>
+                                            </li><li><a href="http://education.wolfram.com/summer/?source=nav" data-walid="GUIHeader" class="_nav-l3">Summer Programs</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                                <ul class="_nav-c4 hide__900">
+                                    <li class="_nav-hover"><span class="mini _nav-l2"><span><i class="_icon-r2-c11"></i></span><span>Mobile Apps</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/cloud-app/?source=nav" target="_blank" data-walid="GUIHeader" class="_nav-l3">Wolfram Cloud App</a>
+                                            </li><li><a href="http://products.wolframalpha.com/mobile/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram|Alpha for Mobile</a>
+                                            </li><li><a href="http://products.wolframalpha.com/mobile/?source=nav#wapowered" data-walid="GUIHeader" class="_nav-l3">Wolfram|Alpha-Powered Apps</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                    </li><li class="_nav-hover"><span class="mini _nav-l2"><span><i class="_icon-r2-c12"></i></span><span>Services</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/support/technical-services/?source=nav" data-walid="GUIHeader" class="_nav-l3">Paid Project Support</a>
+                                            </li><li><a href="http://www.wolfram.com/training/?source=nav" data-walid="GUIHeader" class="_nav-l3">Training</a>
+                                            </li><li><a href="http://education.wolfram.com/summer/?source=nav" data-walid="GUIHeader" class="_nav-l3">Summer Programs</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                            </div>
+                        </div><!--/.table-->
+                    </div>
+                    <div class="_nav-footer font-size-3-4">
+                        <a href="http://www.wolfram.com/products/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-has-line"><span><i class="_icon-r1-c6 hide show__600"></i></span><span class="chevron-after nothing-after__600 font-style-i__600">All Products &amp; Services</span></a>
+                    </div>
+                </div><!--/._nav-tab-content-->
+            </div><!--/#_nav-products-->
+
+            <div id="_nav-technologies" class="_nav-tab">
+                <a href="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html" data-walid="GUIHeader" class="_nav-l1">Technologies<i class="_icon-r1-c1 hide__900"></i></a>
+                <div class="_nav-tab-content">
+                    <div class="_page-width padding-bt-1">
+                        <div class="table width-full">
+                            <div class="heirs-width-1-3">
+                                <a href="http://www.wolfram.com/language/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-hover">
+                                    <span class="mini"><span><i class="_icon-r3-c1"></i></span><span>Wolfram Language</span></span>
+                                    <p>Revolutionary knowledge-based programming language.</p>
+                                </a>
+                                <a href="http://www.wolfram.com/cdf/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-hover">
+                                    <span class="mini"><span><i class="_icon-r3-c2"></i></span><span>Computable Document Format</span></span>
+                                    <p>Computation-powered interactive documents.</p>
+                                </a>
+                                <a href="http://www.wolfram.com/data-framework/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-hover">
+                                    <span class="mini"><span><i class="_icon-r3-c3"></i></span><span>Wolfram Data Framework</span></span>
+                                    <p>Semantic framework for real-world data.</p>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="http://www.wolfram.com/cloud/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-hover">
+                                    <span class="mini"><span><i class="_icon-r3-c4"></i></span><span>Wolfram Cloud</span></span>
+                                    <p>Central infrastructure for Wolfram's cloud products &amp; services.</p>
+                                </a>
+                                <a href="http://www.wolfram.com/engine/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-hover">
+                                    <span class="mini"><span><i class="_icon-r3-c5"></i></span><span>Wolfram Engine</span></span>
+                                    <p>Software engine implementing the Wolfram Language.</p>
+                                </a>
+                                <a href="http://www.wolfram.com/universal-deployment-system/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-hover">
+                                    <span class="mini"><span><i class="_icon-r3-c6"></i></span><span>Wolfram Universal Deployment System</span></span>
+                                    <p>Instant deployment across cloud, desktop, mobile, and more.</p>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="http://www.wolfram.com/wolfram-science/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-hover">
+                                    <span class="mini"><span><i class="_icon-r3-c7"></i></span><span>Wolfram Science</span></span>
+                                    <p>Technology-enabling science of the computational universe.</p>
+                                </a>
+                                <a href="http://www.wolfram.com/natural-language-understanding/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-hover">
+                                    <span class="mini"><span><i class="_icon-r3-c8"></i></span><span>Wolfram Natural Language Understanding System</span></span>
+                                    <p>Knowledge-based, broadly deployed natural language.</p>
+                                </a>
+                                <a href="http://www.wolfram.com/knowledgebase/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-hover">
+                                    <span class="mini"><span><i class="_icon-r3-c9"></i></span><span>Wolfram Knowledgebase</span></span>
+                                    <p>Curated computable knowledge powering Wolfram|Alpha.</p>
+                                </a>
+                            </div>
+                        </div><!--/.table-->
+                    </div>
+                    <div class="_nav-footer font-size-3-4">
+                        <a href="http://www.wolfram.com/technologies/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-has-line"><span><i class="_icon-r1-c6 hide show__600"></i></span><span class="chevron-after nothing-after__600 font-style-i__600">All Technologies</span></a>
+                    </div>
+                </div><!--/._nav-tab-content-->
+            </div><!--/#_nav-technologies-->
+
+            <div id="_nav-solutions" class="_nav-tab">
+                <a href="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html" data-walid="GUIHeader" class="_nav-l1">Solutions<i class="_icon-r1-c1 hide__900"></i></a>
+                <div class="_nav-tab-content">
+                    <div class="_page-width padding-bt-1">
+                        <div class="table width-full">
+                            <div class="heirs-width-1-4">
+                                <ul class="_nav-c1">
+                                    <li class="_nav-hover"><span class="_nav-l2 mini"><span><i class="_icon-r4-c1"></i></span><span>Engineering, R&amp;D</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/solutions/industry/aerospace-engineering/?source=nav" data-walid="GUIHeader" class="_nav-l3">Aerospace &amp; Defense</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/chemical-engineering/?source=nav" data-walid="GUIHeader" class="_nav-l3">Chemical Engineering</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/control-systems/?source=nav" data-walid="GUIHeader" class="_nav-l3">Control Systems</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/electrical-engineering/?source=nav" data-walid="GUIHeader" class="_nav-l3">Electrical Engineering</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/image-processing/?source=nav" data-walid="GUIHeader" class="_nav-l3">Image Processing</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/industrial-engineering/?source=nav" data-walid="GUIHeader" class="_nav-l3">Industrial Engineering</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/mechanical-engineering/?source=nav" data-walid="GUIHeader" class="_nav-l3">Mechanical Engineering</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/operations-research/?source=nav" data-walid="GUIHeader" class="_nav-l3">Operations Research</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/?source=nav" data-walid="GUIHeader" class="_nav-l3 font-style-i">More...</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                    </li><li class="_nav-hover hide show__900"><span class="mini _nav-l2 _exclude-from-burger"><span><i class="_icon-r2-c10"></i></span><span>Education</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/education/?source=nav" data-walid="GUIHeader" class="_nav-l3">All Solutions for Education</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                                <ul class="_nav-c2">
+                                    <li class="_nav-hover hide__900"><span class="mini _nav-l2"><span><i class="_icon-r2-c10"></i></span><span>Education</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/education/?source=nav" data-walid="GUIHeader" class="_nav-l3">All Solutions for Education</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                    </li><li class="_nav-hover margin-t-0__900"><span class="mini _nav-l2"><span><i class="_icon-r4-c2"></i></span><span>Web &amp; Software</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/solutions/industry/electronic-publishing/?source=nav" data-walid="GUIHeader" class="_nav-l3">Authoring &amp; Publishing</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/interface-development/?source=nav" data-walid="GUIHeader" class="_nav-l3">Interface Development</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/software-engineering/?source=nav" data-walid="GUIHeader" class="_nav-l3">Software Engineering</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/web-development/?source=nav" data-walid="GUIHeader" class="_nav-l3">Web Development</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                    </li><li class="_nav-hover hide show__900"><span class="mini _nav-l2 _exclude-from-burger"><span><i class="_icon-r4-c3"></i></span><span>Finance, Statistics &amp; Business Analysis</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/solutions/industry/actuarial-sciences/?source=nav" data-walid="GUIHeader" class="_nav-l3">Actuarial Sciences</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/bioinformatics/?source=nav" data-walid="GUIHeader" class="_nav-l3">Bioinformatics</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/data-science/?source=nav" data-walid="GUIHeader" class="_nav-l3">Data Science</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/econometrics/?source=nav" data-walid="GUIHeader" class="_nav-l3">Econometrics</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/financial-risk-management/?source=nav" data-walid="GUIHeader" class="_nav-l3">Financial Risk Management</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/statistics/?source=nav" data-walid="GUIHeader" class="_nav-l3">Statistics</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/?source=nav" data-walid="GUIHeader" class="_nav-l3 font-style-i">More...</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                                <ul class="_nav-c3 border-r-n__900">
+                                    <li class="_nav-hover hide__900"><span class="mini _nav-l2"><span><i class="_icon-r4-c3"></i></span><span>Finance, Statistics &amp; Business Analysis</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/solutions/industry/actuarial-sciences/?source=nav" data-walid="GUIHeader" class="_nav-l3">Actuarial Sciences</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/bioinformatics/?source=nav" data-walid="GUIHeader" class="_nav-l3">Bioinformatics</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/data-science/?source=nav" data-walid="GUIHeader" class="_nav-l3">Data Science</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/econometrics/?source=nav" data-walid="GUIHeader" class="_nav-l3">Econometrics</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/financial-risk-management/?source=nav" data-walid="GUIHeader" class="_nav-l3">Financial Risk Management</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/statistics/?source=nav" data-walid="GUIHeader" class="_nav-l3">Statistics</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/?source=nav" data-walid="GUIHeader" class="_nav-l3 font-style-i">More...</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                    </li><li class="_nav-hover hide show__900"><span class="mini _nav-l2 _exclude-from-burger"><span><i class="_icon-r4-c4"></i></span><span>Sciences</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/solutions/industry/astronomy/?source=nav" data-walid="GUIHeader" class="_nav-l3">Astronomy</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/biological-sciences/?source=nav" data-walid="GUIHeader" class="_nav-l3">Biology</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/chemistry/?source=nav" data-walid="GUIHeader" class="_nav-l3">Chemistry</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/?source=nav" data-walid="GUIHeader" class="_nav-l3 font-style-i">More...</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                    </li><li class="_nav-hover hide show__900"><span class="mini _nav-l2 _exclude-from-burger"><span><i class="_icon-r4-c5"></i></span><span>Trends</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/internet-of-things/?source=nav" data-walid="GUIHeader" class="_nav-l3">Internet of Things</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/hpc/?source=nav" data-walid="GUIHeader" class="_nav-l3">High-Performance Computing</a>
+                                            </li><li><a href="http://www.wolfram.com/hackathons/?source=nav" data-walid="GUIHeader" class="_nav-l3">Hackathons</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                                <ul class="_nav-c4 hide__900">
+                                    <li class="_nav-hover"><span class="_nav-l2 mini"><span><i class="_icon-r4-c4"></i></span><span>Sciences</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/solutions/industry/astronomy/?source=nav" data-walid="GUIHeader" class="_nav-l3">Astronomy</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/biological-sciences/?source=nav" data-walid="GUIHeader" class="_nav-l3">Biology</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/industry/chemistry/?source=nav" data-walid="GUIHeader" class="_nav-l3">Chemistry</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/?source=nav" data-walid="GUIHeader" class="_nav-l3 font-style-i">More...</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                    </li><li class="_nav-hover"><span class="mini _nav-l2"><span><i class="_icon-r4-c5"></i></span><span>Trends</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/internet-of-things/?source=nav" data-walid="GUIHeader" class="_nav-l3">Internet of Things</a>
+                                            </li><li><a href="http://www.wolfram.com/solutions/hpc/?source=nav" data-walid="GUIHeader" class="_nav-l3">High-Performance Computing</a>
+                                            </li><li><a href="http://www.wolfram.com/hackathons/?source=nav" data-walid="GUIHeader" class="_nav-l3">Hackathons</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                            </div>
+                        </div><!--/.table-->
+                    </div>
+                    <div class="_nav-footer font-size-3-4">
+                        <a href="http://www.wolfram.com/solutions/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-has-line"><span><i class="_icon-r1-c6 hide show__600"></i></span><span class="chevron-after nothing-after__600 font-style-i__600">All Solutions</span></a>
+                    </div>
+                </div><!--/._nav-tab-content-->
+            </div><!--/#_nav-solutions-->
+
+            <div id="_nav-support" class="_nav-tab">
+                <a href="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html" data-walid="GUIHeader" class="_nav-l1">Support<span class="hide__1200 display-i__600"> &amp; Learning</span><i class="_icon-r1-c1 hide__900"></i></a>
+                <div class="_nav-tab-content">
+                    <div class="_page-width padding-bt-1">
+                        <div class="table width-full">
+                            <div class="heirs-width-1-3__900">
+                                <ul class="_nav-c1 _nav-hover width-1-2">
+                                    <li class="grid heirs-width-1-2 heirs-width-full__900">
+                                        <ul>
+                                            <li><span class="mini _nav-l2"><span><i class="_icon-r5-c1"></i></span><span>Learning</span></span>
+                                                <ul>
+                                                    <li><a href="http://reference.wolfram.com/language/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram Language Documentation</a>
+                                                    </li><li><a href="http://www.wolfram.com/language/fast-introduction-for-programmers/?source=nav" data-walid="GUIHeader" class="_nav-l3">Fast Introduction for Programmers</a>
+                                                    </li><li><a href="http://www.wolfram.com/training/?source=nav" data-walid="GUIHeader" class="_nav-l3">Training</a>
+                                                    </li><li><a href="http://www.wolfram.com/broadcast/?source=nav" data-walid="GUIHeader" class="_nav-l3">Videos &amp; Screencasts</a>
+                                                </li></ul>
+                                            <!--</li>-->
+                                        </li></ul>
+                                        <ul class="display-tr__900">
+                                            <li><span class="hide__900">&nbsp;</span>
+                                                <ul>
+                                                    <li><a href="http://www.wolfram.com/language/elementary-introduction/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram Language Introductory Book</a>
+                                                    </li><li><a href="http://www.wolfram.com/training/special-event/?source=nav" data-walid="GUIHeader" class="_nav-l3">Virtual Workshops</a>
+                                                    </li><li><a href="http://education.wolfram.com/summer/?source=nav" data-walid="GUIHeader" class="_nav-l3">Summer Programs</a>
+                                                    </li><li><a href="http://www.wolfram.com/books/?source=nav" data-walid="GUIHeader" class="_nav-l3">Books</a>
+                                                </li></ul>
+                                            <!--</li>-->
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                                <ul class="_nav-c2 _nav-hover width-1-4">
+                                    <li><span class="mini _nav-l2"><span><i class="_icon-r5-c2"></i></span><span>Need Help?</span></span>
+                                        <ul>
+                                            <li><a href="http://support.wolfram.com/kb/?source=nav" data-walid="GUIHeader" class="_nav-l3">Support FAQ</a>
+                                            </li><li><a href="http://community.wolfram.com/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram Community</a>
+                                            </li><li><a href="http://www.wolfram.com/support/contact/?source=nav" data-walid="GUIHeader" class="_nav-l3">Contact Support</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                                <ul class="_nav-c3 _nav-hover width-1-4">
+                                    <li><span class="mini _nav-l2"><span><i class="_icon-r5-c3"></i></span><span>Premium Support</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/mathematica/pricing/premier-service.php?source=nav" data-walid="GUIHeader" class="_nav-l3">Premier Service</a>
+                                            </li><li><a href="http://www.wolfram.com/support/technical-services/?source=nav" data-walid="GUIHeader" class="_nav-l3">Technical Services</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                            </div>
+                        </div><!--/.table-->
+                    </div>
+                    <div class="_nav-footer font-size-3-4">
+                        <a href="http://www.wolfram.com/support/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-has-line"><span><i class="_icon-r1-c6 hide show__600"></i></span><span class="chevron-after nothing-after__600 font-style-i__600">All Support &amp; Learning</span></a>
+                    </div>
+                </div><!--/._nav-tab-content-->
+            </div><!--/#_nav-support-->
+
+            <div id="_nav-company" class="_nav-tab">
+                <a href="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html" data-walid="GUIHeader" class="_nav-l1">Company<i class="_icon-r1-c1 hide__900"></i></a>
+                <div class="_nav-tab-content">
+                    <div class="_page-width padding-bt-1">
+                        <div class="table width-full">
+                            <div class="heirs-width-1-3__900">
+                                <ul class="_nav-c1 _nav-hover width-1-4">
+                                    <li><span class="mini _nav-l2"><span><i class="_icon-r6-c1"></i></span><span>About</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/company/background.html?source=nav" data-walid="GUIHeader" class="_nav-l3">Company Background</a>
+                                            </li><li><a href="http://blog.wolfram.com/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram Blog</a>
+                                            </li><li><a href="http://company.wolfram.com/announcements/?source=nav" data-walid="GUIHeader" class="_nav-l3">Announcements</a>
+                                            </li><li><a href="http://company.wolfram.com/events/?source=nav" data-walid="GUIHeader" class="_nav-l3">Events</a>
+                                            </li><li><a href="http://www.wolfram.com/company/contact/?source=nav" data-walid="GUIHeader" class="_nav-l3">Contact Us</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                                <ul class="_nav-c2 _nav-hover width-1-4">
+                                    <li><span class="mini _nav-l2"><span><i class="_icon-r6-c2"></i></span><span>Work with Us</span></span>
+                                        <ul>
+                                            <li><a href="http://www.wolfram.com/company/careers/?source=nav" data-walid="GUIHeader" class="_nav-l3">Careers at Wolfram</a>
+                                            </li><li><a href="http://www.wolfram.com/company/careers/?source=nav" data-walid="GUIHeader" class="_nav-l3">Internships</a>
+                                            </li><li><a href="http://community.wolfram.com/content?curTag=jobs&amp;source=nav" data-walid="GUIHeader" class="_nav-l3">Other Wolfram Language Jobs</a>
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                                <ul class="_nav-c3 _nav-hover width-1-2">
+                                    <li class="grid heirs-width-1-2 heirs-width-full__900">
+                                        <ul>
+                                            <li><span class="mini _nav-l2"><span><i class="_icon-r6-c3"></i></span><span>Initiatives</span></span>
+                                                <ul>
+                                                    <li><a href="http://www.wolframfoundation.org/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram Foundation</a>
+                                                    </li><li><a href="http://mathworld.wolfram.com/?source=nav" data-walid="GUIHeader" target="_blank" class="_nav-l3">MathWorld</a>
+                                                    </li><li><a href="http://www.computerbasedmath.org/?source=nav" data-walid="GUIHeader" class="_nav-l3">Computer-Based Math</a>
+                                                    </li><li><a href="http://www.wolframscience.com/?source=nav" data-walid="GUIHeader" class="_nav-l3 font-style-i">A New Kind of Science</a>
+                                                    </li><li><a href="http://www.wolfram.com/hackathons/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram Technology for Hackathons</a>
+                                                    </li><li><a href="http://www.wolfram.com/company/careers/ambassador/?source=nav" data-walid="GUIHeader" class="_nav-l3">Student Ambassador Program</a>
+                                                </li></ul>
+                                            <!--</li>-->
+                                        </li></ul>
+                                        <ul class="display-tr__900">
+                                            <li><span class="hide__900">&nbsp;</span>
+                                                <ul>
+                                                    <li><a href="http://www.wolfram.com/startups/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram for Startups</a>
+                                                    </li><li><a href="http://demonstrations.wolfram.com/?source=nav" data-walid="GUIHeader" class="_nav-l3">Demonstrations Project</a>
+                                                    </li><li><a href="http://www.wolfram.com/events/technology-conference/innovator-award/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram Innovator Awards</a>
+                                                    </li><li><a href="http://www.wolfram.com/raspberry-pi/?source=nav" data-walid="GUIHeader" class="_nav-l3">Wolfram + Raspberry Pi</a>
+                                                    </li><li><a href="http://education.wolfram.com/summer/?source=nav" data-walid="GUIHeader" class="_nav-l3">Summer Programs</a>
+                                                    </li><li><a href="http://www.wolfram.com/resources/?source=nav" data-walid="GUIHeader" class="_nav-l3 font-style-i">More...</a>
+                                                </li></ul>
+                                            <!--</li>-->
+                                        </li></ul>
+                                    <!--</li>-->
+                                </li></ul>
+                            </div>
+                        </div><!--/.table-->
+                    </div>
+                    <div class="_nav-footer font-size-3-4">
+                        <a href="http://www.wolfram.com/company/?source=nav" data-walid="GUIHeader" class="_nav-l2 _nav-has-line"><span><i class="_icon-r1-c6 hide show__600"></i></span><span class="chevron-after nothing-after__600 font-style-i__600">All Company</span></a>
+                    </div>
+                </div><!--/._nav-tab-content-->
+            </div><!--/#_nav-company-->
+
+            <div id="_nav-search" class="_nav-tab">
+                <a href="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html" data-walid="GUIHeader" class="_nav-l1"><i class="_icon-r1-c4 hide show__600"></i><i class="_icon-r1-c3 hide__600"></i><span class="hide__1200">Search</span></a>
+                <ul class="_nav-tab-content">
+                    <li id="_search-wrapper" class="cf">
+                        <form action="http://search.wolfram.com/" method="get" accept-charset="utf-8" class="no-bfc">
+                            <div><input type="text" name="query" value="What are you looking for?" autocomplete="off" id="_search-input"></div>
+                            <input type="hidden" name="source" value="GUIHeader">
+                        </form>
+                    <!--</li>-->
+                </li></ul><!--/._nav-tab-content-->
+            </div><!--/#_nav-search-->
+
+            <div id="_nav-burger" class="_nav-tab hide show__600" style="display: none;">
+                <a href="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html" data-walid="GUIHeader" class="_nav-l1"><i class="_icon-r1-c5"></i></a>
+                <div class="_nav-tab-content font-size-1-1-8"><ul class="_burger-l1"><li id="_burger-l1-subnav-0"><a>Products<span class="hide__1200 display-i__600"> &amp; Services</span><i class="_icon-r1-c1 hide__900"></i></a><ul class="_burger-l2"><li id="_burger-l1-subnav-0-0"><a href="http://www.wolfram.com/wolfram-one/?source=nav" class="mini"><span><i class="_icon-r1-c12"></i></span><span>Wolfram|One</span></a></li><li id="_burger-l1-subnav-0-1"><a href="http://www.wolfram.com/mathematica/?source=nav" class="mini"><span><i class="_icon-r2-c1"></i></span><span>Mathematica</span></a></li><li id="_burger-l1-subnav-0-2"><a href="http://www.wolfram.com/development-platform/?source=nav" class="mini"><span><i class="_icon-r2-c2"></i></span><span>Development Platform</span></a></li><li id="_burger-l1-subnav-0-3"><a href="http://www.wolfram.com/programming-lab/?source=nav" class="mini"><span><i class="_icon-r2-c3"></i></span><span>Programming Lab</span></a></li><li id="_burger-l1-subnav-0-4"><a href="http://www.wolfram.com/data-science-platform/?source=nav" class="mini"><span><i class="_icon-r2-c5"></i></span><span>Data Science Platform</span></a></li><li id="_burger-l1-subnav-0-5"><a href="http://www.wolfram.com/finance-platform/?source=nav" class="mini"><span><i class="_icon-r2-c6"></i></span><span>Finance Platform</span></a></li><li id="_burger-l1-subnav-0-6"><a href="http://www.wolfram.com/system-modeler/?source=nav" class="mini"><span><i class="_icon-r2-c7"></i></span><span>SystemModeler</span></a></li><li id="_burger-l1-subnav-0-7" class=" _nav-has-line"><a href="http://www.wolfram.com/enterprise-private-cloud/?source=nav" class="mini"><span><i class="_icon-r1-c8"></i></span><span>Enterprise Private Cloud</span></a></li><li id="_burger-l1-subnav-0-8"><a href="http://www.wolfram.com/mathematica-enterprise-edition/?source=nav" class="mini"><span><i class="_icon-r1-c9"></i></span><span>Enterprise Mathematica</span></a></li><li id="_burger-l1-subnav-0-9"><a href="http://products.wolframalpha.com/appliance/?source=nav" class="mini"><span><i class="_icon-r1-c10"></i></span><span>Wolfram|Alpha Appliance</span></a></li><li id="_burger-l1-subnav-0-10" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r1-c11"></i></span><span>Enterprise Solutions</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolframsolutions.com/?source=nav">Corporate Consulting</a></li><li><a href="http://www.wolfram.com/support/technical-services/?source=nav">Technical Services</a></li><li><a href="http://products.wolframalpha.com/business/?source=nav">Wolfram|Alpha Business Solutions</a></li></ul></li><li id="_burger-l1-subnav-0-11" class=" _nav-has-line"><a href="http://www.wolfram.com/education/?source=nav" class="mini"><span><i class="_icon-r2-c10"></i></span><span>Products for Education</span></a></li><li id="_burger-l1-subnav-0-12" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r2-c8"></i></span><span>Wolfram|Alpha</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolframalpha.com/pro/?source=nav">Wolfram|Alpha Pro</a></li><li><a href="http://www.wolframalpha.com/pro/problem-generator/?source=nav">Problem Generator</a></li><li><a href="http://products.wolframalpha.com/api/?source=nav">API</a></li></ul></li><li id="_burger-l1-subnav-0-13"><a href="http://datadrop.wolframcloud.com/?source=nav" class="mini"><span><i class="_icon-r2-c9"></i></span><span>Data Drop</span></a></li><li id="_burger-l1-subnav-0-14"><a href="https://datarepository.wolframcloud.com/?source=nav" class="mini"><span><i class="_icon-r3-c10"></i></span><span>Data Repository</span></a></li><li id="_burger-l1-subnav-0-15" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r2-c11"></i></span><span>Mobile Apps</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/cloud-app/?source=nav">Wolfram Cloud App</a></li><li><a href="http://products.wolframalpha.com/mobile/?source=nav">Wolfram|Alpha for Mobile</a></li><li><a href="http://products.wolframalpha.com/mobile/?source=nav#wapowered">Wolfram|Alpha-Powered Apps</a></li></ul></li><li id="_burger-l1-subnav-0-16" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r2-c12"></i></span><span>Services</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/support/technical-services/?source=nav">Paid Project Support</a></li><li><a href="http://www.wolfram.com/training/?source=nav">Training</a></li><li><a href="http://education.wolfram.com/summer/?source=nav">Summer Programs</a></li></ul></li><li id="_burger-l1-subnav-0-17" class=" _nav-has-line"><a href="http://www.wolfram.com/products/?source=nav" class="mini"><span><i class="_icon-r1-c6 hide show__600"></i></span><span class="chevron-after nothing-after__600 font-style-i__600">All Products &amp; Services</span></a></li></ul></li><li id="_burger-l1-subnav-1"><a>Technologies<i class="_icon-r1-c1 hide__900"></i></a><ul class="_burger-l2"><li id="_burger-l1-subnav-1-0"><a href="http://www.wolfram.com/language/?source=nav" class="mini">
+                                    <span class="mini"><span><i class="_icon-r3-c1"></i></span><span>Wolfram Language</span></span>
+                                    
+                                </a></li><li id="_burger-l1-subnav-1-1"><a href="http://www.wolfram.com/cdf/?source=nav" class="mini">
+                                    <span class="mini"><span><i class="_icon-r3-c2"></i></span><span>Computable Document Format</span></span>
+                                    
+                                </a></li><li id="_burger-l1-subnav-1-2"><a href="http://www.wolfram.com/data-framework/?source=nav" class="mini">
+                                    <span class="mini"><span><i class="_icon-r3-c3"></i></span><span>Wolfram Data Framework</span></span>
+                                    
+                                </a></li><li id="_burger-l1-subnav-1-3"><a href="http://www.wolfram.com/cloud/?source=nav" class="mini">
+                                    <span class="mini"><span><i class="_icon-r3-c4"></i></span><span>Wolfram Cloud</span></span>
+                                    
+                                </a></li><li id="_burger-l1-subnav-1-4"><a href="http://www.wolfram.com/engine/?source=nav" class="mini">
+                                    <span class="mini"><span><i class="_icon-r3-c5"></i></span><span>Wolfram Engine</span></span>
+                                    
+                                </a></li><li id="_burger-l1-subnav-1-5"><a href="http://www.wolfram.com/universal-deployment-system/?source=nav" class="mini">
+                                    <span class="mini"><span><i class="_icon-r3-c6"></i></span><span>Wolfram Universal Deployment System</span></span>
+                                    
+                                </a></li><li id="_burger-l1-subnav-1-6"><a href="http://www.wolfram.com/wolfram-science/?source=nav" class="mini">
+                                    <span class="mini"><span><i class="_icon-r3-c7"></i></span><span>Wolfram Science</span></span>
+                                    
+                                </a></li><li id="_burger-l1-subnav-1-7"><a href="http://www.wolfram.com/natural-language-understanding/?source=nav" class="mini">
+                                    <span class="mini"><span><i class="_icon-r3-c8"></i></span><span>Wolfram Natural Language Understanding System</span></span>
+                                    
+                                </a></li><li id="_burger-l1-subnav-1-8"><a href="http://www.wolfram.com/knowledgebase/?source=nav" class="mini">
+                                    <span class="mini"><span><i class="_icon-r3-c9"></i></span><span>Wolfram Knowledgebase</span></span>
+                                    
+                                </a></li><li id="_burger-l1-subnav-1-9" class=" _nav-has-line"><a href="http://www.wolfram.com/technologies/?source=nav" class="mini"><span><i class="_icon-r1-c6 hide show__600"></i></span><span class="chevron-after nothing-after__600 font-style-i__600">All Technologies</span></a></li></ul></li><li id="_burger-l1-subnav-2"><a>Solutions<i class="_icon-r1-c1 hide__900"></i></a><ul class="_burger-l2"><li id="_burger-l1-subnav-2-0" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r4-c1"></i></span><span>Engineering, R&amp;D</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/solutions/industry/aerospace-engineering/?source=nav">Aerospace &amp; Defense</a></li><li><a href="http://www.wolfram.com/solutions/industry/chemical-engineering/?source=nav">Chemical Engineering</a></li><li><a href="http://www.wolfram.com/solutions/industry/control-systems/?source=nav">Control Systems</a></li><li><a href="http://www.wolfram.com/solutions/industry/electrical-engineering/?source=nav">Electrical Engineering</a></li><li><a href="http://www.wolfram.com/solutions/industry/image-processing/?source=nav">Image Processing</a></li><li><a href="http://www.wolfram.com/solutions/industry/industrial-engineering/?source=nav">Industrial Engineering</a></li><li><a href="http://www.wolfram.com/solutions/industry/mechanical-engineering/?source=nav">Mechanical Engineering</a></li><li><a href="http://www.wolfram.com/solutions/industry/operations-research/?source=nav">Operations Research</a></li><li><a href="http://www.wolfram.com/solutions/?source=nav">More...</a></li></ul></li><li id="_burger-l1-subnav-2-1" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r2-c10"></i></span><span>Education</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/education/?source=nav">All Solutions for Education</a></li></ul></li><li id="_burger-l1-subnav-2-2" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r4-c2"></i></span><span>Web &amp; Software</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/solutions/industry/electronic-publishing/?source=nav">Authoring &amp; Publishing</a></li><li><a href="http://www.wolfram.com/solutions/industry/interface-development/?source=nav">Interface Development</a></li><li><a href="http://www.wolfram.com/solutions/industry/software-engineering/?source=nav">Software Engineering</a></li><li><a href="http://www.wolfram.com/solutions/industry/web-development/?source=nav">Web Development</a></li></ul></li><li id="_burger-l1-subnav-2-3" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r4-c3"></i></span><span>Finance, Statistics &amp; Business Analysis</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/solutions/industry/actuarial-sciences/?source=nav">Actuarial Sciences</a></li><li><a href="http://www.wolfram.com/solutions/industry/bioinformatics/?source=nav">Bioinformatics</a></li><li><a href="http://www.wolfram.com/solutions/industry/data-science/?source=nav">Data Science</a></li><li><a href="http://www.wolfram.com/solutions/industry/econometrics/?source=nav">Econometrics</a></li><li><a href="http://www.wolfram.com/solutions/industry/financial-risk-management/?source=nav">Financial Risk Management</a></li><li><a href="http://www.wolfram.com/solutions/industry/statistics/?source=nav">Statistics</a></li><li><a href="http://www.wolfram.com/solutions/?source=nav">More...</a></li></ul></li><li id="_burger-l1-subnav-2-4" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r4-c4"></i></span><span>Sciences</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/solutions/industry/astronomy/?source=nav">Astronomy</a></li><li><a href="http://www.wolfram.com/solutions/industry/biological-sciences/?source=nav">Biology</a></li><li><a href="http://www.wolfram.com/solutions/industry/chemistry/?source=nav">Chemistry</a></li><li><a href="http://www.wolfram.com/solutions/?source=nav">More...</a></li></ul></li><li id="_burger-l1-subnav-2-5" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r4-c5"></i></span><span>Trends</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/internet-of-things/?source=nav">Internet of Things</a></li><li><a href="http://www.wolfram.com/solutions/hpc/?source=nav">High-Performance Computing</a></li><li><a href="http://www.wolfram.com/hackathons/?source=nav">Hackathons</a></li></ul></li><li id="_burger-l1-subnav-2-6" class=" _nav-has-line"><a href="http://www.wolfram.com/solutions/?source=nav" class="mini"><span><i class="_icon-r1-c6 hide show__600"></i></span><span class="chevron-after nothing-after__600 font-style-i__600">All Solutions</span></a></li></ul></li><li id="_burger-l1-subnav-3"><a>Support<span class="hide__1200 display-i__600"> &amp; Learning</span><i class="_icon-r1-c1 hide__900"></i></a><ul class="_burger-l2"><li id="_burger-l1-subnav-3-0" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r5-c1"></i></span><span>Learning</span></span></span><ul class="_burger-l3"><li><a href="http://reference.wolfram.com/language/?source=nav">Wolfram Language Documentation</a></li><li><a href="http://www.wolfram.com/language/fast-introduction-for-programmers/?source=nav">Fast Introduction for Programmers</a></li><li><a href="http://www.wolfram.com/training/?source=nav">Training</a></li><li><a href="http://www.wolfram.com/broadcast/?source=nav">Videos &amp; Screencasts</a></li><li><a href="http://www.wolfram.com/language/elementary-introduction/?source=nav">Wolfram Language Introductory Book</a></li><li><a href="http://www.wolfram.com/training/special-event/?source=nav">Virtual Workshops</a></li><li><a href="http://education.wolfram.com/summer/?source=nav">Summer Programs</a></li><li><a href="http://www.wolfram.com/books/?source=nav">Books</a></li></ul></li><li id="_burger-l1-subnav-3-1" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r5-c2"></i></span><span>Need Help?</span></span></span><ul class="_burger-l3"><li><a href="http://support.wolfram.com/kb/?source=nav">Support FAQ</a></li><li><a href="http://community.wolfram.com/?source=nav">Wolfram Community</a></li><li><a href="http://www.wolfram.com/support/contact/?source=nav">Contact Support</a></li></ul></li><li id="_burger-l1-subnav-3-2" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r5-c3"></i></span><span>Premium Support</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/mathematica/pricing/premier-service.php?source=nav">Premier Service</a></li><li><a href="http://www.wolfram.com/support/technical-services/?source=nav">Technical Services</a></li></ul></li><li id="_burger-l1-subnav-3-3" class=" _nav-has-line"><a href="http://www.wolfram.com/support/?source=nav" class="mini"><span><i class="_icon-r1-c6 hide show__600"></i></span><span class="chevron-after nothing-after__600 font-style-i__600">All Support &amp; Learning</span></a></li></ul></li><li id="_burger-l1-subnav-4"><a>Company<i class="_icon-r1-c1 hide__900"></i></a><ul class="_burger-l2"><li id="_burger-l1-subnav-4-0" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r6-c1"></i></span><span>About</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/company/background.html?source=nav">Company Background</a></li><li><a href="http://blog.wolfram.com/?source=nav">Wolfram Blog</a></li><li><a href="http://company.wolfram.com/announcements/?source=nav">Announcements</a></li><li><a href="http://company.wolfram.com/events/?source=nav">Events</a></li><li><a href="http://www.wolfram.com/company/contact/?source=nav">Contact Us</a></li></ul></li><li id="_burger-l1-subnav-4-1" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r6-c2"></i></span><span>Work with Us</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolfram.com/company/careers/?source=nav">Careers at Wolfram</a></li><li><a href="http://www.wolfram.com/company/careers/?source=nav">Internships</a></li><li><a href="http://community.wolfram.com/content?curTag=jobs&amp;source=nav">Other Wolfram Language Jobs</a></li></ul></li><li id="_burger-l1-subnav-4-2" class="_burger-has-subnav"><span><span class="mini"><span><i class="_icon-r6-c3"></i></span><span>Initiatives</span></span></span><ul class="_burger-l3"><li><a href="http://www.wolframfoundation.org/?source=nav">Wolfram Foundation</a></li><li><a href="http://mathworld.wolfram.com/?source=nav">MathWorld</a></li><li><a href="http://www.computerbasedmath.org/?source=nav">Computer-Based Math</a></li><li><a href="http://www.wolframscience.com/?source=nav">A New Kind of Science</a></li><li><a href="http://www.wolfram.com/hackathons/?source=nav">Wolfram Technology for Hackathons</a></li><li><a href="http://www.wolfram.com/company/careers/ambassador/?source=nav">Student Ambassador Program</a></li><li><a href="http://www.wolfram.com/startups/?source=nav">Wolfram for Startups</a></li><li><a href="http://demonstrations.wolfram.com/?source=nav">Demonstrations Project</a></li><li><a href="http://www.wolfram.com/events/technology-conference/innovator-award/?source=nav">Wolfram Innovator Awards</a></li><li><a href="http://www.wolfram.com/raspberry-pi/?source=nav">Wolfram + Raspberry Pi</a></li><li><a href="http://education.wolfram.com/summer/?source=nav">Summer Programs</a></li><li><a href="http://www.wolfram.com/resources/?source=nav">More...</a></li></ul></li><li id="_burger-l1-subnav-4-3" class=" _nav-has-line"><a href="http://www.wolfram.com/company/?source=nav" class="mini"><span><i class="_icon-r1-c6 hide show__600"></i></span><span class="chevron-after nothing-after__600 font-style-i__600">All Company</span></a></li></ul></li><li class="_burger-all"><a href="http://www.wolfram.com/resources/" class="chevron-after">All Sites &amp; Public Resources</a></li></ul>
+                </div><!--/._nav-tab-content-->
+            </div><!--/#_nav-burger-->
+
+        </nav><!--/#_nav-->
+    </div><!--/#_header-b-->
+</header><!--/#_header-->
+
+<!-- end framework header en -->
+
+
+<main class="main">
+<header class="header">
+    <div class="inner">
+        <a href="http://reference.wolfram.com/language" class="header-link">
+            <span class="heading1">Wolfram Language &amp; System</span>
+            <span class="heading2">Documentation Center</span>
+        </a>
+        <div class="right">
+            <form class="search" method="get" name="searchpageform" action="http://reference.wolfram.com/search/" id="ref-search-form">
+                <input type="submit" value="q" id="search-button"><input id="query" name="query" type="text" value="" placeholder="Search">
+            </form>
+            <a class="language-home" href="http://www.wolfram.com/language">Wolfram Language Home Page&nbsp;»</a>
+        </div>
+    </div>
+    
+</header>
+  <div class="inner main-content"><nav class="topContentWrap"><span class="badge">TUTORIAL</span><ul class="dropdown">
+   <li>
+    <a href="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html#" class="menu tutorials">Tutorials</a>
+    <ul class="sub_menu">
+     <li>
+      <a href="http://reference.wolfram.com/language/tutorial/DSolveOverview.html"><span class="dropdownPad">Differential Equation Solving with DSolve</span></a>
+     </li>
+    </ul>
+   </li>
+   <li>
+    <a href="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html#" class="menu see-also">Functions</a>
+    <ul class="sub_menu">
+     <li>
+      <a href="http://reference.wolfram.com/language/ref/DSolve.html"><span class="dropdownPad">DSolve</span></a>
+     </li>
+    </ul>
+   </li>
+  </ul></nav><h1 class="Title main-title"><a name="9961"></a>Introduction to Differential Equation Solving with DSolve</h1><p class="Text"><a name="3959"></a>The Wolfram Language function <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span><span class="TR"> </span>finds <em>symbolic solutions</em> to differential equations. (The Wolfram Language function <span class="IF"><a href="http://reference.wolfram.com/language/ref/NDSolve.html">NDSolve</a></span>, on the other hand, is a general numerical differential equation solver.) <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> can handle the following types of equations:</p><ul>
+  <li class="BulletedText"><a name="6493"></a><em>Ordinary Differential Equations </em>(ODEs), in which there is a single independent variable <span class="IM"><img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/1.png" height="16" width="5" alt=""></span> and one or more dependent variables <span class="IM"><img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/2.png" height="16" width="25" alt=""></span>. <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> is equipped with a wide variety of techniques for solving single ODEs as well as systems of ODEs.</li>
+ </ul><ul>
+  <li class="BulletedText"><a name="1515"></a><em>Partial Differential Equations</em> (PDEs), in which there are two or more independent variables and one dependent variable. Finding exact symbolic solutions of PDEs is a difficult problem, but <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> can solve most first-order PDEs and a limited number of the second-order PDEs found in standard reference books.</li>
+ </ul><ul>
+  <ul>
+   <li class="BulletedText"><a name="25269"></a><em>Differential-Algebraic Equations</em> (DAEs), in which some members of the system are differential equations and the others are purely algebraic, having no derivatives in them. As with PDEs, it is difficult to find exact solutions to DAEs, but <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> can solve many examples of such systems that occur in applications.</li>
+  </ul>
+  <div class="MathTable DefinitionBox">
+   <a name="24937"></a>
+   <table class="nogridboxdividers">
+    <colgroup><col width="40%">
+    <col width="60%">
+    </colgroup><tbody><tr class="lineAbove" style=""><td><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a><span class="openbracket">[</span><span class="TI">eqn</span><span class="comma">,</span><span class="TI">y</span><span class="openbracket">[</span><span class="TI">x</span><span class="closebracket">]</span><span class="comma">,</span><span class="TI">x</span><span class="closebracket">]</span></td><td><span class="TT">solve a differential equation for <span class="IF">Null</span></span></td></tr>
+    <tr class="SpanColumn" style=""><td colspan="2"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a><span class="openbracket">[</span><span class="openbrace">{</span><span class="TI">eqn</span><sub><span class="TR">1</span></sub><span class="comma">,</span><span class="TI">eqn</span><sub><span class="TR">2</span></sub><span class="comma">,</span><span class="TR"><span class="special-character Ellipsis">…</span></span><span class="closebrace">}</span><span class="comma">,</span><span class="openbrace">{</span><span class="TI">y</span><sub><span class="TR">1</span></sub><span class="openbracket">[</span><span class="TI">x</span><span class="closebracket">]</span><span class="comma">,</span><span class="TI">y</span><sub><span class="TR">2</span></sub><span class="openbracket">[</span><span class="TI">x</span><span class="closebracket">]</span><span class="comma">,</span><span class="TR"><span class="special-character Ellipsis">…</span></span><span class="closebrace">}</span><span class="comma">,</span><span class="TI">x</span><span class="closebracket">]</span></td></tr>
+    <tr class="" style=""><td></td><td><span class="TT">solve a system of differential equations for <span class="IF">Null</span></span></td></tr>
+   </tbody></table>
+  </div>
+  <p class="Caption"><a name="28869"></a>Finding symbolic solutions to ordinary differential equations.</p>
+  <p class="Text"><a name="58"></a><span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> returns results as lists of rules. This makes it possible to return multiple solutions to an equation. For a system of equations, possibly multiple solution sets are grouped together. You can use the rules to substitute the solutions into other calculations.</p>
+  <div class="MCap"><a name="14700"></a>This finds the <em>general solution</em> for the given ODE. A rule for the function that satisfies the equation is returned. </div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[1]:=</td><td class="Input"><div>
+       <a name="13971"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_2.png" height="19" width="183" alt="Click for copyable input">
+      </div><div id="i_1_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[1]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_1.png" height="17" width="79" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MCap"><a name="15117"></a>You can pick out a specific solution by using <span class="IF">/.</span> (<span class="IF"><a href="http://reference.wolfram.com/language/ref/ReplaceAll.html">ReplaceAll</a></span>).</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[2]:=</td><td class="Input"><div>
+       <a name="16215"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_4.png" height="19" width="219" alt="Click for copyable input">
+      </div><div id="i_3_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[2]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_2.png" height="17" width="40" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <p class="Text"><a name="7815"></a>A general solution contains arbitrary parameters <span class="IF"><a href="http://reference.wolfram.com/language/ref/C.html">C</a><span class="openbracket">[</span><span class="TI">i</span><span class="closebracket">]</span></span> that can be varied to produce particular solutions for the equation. When an adequate number of <em>initial conditions</em> is specified, <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> returns particular solutions to the given equations.</p>
+  <div class="MCap"><a name="18330"></a>Here, the initial condition <span class="IF"><span class="specialcharacters">y<span class="openbracket">[</span>0<span class="closebracket">]</span>==1</span></span> is specified, and <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> returns a particular solution for the problem.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[3]:=</td><td class="Input"><div>
+       <a name="3039"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_6.png" height="19" width="274" alt="Click for copyable input">
+      </div><div id="i_5_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[3]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_3.png" height="17" width="58" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MCap"><a name="29288"></a>This plots the solution. <span class="IF"><a href="http://reference.wolfram.com/language/ref/ReplaceAll.html">ReplaceAll</a></span> (<span class="IF">/.</span>) is used in the <span class="IF"><a href="http://reference.wolfram.com/language/ref/Plot.html">Plot</a></span> command to substitute the solution for <span class="IF"><span class="specialcharacters">y<span class="openbracket">[</span>x<span class="closebracket">]</span></span></span>.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[4]:=</td><td class="Input"><div>
+       <a name="28082"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_8.png" height="19" width="152" alt="Click for copyable input">
+      </div><div id="i_7_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[4]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_4.png" height="151" width="226" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MathTable DefinitionBox">
+   <a name="16085"></a>
+   <table class="nogridboxdividers">
+    <colgroup><col width="40%">
+    <col width="60%">
+    </colgroup><tbody><tr class="lineAbove" style=""><td><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a><span class="openbracket">[</span><span class="TI">eqn</span><span class="comma">,</span><span class="TI">y</span><span class="comma">,</span><span class="TI">x</span><span class="closebracket">]</span></td><td><span class="TT">solve a differential equation for <span class="IF">Null</span> as a pure function</span></td></tr>
+    <tr class="SpanColumn" style=""><td colspan="2"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a><span class="openbracket">[</span><span class="openbrace">{</span><span class="TI">eqn</span><sub><span class="TR">1</span></sub><span class="comma">,</span><span class="TI">eqn</span><sub><span class="TR">2</span></sub><span class="comma">,</span><span class="TR"><span class="special-character Ellipsis">…</span></span><span class="closebrace">}</span><span class="comma">,</span><span class="openbrace">{</span><span class="TI">y</span><sub><span class="TR">1</span></sub><span class="comma">,</span><span class="TI">y</span><sub><span class="TR">2</span></sub><span class="comma">,</span><span class="TR"><span class="special-character Ellipsis">…</span></span><span class="closebrace">}</span><span class="comma">,</span><span class="TI">x</span><span class="closebracket">]</span></td></tr>
+    <tr class="" style=""><td></td><td><span class="TT">solve a system of differential equations for the pure functions <span class="IF">Null</span></span></td></tr>
+   </tbody></table>
+  </div>
+  <p class="Caption"><a name="20710"></a>Finding symbolic solutions to ordinary differential equations as pure functions.</p>
+  <p class="Text"><a name="24484"></a>When the second argument to <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> is specified as <span class="IF">Null</span> instead of <span class="IF">Null</span>, the solution is returned as a pure function. This form is useful for verifying the solution of the ODE and for using the solution in further work. More details are given in <a href="http://reference.wolfram.com/language/tutorial/DSolveSettingUpTheProblem.html">"Setting Up the Problem"</a>.</p>
+  <div class="MCap"><a name="24774"></a>The solution to this differential equation is given as a pure function.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[5]:=</td><td class="Input"><div>
+       <a name="8380"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_10.png" height="39" width="204" alt="Click for copyable input">
+      </div><div id="i_9_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[5]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_5.png" height="29" width="140" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MCap"><a name="25951"></a>This verifies the solution.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[6]:=</td><td class="Input"><div>
+       <a name="6541"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_12.png" height="19" width="56" alt="Click for copyable input">
+      </div><div id="i_11_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[6]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_6.png" height="16" width="67" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MCap"><a name="1679"></a>This solves a system of ODEs. Each solution is labeled according to the name of the function (here, <span class="IF">x</span> and <span class="IF">y</span>), making it easier to pick out individual functions.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[7]:=</td><td class="Input"><div>
+       <a name="17110"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_14.png" data-src="Files/DSolveIntroduction.en/I_14.png" data-big="471 59" data-small="400 59" alt="Click for copyable input" width="471" height="59">
+      </div><div id="i_13_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[7]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_7.png" height="105" width="395" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MCap"><a name="23073"></a>This substitutes a random value for the independent variable and shows that the solutions are correct at that point.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[8]:=</td><td class="Input"><div>
+       <a name="788"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_16.png" height="19" width="198" alt="Click for copyable input">
+      </div><div id="i_15_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[8]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_8.png" height="16" width="125" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MCap"><a name="18132"></a>This plots the solutions.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[9]:=</td><td class="Input"><div>
+       <a name="29956"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_18.png" height="19" width="237" alt="Click for copyable input">
+      </div><div id="i_17_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[9]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_9.png" height="140" width="226" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MathTable DefinitionBox">
+   <a name="26113"></a>
+   <table class="nogridboxdividers">
+    <colgroup><col width="40%">
+    <col width="60%">
+    </colgroup><tbody><tr class="lineAbove" style=""><td><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a><span class="openbracket">[</span><span class="TI">eqn</span><span class="comma">,</span><span class="TI">u</span><span class="openbracket">[</span><span class="TI">x</span><span class="comma">,</span><span class="TI">y</span><span class="closebracket">]</span><span class="comma">,</span><span class="openbrace">{</span><span class="TI">x</span><span class="comma">,</span><span class="TI">y</span><span class="closebrace">}</span><span class="closebracket">]</span></td><td><span class="TT">solve a partial differential equation for <span class="IM"><img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/9.png" height="20" width="38" alt=""></span></span></td></tr>
+   </tbody></table>
+  </div>
+  <p class="Caption"><a name="10008"></a>Finding symbolic solutions to partial differential equations.</p>
+  <p class="Text"><a name="12941"></a>While general solutions to ordinary differential equations involve arbitrary <em>constants</em>, general solutions to partial differential equations involve arbitrary <em>functions</em>. <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> labels these arbitrary functions as <span class="IF"><a href="http://reference.wolfram.com/language/ref/C.html">C</a><span class="openbracket">[</span><span class="TI">i</span><span class="closebracket">]</span></span>.</p>
+  <div class="MCap"><a name="15790"></a>Here is the general solution to a linear first-order PDE. In the solution, <span class="IF"><a href="http://reference.wolfram.com/language/ref/C.html">C</a><span class="openbracket">[</span>1<span class="closebracket">]</span></span> labels an arbitrary function of <span class="IM"><img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/10.png" height="22" width="26" alt=""></span>.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[10]:=</td><td class="Input"><div>
+       <a name="1723"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_20.png" height="39" width="362" alt="Click for copyable input">
+      </div><div id="i_19_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[10]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_10.png" height="30" width="208" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MCap"><a name="28"></a>This obtains a particular solution to the PDE for a specific choice of <span class="IF"><a href="http://reference.wolfram.com/language/ref/C.html">C</a><span class="openbracket">[</span>1<span class="closebracket">]</span></span>.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[11]:=</td><td class="Input"><div>
+       <a name="25184"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_22.png" height="19" width="313" alt="Click for copyable input">
+      </div><div id="i_21_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[11]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_11.png" height="36" width="141" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MCap"><a name="7200"></a>Here is a plot of the surface for this solution.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[12]:=</td><td class="Input"><div>
+       <a name="5071"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_24.png" height="19" width="194" alt="Click for copyable input">
+      </div><div id="i_23_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[12]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_12.png" height="252" width="301" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <p class="Text"><a name="21974"></a><span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> can also solve differential-algebraic equations. The syntax is the same as for a system of ordinary differential equations.</p>
+  <div class="MCap"><a name="1071"></a>This solves a DAE.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[13]:=</td><td class="Input"><div>
+       <a name="11333"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_26.png" data-src="Files/DSolveIntroduction.en/I_26.png" data-big="434 39" data-small="434 39" alt="Click for copyable input" width="434" height="39">
+      </div><div id="i_25_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[13]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_13.png" height="59" width="341" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MCap"><a name="26153"></a>This verifies the solutions.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[14]:=</td><td class="Input"><div>
+       <a name="14295"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_28.png" height="19" width="122" alt="Click for copyable input">
+      </div><div id="i_27_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[14]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_14.png" height="16" width="125" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+  <div class="MCap"><a name="20825"></a>A plot of the solutions shows that their sum satisfies the algebraic relation <span class="IF"><span class="TI">f</span><span class="openbracket">[</span><span class="TI">x</span><span class="closebracket">]</span>+<span class="TI">g</span><span class="openbracket">[</span><span class="TI">x</span><span class="closebracket">]</span><span class="special-character Equal"></span>3 <a href="http://reference.wolfram.com/language/ref/Sin.html">Sin</a><span class="openbracket">[</span><span class="TI">x</span><span class="closebracket">]</span></span>.</div>
+  <div class="IO">
+   <table class="InCell">
+    <tbody><tr><td class="lab">In[15]:=</td><td class="Input"><div>
+       <a name="9676"></a>
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/I_30.png" height="19" width="326" alt="Click for copyable input">
+      </div><div id="i_29_out" class="IFL"></div></td></tr>
+   </tbody></table>
+   <table class="OCell">
+    <tbody><tr><td class="lab">Out[15]=</td><td class="Output"><div class="output-image">
+       <img src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/O_15.png" height="141" width="226" alt="">
+      </div></td></tr>
+   </tbody></table>
+  </div>
+ </ul><h2 class="Section"><a name="28650"></a>Goals of Differential Equation Solving with DSolve Tutorials</h2><p class="Text"><a name="2598"></a>The design of <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> is modular: the algorithms for different classes of problems work independently of one another. Once a problem has been classified (as described in <a href="http://reference.wolfram.com/language/tutorial/DSolveClassificationOfDifferentialEquations.html">"Classification of Differential Equations"</a>), the available methods for that class are tried in a specific sequence until a solution is obtained. The code has a hierarchical structure whereby the solution of complex problems is reduced to the solution of relatively simpler problems, for which a greater variety of methods is available. For example, higher-order ODEs are typically solved by reducing their order to 1 or 2. </p><p class="Text"><a name="3309"></a>The process described is done internally and does not require any intervention from the user. For this reason, these tutorials have the following basic goals.</p><ul>
+  <li class="BulletedText"><a name="4693"></a>To provide enough information and tips so that users can pose problems to <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> in the most appropriate form and apply the solutions in their work. This is accomplished through a substantial number of examples. A summary of this information is given in <a href="http://reference.wolfram.com/language/tutorial/WorkingWithDSolveIntroduction.html">"Working with DSolve"</a>.</li>
+ </ul><ul>
+  <ul>
+   <li class="BulletedText"><a name="4686"></a>To give a catalog of the kinds of problems that can be handled by <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> as well as the nature of the solutions for each case. This is provided in the tutorials on ODEs, PDEs, DAEs, and boundary value problems (BVPs).</li>
+  </ul>
+  <p class="Text"><a name="30080"></a>These Differential Equation Solving with <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> tutorials will be useful in acquiring a basic knowledge of <span class="IF"><a href="http://reference.wolfram.com/language/ref/DSolve.html">DSolve</a></span> and also serve as a ready reference for information on more advanced topics.</p>
+ </ul><section id="RelatedTutorials"><h1>Related Tutorials</h1><ul class="functionList">
+   <li>
+    <a name="439091251"></a>
+    <a href="http://reference.wolfram.com/language/tutorial/DSolveOverview.html">Differential Equation Solving with DSolve</a>
+   </li>
+  </ul></section>
+  <div class="feedback-content">
+    <button class="feedback">Give Feedback</button>
+    <form id="feedbackForm" class="feedback-form" action="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html" method="post">
+    <input type="hidden" value="submit" name="action">
+    <input type="hidden" value="" id="referer" name="referer">
+    <div id="thank_you" class="hide">
+        <span class="feedback-form-heading">Thank you for your feedback! </span>
+    </div>
+    <table id="formTable">
+        <tbody><tr>
+            <td colspan="2" id="feedbackMessageTable" class="message">
+                <p><label class="feedback-form-heading">Documentation Feedback</label></p>
+                <textarea id="feedbackMessage" name="feedbackMessage" rows="4" cols="50"></textarea>
+                <label class="errorbox hide" for="feedbackMessage">Please complete this field.</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                <label class="name text" for="name">Name <span class="optional">(optional)</span></label>
+                <input type="text" class="text" name="name" id="name" value="">
+            </td>
+            <td class="email">
+                <label class="email text" for="email">Email address <span class="optional">(optional)</span></label>
+                <input type="email" class="text" name="email" id="email" value="">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" id="submit" class="button" value="Send Feedback">
+            </td>
+        </tr>
+    </tbody></table>
+    </form>
+</div>
+</div>
+  </main>
+<div id="_footer-offset" style="display: none; height: 0px;"></div>
+<footer class="footer-links">
+  <div class="inner">
+      <a class="language-home" href="http://www.wolfram.com/language">Wolfram Language Home Page&nbsp;»</a>
+  </div>
+  <a class="icon fast-intro" href="http://www.wolfram.com/language/fast-introduction-for-programmers/">
+    Introduction for Programmers&nbsp;»
+  </a>
+  <a class="icon elementary-intro" target="_blank" href="http://www.wolfram.com/language/elementary-introduction/">
+    Introductory Book&nbsp;»
+  </a>
+  <a class="icon new-features" href="http://reference.wolfram.com/language/guide/SummaryOfNewFeaturesIn111.html">
+    New in 11&nbsp;»
+  </a>
+  <br>
+  <a class="icon quick-reference" target="_blank" href="https://www.wolframcloud.com/">
+    Get Started in Wolfram Cloud&nbsp;»
+  </a>
+  <a class="icon language-products" href="http://www.wolfram.com/products/">
+    Wolfram Language Products&nbsp;»
+  </a>
+  <a class="toplink" href="http://reference.wolfram.com/language/tutorial/DSolveIntroduction.html#top"><span class="top">Top</span></a>
+</footer>
+
+<!-- begin framework footer en -->
+
+<div id="_footer-offset"></div><footer id="_footer" class="font-size-7-8 line-height-1-1-4">
+    <nav id="_footer-t" class="_page-width grid padding-bt-2 heirs-width-1-5 heirs-width-1-4__900">
+        <div class="hide__600">
+            <ul>
+                <li class="font-size-1">Products
+                </li><li><a href="http://www.wolfram.com/wolfram-one/?source=footer" data-walid="GUIFooter">Wolfram|One</a>
+                </li><li><a href="http://www.wolfram.com/mathematica/?source=footer" data-walid="GUIFooter">Mathematica</a>
+                </li><li><a href="http://www.wolfram.com/development-platform/?source=footer" data-walid="GUIFooter">Development Platform</a>
+                </li><li><a href="http://www.wolfram.com/programming-lab/?source=footer" data-walid="GUIFooter">Programming Lab</a>
+                </li><li><a href="http://www.wolfram.com/data-science-platform/?source=footer" data-walid="GUIFooter">Data Science Platform</a>
+                </li><li><a href="http://www.wolframalpha.com/pro/?source=footer" data-walid="GUIFooter">Wolfram|Alpha Pro</a>
+                </li><li><a href="http://www.wolfram.com/products/?source=footer#mobile-apps" data-walid="GUIFooter">Mobile Apps</a>
+                </li><li><a href="http://www.wolfram.com/finance-platform/?source=footer" data-walid="GUIFooter">Finance Platform</a>
+                </li><li><a href="http://www.wolfram.com/system-modeler/?source=footer" data-walid="GUIFooter">SystemModeler</a>
+                </li><li><a href="http://www.wolfram.com/products/workbench/?source=footer" data-walid="GUIFooter">Wolfram Workbench</a>
+                </li><li><a href="http://www.wolfram.com/cdf-player/?source=footer" data-walid="GUIFooter">CDF Player</a>
+                </li><li><a href="http://www.wolfram.com/group-organization-licensing/?source=footer" data-walid="GUIFooter">Volume &amp; Site Licensing</a>
+                </li><li><a href="http://www.wolfram.com/enterprise-private-cloud/?source=footer" data-walid="GUIFooter">Enterprise Private Cloud</a>
+                </li><li class="font-size-5-8 _footer-all"><a href="http://www.wolfram.com/products/?source=footer" data-walid="GUIFooter">View all...</a>
+            </li></ul>
+            <ul class="hide show__900">
+                <li class="font-size-1">Services
+                </li><li><a href="http://www.wolfram.com/support/technical-services/?source=footer" data-walid="GUIFooter">Technical Services</a>
+                </li><li><a href="http://www.wolframsolutions.com/?source=footer" data-walid="GUIFooter">Corporate Consulting</a>
+            </li></ul>
+        </div>
+        <div class="hide__600">
+            <ul class="hide__900">
+                <li class="font-size-1">Services
+                </li><li><a href="http://www.wolfram.com/support/technical-services/?source=footer" data-walid="GUIFooter">Technical Services</a>
+                </li><li><a href="http://www.wolframsolutions.com/?source=footer" data-walid="GUIFooter">Corporate Consulting</a>
+            </li></ul>
+            <ul>
+                <li class="font-size-1">For Customers
+                </li><li><a href="http://store.wolfram.com/?source=footer" data-walid="GUIFooter">Online Store</a>
+                </li><li><a href="https://user.wolfram.com/portal/ProductRegistration?source=footer" data-walid="GUIFooter">Product Registration</a>
+                </li><li><a href="https://user.wolfram.com/portal/login.html?source=footer" data-walid="GUIFooter">Product Downloads</a>
+                </li><li><a href="https://user.wolfram.com/portal/login.html?source=footer" data-walid="GUIFooter">Service Plans Benefits</a>
+            </li></ul>
+            <ul class="hide__900">
+                <li class="font-size-1">Support
+                </li><li><a href="http://support.wolfram.com/kb/?source=footer" data-walid="GUIFooter">Support FAQ</a>
+                </li><li><a href="http://www.wolfram.com/support/contact/email/?source=footer" data-walid="GUIFooter">Customer Service</a>
+                </li><li><a href="http://www.wolfram.com/support/contact/?source=footer" data-walid="GUIFooter">Contact Support</a>
+            </li></ul>
+            <ul class="hide show__900">
+                <li class="font-size-1">Public Resources
+                </li><li><a href="http://www.wolframalpha.com/?source=footer" data-walid="GUIFooter">Wolfram|Alpha</a>
+                </li><li><a href="http://demonstrations.wolfram.com/?source=footer" data-walid="GUIFooter">Demonstrations Project</a>
+                </li><li><a href="http://devices.wolfram.com/?source=footer" data-walid="GUIFooter">Connected Devices Project</a>
+                </li><li><a href="http://datadrop.wolframcloud.com/?source=footer" data-walid="GUIFooter">Wolfram Data Drop</a>
+                </li><li><a href="http://www.wolfram.com/raspberry-pi/?source=footer" data-walid="GUIFooter">Wolfram + Raspberry Pi</a>
+                </li><li><a href="http://www.wolframscience.com/?source=footer" data-walid="GUIFooter">Wolfram Science</a>
+                </li><li><a href="http://www.computerbasedmath.org/?source=footer" data-walid="GUIFooter">Computer-Based Math</a>
+                </li><li><a href="http://mathworld.wolfram.com/?source=footer" data-walid="GUIFooter" target="_blank">MathWorld</a>
+                </li><li><a href="http://www.wolfram.com/hackathons/?source=footer" data-walid="GUIFooter">Hackathons</a>
+                </li><li><a href="http://www.wolfram.com/resources/computational-thinking/?source=footer" data-walid="GUIFooter">Computational Thinking</a>
+                </li><li class="font-size-5-8 _footer-all"><a href="http://www.wolfram.com/resources/?source=footer" data-walid="GUIFooter">View all...</a>
+            </li></ul>
+        </div>
+        <div class="hide__600">
+            <ul class="hide show__900">
+                <li class="font-size-1">Support
+                </li><li><a href="http://support.wolfram.com/kb/?source=footer" data-walid="GUIFooter">Support FAQ</a>
+                </li><li><a href="http://www.wolfram.com/support/contact/email/?source=footer" data-walid="GUIFooter">Customer Service</a>
+                </li><li><a href="http://www.wolfram.com/support/contact/?source=footer" data-walid="GUIFooter">Contact Support</a>
+            </li></ul>
+            <ul>
+                <li class="font-size-1">Learning
+                </li><li><a href="http://reference.wolfram.com/language/?source=footer" data-walid="GUIFooter">Wolfram Language Documentation</a>
+                </li><li><a href="http://www.wolfram.com/language/elementary-introduction/?source=footer" data-walid="GUIFooter">Wolfram Language Introductory Book</a>
+                </li><li><a href="http://www.wolfram.com/language/fast-introduction-for-programmers/?source=footer" data-walid="GUIFooter">Fast Introduction for Programmers</a>
+                </li><li><a href="http://www.wolfram.com/language/fast-introduction-for-math-students/?source=footer" data-walid="GUIFooter">Fast Introduction for Math Students</a>
+                </li><li><a href="http://www.wolfram.com/training/special-event/?source=footer" data-walid="GUIFooter">Virtual Workshops</a>
+                </li><li><a href="http://www.wolfram.com/training/?source=footer" data-walid="GUIFooter">Training</a>
+                </li><li><a href="http://education.wolfram.com/summer/?source=footer" data-walid="GUIFooter">Summer Programs</a>
+                </li><li><a href="http://www.wolfram.com/broadcast/?source=footer" data-walid="GUIFooter">Videos</a>
+                </li><li><a href="http://www.wolfram.com/books/?source=footer" data-walid="GUIFooter">Books</a>
+            </li></ul>
+        </div>
+        <div class="hide__600">
+            <ul class="hide__900">
+                <li class="font-size-1">Public Resources
+                </li><li><a href="http://www.wolframalpha.com/?source=footer" data-walid="GUIFooter">Wolfram|Alpha</a>
+                </li><li><a href="http://demonstrations.wolfram.com/?source=footer" data-walid="GUIFooter">Demonstrations Project</a>
+                </li><li><a href="http://devices.wolfram.com/?source=footer" data-walid="GUIFooter">Connected Devices Project</a>
+                </li><li><a href="http://datadrop.wolframcloud.com/?source=footer" data-walid="GUIFooter">Wolfram Data Drop</a>
+                </li><li><a href="http://www.wolfram.com/raspberry-pi/?source=footer" data-walid="GUIFooter">Wolfram + Raspberry Pi</a>
+                </li><li><a href="http://www.wolframscience.com/?source=footer" data-walid="GUIFooter">Wolfram Science</a>
+                </li><li><a href="http://www.computerbasedmath.org/?source=footer" data-walid="GUIFooter">Computer-Based Math</a>
+                </li><li><a href="http://mathworld.wolfram.com/?source=footer" data-walid="GUIFooter" target="_blank">MathWorld</a>
+                </li><li><a href="http://www.wolfram.com/hackathons/?source=footer" data-walid="GUIFooter">Hackathons</a>
+                </li><li><a href="http://www.wolfram.com/resources/computational-thinking/?source=footer" data-walid="GUIFooter">Computational Thinking</a>
+                </li><li class="font-size-5-8 _footer-all"><a href="http://www.wolfram.com/resources/?source=footer" data-walid="GUIFooter">View all...</a>
+            </li></ul>
+        </div>
+        <div class="width-full__600">
+            <ul class="hide__600">
+                <li class="font-size-1">Company
+                </li><li><a href="http://company.wolfram.com/announcements/?source=footer" data-walid="GUIFooter">Announcements</a>
+                </li><li><a href="http://company.wolfram.com/events/?source=footer" data-walid="GUIFooter">Events</a>
+                </li><li><a href="http://www.wolfram.com/company/background.html?source=footer" data-walid="GUIFooter">About Wolfram</a>
+                </li><li><a href="http://www.wolfram.com/company/careers/?source=footer" data-walid="GUIFooter">Careers</a>
+                </li><li><a href="http://www.wolfram.com/company/contact/?source=footer" data-walid="GUIFooter">Contact</a>
+            </li></ul>
+            <ul id="_footer-connect" class="text-align-c__600 heirs-padding-lr-1-2__600">
+                <li class="font-size-1 hide__600">Connect
+                </li><li class="display-ib__600"><a href="http://community.wolfram.com/?source=footer" data-walid="GUIFooter">Wolfram Community</a>
+                </li><li class="display-ib__600"><a href="http://blog.wolfram.com/?source=footer" data-walid="GUIFooter">Wolfram Blog</a>
+                </li><li class="display-ib__600"><a href="http://company.wolfram.com/announcements/newsletter/?source=footer" data-walid="GUIFooter">Newsletter</a>
+                </li><li class="_footer-social margin-t-1-4 display-b__600"><a href="http://www.wolfram.com/connect/?source=footer" data-walid="GUIFooter"><i class="_icon-r7-c1 display-ib__600"></i></a>
+            </li></ul>
+        </div>
+    </nav><!--/#_footer-t-->
+    <div id="_footer-b" class="_page-width padding-t-1">
+        <div class="grid">
+            <div id="_footer-bl" class="width-2-5 width-1-3__600">
+                <span>© <span id="_footer-year">2017</span> <a href="http://www.wolfram.com/?source=footer">Wolfram</a>. <span class="break-after__600"></span>All rights reserved.</span>
+            </div>
+            <div id="_footer-br" class="text-align-r width-3-5 width-2-3__600">
+                <ul class="heirs-bar-between heirs-display-ib">
+                    <li><a href="http://www.wolfram.com/legal/?source=footer" data-walid="GUIFooter">Legal</a>
+                    </li><li><a href="http://www.wolfram.com/site-map/?source=footer" data-walid="GUIFooter">Site Map</a>
+                    </li><li><a href="http://www.wolframalpha.com/?source=footer" data-walid="GUIFooter">WolframAlpha.com</a>
+                    </li><li><a href="http://www.wolframcloud.com/?source=footer" data-walid="GUIFooter">WolframCloud.com</a>
+                </li></ul>
+            </div>
+        </div>
+        
+    </div><!--/#_footer-b-->
+</footer><!--/#_footer-->
+
+
+
+
+
+<script src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/body.en.js"></script>
+<script src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/eucd.min.js"></script>
+
+<!-- end framework footer en -->
+
+
+    <script src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/clipboard.js"></script>
+    <script src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/language-specific.js.en"></script>
+    <script src="./Introduction to Differential Equation Solving with DSolve—Wolfram Language Documentation_files/global.js"></script>
+
+</body></html>
