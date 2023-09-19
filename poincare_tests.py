@@ -6,7 +6,8 @@ from signal_properties.RRclasses import Signal
 class TestPoincare(unittest.TestCase):
 
     def setUp(self):
-        self.signal_real1 = Signal("RR1.csv", 1, 2, annotation_filter=(2,))
+        #changed the column indexes from 1 and 2 to 0 and 1 to match python indexing
+        self.signal_real1 = Signal("RR1.csv", 0, 1, annotation_filter=(2,))
         self.signal_real1.set_poincare()
 
     def test_first_signal_SD1(self):

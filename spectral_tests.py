@@ -10,9 +10,9 @@ class TestLombSpectrum(unittest.TestCase):
         pass
         # this needs to be cleaned up - these tests need to run only for certain classes, so the consturctor of Signal
         # needs to have a selector
-        # self.signal1 = Signal([[1., 1., 1., 1.], [0, 0, 0, 0, 0]])
-        # self.signal2 = Signal([[1., 1., 1., 1., 1.], [0, 0, 1., 0, 0]])
-        # self.signal3 = Signal([[1., 2., 3., 4., 5., 6., 7., 8.], [1., 0, 0, 1., 0, 0, 0, 1.]])
+        #self.signal1 = Signal([[1., 1., 1., 1.], [0, 0, 0, 0, 0]])
+        #self.signal2 = Signal([[1., 1., 1., 1., 1.], [0, 0, 1., 0, 0]])
+        #self.signal3 = Signal([[1., 2., 3., 4., 5., 6., 7., 8.], [1., 0, 0, 1., 0, 0, 0, 1.]])
 
     # def test_filter_and_timetrack(self):
     #     # testing filtering and time tracking
