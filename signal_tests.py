@@ -1,6 +1,6 @@
 import unittest
 from signal_properties.RRclasses import Signal
-from scipy import array
+from numpy import array
 
 
 class TestPoincareFiltering(unittest.TestCase):

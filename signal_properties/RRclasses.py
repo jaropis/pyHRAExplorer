@@ -1,5 +1,5 @@
 from re import findall
-from scipy import array, where, cumsum
+from numpy import array, where, cumsum
 from signal_properties.Poincare import Poincare
 from signal_properties.runs import Runs
 from signal_properties.spectral import LombScargleSpectrum

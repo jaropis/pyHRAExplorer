@@ -1,4 +1,4 @@
-import scipy
+import numpy
 import scipy.signal as sc
 import matplotlib.pyplot as plt
 from signal_properties.RRclasses import Signal
@@ -8,15 +8,15 @@ from signal_properties.my_exceptions import WrongCuts
 A1 = 8.
 omega1 = 1        
 nin = 11
-x = scipy.linspace(0.01, 2*scipy.pi, nin)
-y1 = A1 * scipy.sin(omega1*(x))
-signal3 = Signal([y1, scipy.absolute(y1*0), x])
+x = numpy.linspace(0.01, 2*numpy.pi, nin)
+y1 = A1 * numpy.sin(omega1*(x))
+signal3 = Signal([y1, numpy.absolute(y1*0), x])
 signal3.set_LS_spectrum()
-signal3.LS_spectrum.periodogram = scipy.linspace(0.0, 1.0, nin) * 0 + 1.0/(nin-1)
-signal3.LS_spectrum.frequency = scipy.linspace(0.0, 1.0, nin)
+signal3.LS_spectrum.periodogram = numpy.linspace(0.0, 1.0, nin) * 0 + 1.0/(nin-1)
+signal3.LS_spectrum.frequency = numpy.linspace(0.0, 1.0, nin)
 
 cuts = [0.0, 0.5, 1]
-#signal3.LS_spectrum.get_bands(cuts, 1) == scipy.array([0.5, 0.5])).all())
+#signal3.LS_spectrum.get_bands(cuts, 1) == numpy.array([0.5, 0.5])).all())
 #print(signal3.LS_spectrum.get_bands(cuts, 1))
 #print()
 
@@ -27,19 +27,19 @@ A2 = 2.
 omega1 = 1
 omega2 = 2
 nin = 1000
-x = scipy.linspace(0.01, 2*scipy.pi, nin)
-y1 = A1 * scipy.sin(omega1*(x))
-y2 = A2 * scipy.sin(omega2*(x))
+x = numpy.linspace(0.01, 2*numpy.pi, nin)
+y1 = A1 * numpy.sin(omega1*(x))
+y2 = A2 * numpy.sin(omega2*(x))
 y = y1+y2
-signal5 = Signal([y, scipy.absolute(y*0), x])
+signal5 = Signal([y, numpy.absolute(y*0), x])
 signal5.set_LS_spectrum()
-signal51 = Signal([y1, scipy.absolute(y*0), x])
+signal51 = Signal([y1, numpy.absolute(y*0), x])
 signal51.set_LS_spectrum()
-signal52 = Signal([y2, scipy.absolute(y*0), x])
+signal52 = Signal([y2, numpy.absolute(y*0), x])
 signal52.set_LS_spectrum()
-variance = scipy.var(y)
-variance1 = scipy.var(y1)
-variance2 = scipy.var(y2)
+variance = numpy.var(y)
+variance1 = numpy.var(y1)
+variance2 = numpy.var(y2)
 df = (signal5.LS_spectrum.frequency[1] -  signal5.LS_spectrum.frequency[0])
 #print(df)
 spectral_content = signal5.LS_spectrum.get_bands(cuts=[0.2, 2.0], df=df)
@@ -61,8 +61,8 @@ first = cuts[0]
 power_in_bands = []
 for second in cuts[1:]:
     # no interpolation since the frequencies are closely spaced in self.frequency (see the build_spectrum method)
-    first_index = scipy.where(signal5.LS_spectrum.frequency >= first)[0]
-    second_index = scipy.where(signal5.LS_spectrum.frequency >= second)[0]
+    first_index = numpy.where(signal5.LS_spectrum.frequency >= first)[0]
+    second_index = numpy.where(signal5.LS_spectrum.frequency >= second)[0]
     #print(first_index, second_index, signal5.LS_spectrum.frequency[0])
     print('first_index:', first_index[0], 'second index:', second_index[0], 'freq:', signal5.LS_spectrum.frequency[0])
     print('len first:', len(first_index), 'len second:', len(second_index))
@@ -85,13 +85,13 @@ print('sum', sum(signal5.LS_spectrum.periodogram[first_index[0]:second_index[0]]
 print(first_index[-1], second_index[0])
 
 print('variance', variance, 'bands', [i * df for i in power_in_bands])
-#return scipy.array(power_in_bands) * df returned TypeError: can't multiply sequence by non-int of type 'numpy.float64'
-#print(scipy.array([i * df for i in power_in_bands]))
+#return numpy.array(power_in_bands) * df returned TypeError: can't multiply sequence by non-int of type 'numpy.float64'
+#print(numpy.array([i * df for i in power_in_bands]))
 
-frequency = scipy.linspace(0.01, 2*scipy.pi, len(signal5.LS_spectrum.filtered_time_track))
+frequency = numpy.linspace(0.01, 2*numpy.pi, len(signal5.LS_spectrum.filtered_time_track))
         # here the assumption is that the frequencies are below 1Hz
         # which obviously may not be true
-periodogram = sc.lombscargle(signal5.LS_spectrum.filtered_time_track, signal5.LS_spectrum.filtered_signal, frequency) / len(signal5.LS_spectrum.filtered_time_track) * 4 * signal5.LS_spectrum.filtered_time_track[len(signal5.LS_spectrum.filtered_time_track)-1] / (2*scipy.pi) / 2
+periodogram = sc.lombscargle(signal5.LS_spectrum.filtered_time_track, signal5.LS_spectrum.filtered_signal, frequency) / len(signal5.LS_spectrum.filtered_time_track) * 4 * signal5.LS_spectrum.filtered_time_track[len(signal5.LS_spectrum.filtered_time_track)-1] / (2*numpy.pi) / 2
 
 #print(frequency)
 #print(periodogram)
