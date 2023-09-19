@@ -1,4 +1,4 @@
-from scipy import where
+from numpy import where
 from signal_properties.my_exceptions import WrongSignal
 
 

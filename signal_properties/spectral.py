@@ -1,5 +1,5 @@
 from signal_properties.my_exceptions import WrongCuts
-import scipy
+import numpy
 import scipy.signal as sc
 import numpy as np
 
@@ -14,16 +14,16 @@ class LombScargleSpectrum:
 
     def filter_and_timetrack(self, signal):
         # this function prepares data for Lomb-Scargle - i.e. filtered cumulative sum of time,   filtered signal
-        bad_beats = scipy.where(signal.annotation != 0)[0]
-        filtered_timetrack = scipy.delete(signal.timetrack, bad_beats)
-        filtered_signal = scipy.delete(signal.signal, bad_beats)
+        bad_beats = numpy.where(signal.annotation != 0)[0]
+        filtered_timetrack = numpy.delete(signal.timetrack, bad_beats)
+        filtered_signal = numpy.delete(signal.signal, bad_beats)
         return filtered_signal, filtered_timetrack
 
     def build_spectrum(self):
-        frequency = scipy.linspace(0.01, 2*scipy.pi, len(self.filtered_time_track))
+        frequency = numpy.linspace(0.01, 2*numpy.pi, len(self.filtered_time_track))
         # here the assumption is that the frequencies are below 1Hz
         # which obviously may not be true
-        periodogram = scisignal.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*scipy.pi) / 2
+        periodogram = sc.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*numpy.pi) / 2
         return periodogram, frequency
 
     def get_bands(self, cuts, df):
@@ -33,9 +33,9 @@ class LombScargleSpectrum:
         first = cuts[0]
         power_in_bands = []
         for second in cuts[1:]:
-            # no interpolation since th frequencies are closely spaced in self.frequency (see the build_spectrum method)
-            first_index = scipy.where(self.frequency >= first)[0]
-            second_index = scipy.where(self.frequency >= second)[0]
+            # no interpolation since the frequencies are closely spaced in self.frequency (see the build_spectrum method)
+            first_index = numpy.where(self.frequency >= first)[0]
+            second_index = numpy.where(self.frequency >= second)[0]
             # print(first_index, second_index, self.frequency[0])
             if first_index[0] == second_index[0]:
                 # here, if there is no power in the first band, and there is some in the following one,
@@ -43,18 +43,18 @@ class LombScargleSpectrum:
                 power_in_bands.append(0.0)
                 first = second # go to the next band
             elif len(second_index > 0): # if there is any power in the band above the current band
-                power_in_bands.append(sum(self.periodogram[first_index[-1]:second_index[0]]))
+                power_in_bands.append(sum(self.periodogram[first_index[0]:second_index[0]]))
                 first = second
             elif len(first_index) >= 1: # so, there is no power in the band above - is there any power
                 power_in_bands.append(sum(self.periodogram[first_index[0]:first_index[-1]]))
                 break
             else:
                 break
-        print("dupa", power_in_bands * df)
-        return scipy.array(power_in_bands) * df
+        print("dupa", [i * df for i in power_in_bands])
+        return numpy.array([i * df for i in power_in_bands])
 
     def test_cuts(self, cuts):
-        if len(cuts) != len(scipy.unique(cuts)) or (cuts != sorted(cuts)):
+        if len(cuts) != len(numpy.unique(cuts)) or (cuts != sorted(cuts)):
             raise WrongCuts
 
 
@@ -72,15 +72,15 @@ class FFTSpectrum:
     def filter_and_timetrack(signal):
         # this function prepares data for Lomb-Scargle and FFT periodograms - i.e. filtered cumulative sum of time,
         # filtered signal
-        bad_beats = scipy.where(signal.annotation != 0)[0]
-        filtered_timetrack = scipy.delete(signal.timetrack, bad_beats)
-        filtered_signal = scipy.delete(signal.signal, bad_beats)
+        bad_beats = numpy.where(signal.annotation != 0)[0]
+        filtered_timetrack = numpy.delete(signal.timetrack, bad_beats)
+        filtered_signal = numpy.delete(signal.signal, bad_beats)
         return filtered_signal, filtered_timetrack
 
     @staticmethod
     def resample(signal, time_track, resampling_rate):
         # this method does not use the object in which it is enclosed, so I am making it static
-        from scipy.interpolate import interp1d
+        from numpy.interpolate import interp1d
         f_interp = interp1d(time_track, signal)
         time_step = 1 / resampling_rate * 1000
         print(time_step)

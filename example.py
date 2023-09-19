@@ -9,7 +9,8 @@ from numpy import sqrt
 # - 1 is the (Python) number of the annotation column
 # - annotation_filter = (1, 2, 3) means: filter out ventricular beats (1), supraventricular beats (2) and artifacts (3)
 # (this is the standard coding of non-sinus beats)
-rr = Signal("/Users/jaropis/Dropbox/AVA_Results/RR_intervals/AVA02_2017-01-18.txt", 0, 1, annotation_filter=(1, 2, 3))
+#rr = Signal("/Users/jaropis/Dropbox/AVA_Results/RR_intervals/AVA02_2017-01-18.txt", 0, 1, annotation_filter=(1, 2, 3))
+rr = Signal("C:/Users/k52672mg/OneDrive - The University of Manchester/Analysis/PIPS_HRAEXPLORER/test_files/0582a.rea", 1, 2, annotation_filter=(1, 2, 3))
 rr.set_poincare() # here the time domain HRV parameters are calculated
 # and now let's see some of the results
 hrv = {"SDNN": rr.poincare.SDNN, "RMSSD": rr.poincare.SD1*sqrt(2), "SD1": rr.poincare.SD1, "SD2": rr.poincare.SD2}

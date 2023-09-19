@@ -1,5 +1,4 @@
-from numpy import concatenate, delete
-from scipy import mean, var, sqrt, where
+from numpy import concatenate, delete, mean, var, sqrt, where
 
 
 class Poincare:
@@ -44,7 +43,7 @@ class Poincare:
         except ZeroDivisionError:
             result = None
         return result
-        # CAREFUL HERE AND BELOW!!! the definition of variance used in scipy has the denominator equal to n, NOT (n-1)!
+        # CAREFUL HERE AND BELOW!!! the definition of variance used in numpy has the denominator equal to n, NOT (n-1)!
         # this seems to be more appropriate for what we do here, so
         # if you want to get the result you would get in R or Matlab comment the line above, uncomment the lines below and go to the
         # and change the values in the test
@@ -57,7 +56,7 @@ class Poincare:
 
     def sd2(self):
         return(sqrt(var(self.xii + self.xi)/2))
-        # CAREFUL HERE!!! the definition of variance used in scipy has the denominator equal to n, NOT (n-1)!
+        # CAREFUL HERE!!! the definition of variance used in numpy has the denominator equal to n, NOT (n-1)!
         # this seems to be more appropriate for what we do here, so
         # if you want to get the result you would get in R or Matlab comment the line above, uncomment the lines below and go to the
         # and change the values in the test
@@ -66,7 +65,7 @@ class Poincare:
 
     def sdnn(self):
         return(sqrt((self.SD1**2 + self.SD2**2)/2))
-        # CAREFUL HERE!!! the definition of variance used in scipy has the denominator equal to n, NOT (n-1)!
+        # CAREFUL HERE!!! the definition of variance used in numpy has the denominator equal to n, NOT (n-1)!
         # this seems to be more appropriate for what we do here, so
         # if you want to get the result you would get in R or Matlab comment the line above, uncomment the lines below and go to the
         # and change the values in the test
