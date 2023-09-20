@@ -3,6 +3,7 @@ from numpy import array, where, cumsum
 from signal_properties.Poincare import Poincare
 from signal_properties.runs import Runs
 from signal_properties.spectral import LombScargleSpectrum
+from signal_properties.plotRR import PlotRR
 
 
 
@@ -22,6 +23,7 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
         self.poincare = None
         self.runs = None
         self.LS_spectrum = None
+        self.plotRR = None
 
     def read_data(self, path_to_file, column_signal, column_annot, column_sample_to_sample):
         if type(path_to_file) == list:
@@ -43,7 +45,11 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
             signal.append(float(line_content[column_signal]))
             if column_signal != column_annot:  # see below - similar condition
                 annotation.append(int(float(line_content[column_annot])))
-            if column_sample_to_sample !=0 and column_sample_to_sample != column_signal:
+            # for now Ia m using the sample to sample column to store the time from rea files,
+            # so I can build a tachogram, first value in time is 0 so I had to remove the condition
+            # I am not sure how it would be the best to add the time column (should the four columns be all read?)
+            #OLD: if column_sample_to_sample !=0 and column_sample_to_sample != column_signal:
+            if column_sample_to_sample != column_signal:
                 sample_to_sample.append(float(line_content[column_sample_to_sample]))
         signal = array(signal)
         if column_sample_to_sample == column_signal:
@@ -102,3 +108,6 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
 
     def set_LS_spectrum(self):
         self.LS_spectrum = LombScargleSpectrum(self)
+
+    def set_plots(self):
+        self.plotRR = PlotRR(self)

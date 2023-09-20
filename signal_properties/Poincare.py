@@ -4,7 +4,7 @@ from numpy import concatenate, delete, mean, var, sqrt, where
 class Poincare:
     def __init__(self, signal):
         # signal is object of Signal class
-        self.xi, self.xii = self.prepare_PP(signal)
+        self.xi, self.xii, self.filtered_time = self.prepare_PP(signal)
         # descriptors will be capital, functions lower case
         self.SD1 = self.sd1()
         self.SD2 = self.sd2()
@@ -12,6 +12,8 @@ class Poincare:
         self.SD1d, self.C1d, self.SD1a, self.C1a, self.SD1I = self.short_term_asymmetry()
         self.SD2d, self.C2d, self.SD2a, self.C2a, self.SD2I = self.long_term_asymmetry()
         self.SDNNd, self.Cd, self.SDNNa, self.Ca = self.total_asymmetry()
+        self.meanRR = self.meanrr()
+        self.CV = self.cv()
 
     def prepare_PP(self, signal):
         """
@@ -26,6 +28,8 @@ class Poincare:
         # preparing the Poincare plot auxiliary vectors (see Filtering Poincare Plots)
         xi = signal.signal[0:(len(signal.signal)-1)]
         xii = signal.signal[1:len(signal.signal)]
+        #Adding filtered time for tachygraph
+        filtered_time = signal.timetrack[1:len(signal.timetrack)]
 
         bad_beats = where(signal.annotation == 16)[0]
         bad_beats_minus_one = bad_beats - 1
@@ -34,8 +38,9 @@ class Poincare:
         # now removing all bad beats from xi and xii, according to the above paper
         xi = delete(xi, all_bad_beats)
         xii = delete(xii, all_bad_beats)
+        filtered_time = delete(filtered_time, all_bad_beats)
 
-        return xi, xii
+        return xi, xii, filtered_time
 
     def sd1(self):
         try:
@@ -75,6 +80,24 @@ class Poincare:
         #except ZeroDivisionError:
         #    SDNN = None
         #return(SDNN)
+
+    def meanrr(self):
+        # calculate the meanRR after filtering for RRn
+        try:
+            meanRR = mean(self.xii)
+        except ZeroDivisionError:
+            meanRR = None
+        return(meanRR)
+    
+    def cv(self):
+        # calculate CV after filtering for RRn
+        meanRR = self.meanRR 
+        SDNN = self.SDNN
+        try:
+            result = SDNN/meanRR
+        except ZeroDivisionError:
+            result = None
+        return result
 
     def short_term_asymmetry(self):
         n = len(self.xii)
