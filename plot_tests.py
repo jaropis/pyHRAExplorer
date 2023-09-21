@@ -2,7 +2,7 @@ from signal_properties.RRclasses import Signal
 import matplotlib.pyplot as plt
 # Created to test the new plot function
 
-# PLACE TO TEST PLOTS
+# PLACE TO TEST PLOTS WILL BE REMOVED (code moved to the plotRR.py)
 
 rr = Signal("C:/Users/k52672mg/OneDrive - The University of Manchester/Analysis/PIPS_HRAEXPLORER/test_files/0582a.rea", 1, 2, annotation_filter=(1, 2, 3))
 rr.set_poincare()

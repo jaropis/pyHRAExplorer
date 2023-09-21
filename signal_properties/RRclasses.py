@@ -49,13 +49,18 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
             # so I can build a tachogram, first value in time is 0 so I had to remove the condition
             # I am not sure how it would be the best to add the time column (should the four columns be all read?)
             #OLD: if column_sample_to_sample !=0 and column_sample_to_sample != column_signal:
-            if column_sample_to_sample != column_signal:
+            if column_sample_to_sample !=0 and column_sample_to_sample != column_signal:
                 sample_to_sample.append(float(line_content[column_sample_to_sample]))
+                timetrack = cumsum(sample_to_sample)
+            # added an option for using the sample to sample column with an increasing time (rather than sample to sample time)
+            elif column_sample_to_sample == 0 and column_sample_to_sample != column_signal:
+                sample_to_sample.append(float(line_content[column_sample_to_sample]))
+                timetrack = sample_to_sample
         signal = array(signal)
         if column_sample_to_sample == column_signal:
             sample_to_sample = signal
 
-        timetrack = cumsum(sample_to_sample)
+        #timetrack = cumsum(sample_to_sample)
 
         if column_signal == column_annot:
             annotation = 0*signal
