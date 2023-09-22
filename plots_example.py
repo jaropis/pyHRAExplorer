@@ -18,7 +18,8 @@ elif x == '3':
     rr.plotRR.TACHOGRAM
 
 '''
-rr.plotRR.PPLOT
-plt.show()
+#rr.plotRR.PPLOT
+rr.plotRR.pplot(rr, color = 'green')
+#plt.show()
 
 

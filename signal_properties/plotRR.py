@@ -13,7 +13,7 @@ class PlotRR:
        self.RR_HISTOGRAM = self.rr_histogram(signal)
        self.TACHOGRAM = self.tachogram(signal)
 
-    def pplot(self, signal):
+    def pplot(self, signal, color = 'darkblue'):
         #print('test', signal.poincare.meanRR)
         global_min = min([min(signal.poincare.xii[1:]), min(signal.poincare.xi[1:])])
         #print(rr.poincare.xi)
@@ -21,13 +21,14 @@ class PlotRR:
         #RRplot = plt.subplot(3,2,(1,4))
         #RRplot = plt.subplot(2,1,1)
         p_plot = plt.figure()
-        plt.scatter(x = signal.poincare.xi[1:], y = signal.poincare.xii[1:],  facecolors='none', edgecolors= 'darkblue', s = 30, alpha = 0.5)
+        plt.scatter(x = signal.poincare.xi[1:], y = signal.poincare.xii[1:],  facecolors='none', edgecolors= color, s = 30, alpha = 0.5)
         plt.axline((global_min-50,global_min-50), slope=1,c = 'black', ls = '--')
         plt.xlabel('Rnn')
         plt.ylabel('RRn+1')
         #plt.set(adjustable='box', aspect='equal')
         plt.axis('square')
-        return p_plot
+        plt.show()
+        #return p_plot
     
     def rr_histogram(self, signal):
         hist = plt.figure()
