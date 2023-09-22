@@ -19,7 +19,14 @@ elif x == '3':
 
 '''
 #rr.plotRR.PPLOT
-rr.plotRR.pplot(rr, color = 'green')
+# might create a separate function to read directly from file ?
+#PPLOT default : color = 'darkblue', size = 30
+rr.plotRR.pplot(rr, color = 'green', size = 20)
+
+# rr_histogram default: color = 'blue', edgecolor = 'darkblue', bins = 25
+rr.plotRR.rr_histogram(rr, color = 'pink', edgecolor = 'red', bins = 10)
 #plt.show()
 
+# tachogram default: markersize = 5, linewidth = 0.3, color = 'black'z
+rr.plotRR.tachogram(rr, color = 'red', markersize = 10, linewidth = 0.5)
 
