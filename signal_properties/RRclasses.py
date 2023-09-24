@@ -18,7 +18,7 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
         # here the data is filtered - this filtration will apply throughout the whole application
         self.filter_data()
 
-        # now the HRV and HRA methods are being applied
+        # now the HRV and HRA methods are being applied and plots constructed
 
         self.poincare = None
         self.runs = None
@@ -26,6 +26,11 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
         self.plotRR = None
 
     def read_data(self, path_to_file, column_signal, column_annot, column_sample_to_sample):
+        '''
+        This function is used to read the file, using the specified column indexes. 
+        The default value of the index is 0, so if no value is specified the first column will be used.
+
+        '''
         if type(path_to_file) == list:
             if len(path_to_file) == 2:
                 # this is the possibility to pass a list with signal and annotation vector as its elements
@@ -35,7 +40,8 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
         reafile_current = open(path_to_file, 'r')
         reafile_current.readline()
         signal = []  # this variable contains the signal for spectral analysis
-        annotation = []
+        annotation = [] # this variable contains annotations for the signal with 0, 1, 2, 3 values corrsponding 
+        # to sinus, ventricular, supraventricular or artifact beats respecitively. Annotations will be used for filtering the beats. 
         sample_to_sample = [] # this variable holds the sample-to-sample values (like the beat-to-beat interval,
         # RR interval) - this will be used in the Lomb-Scargle periodogram, which requires the time-track column
         # here the reading of the file starts
@@ -44,18 +50,23 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
             line_content = findall(r'\b[0-9\.]+', line)
             signal.append(float(line_content[column_signal]))
             if column_signal != column_annot:  # see below - similar condition
+                # As deafult column index for all is 0, if only one column index or none are specified annotation
+                # variable remians empty.
                 annotation.append(int(float(line_content[column_annot])))
-            # for now Ia m using the sample to sample column to store the time from rea files,
-            # so I can build a tachogram, first value in time is 0 so I had to remove the condition
-            # I am not sure how it would be the best to add the time column (should the four columns be all read?)
-            #OLD: if column_sample_to_sample !=0 and column_sample_to_sample != column_signal:
-            if column_sample_to_sample !=0 and column_sample_to_sample != column_signal:
+           
+            if column_sample_to_sample !=0 and column_sample_to_sample != column_signal: # Checks if the column
+                # sample to sample has been specified (what is it is in the first column?) maybe change default
+                # from 0 to -1?
                 sample_to_sample.append(float(line_content[column_sample_to_sample]))
                 timetrack = cumsum(sample_to_sample)
             # added an option for using the sample to sample column with an increasing time (rather than sample to sample time)
+            # temporary !!!!!!!!
             elif column_sample_to_sample == 0 and column_sample_to_sample != column_signal:
                 sample_to_sample.append(float(line_content[column_sample_to_sample]))
                 timetrack = sample_to_sample
+            else:
+                # To prevent the timetrack not being returned
+                timetrack = cumsum(sample_to_sample)
         signal = array(signal)
         if column_sample_to_sample == column_signal:
             sample_to_sample = signal
