@@ -29,8 +29,13 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
     def read_data(self, path_to_file, column_signal, column_annot, column_sample_to_sample):
         '''
         This function is used to read the file, using the specified column indexes. 
-        The default value of the index is -1, so if no value is specified the first column will be used.
-
+        The default value of the index is -1, so if no value is specified the last column will be used.
+        path_to_file - string containg the file to the file that will be used for the analysis
+        column_signal - integer that correstponding to the (column number - 1) of the column containing the RR 
+        signals
+        column_annot - integer corresponding to the (column number - 1) of the column containg the RR anotations
+        that will be used for filtering
+        column_sample_to_sample - int corresponding to the (column number - 1) of the column containing the sample to sample time or time
         '''
         if type(path_to_file) == list:
             if len(path_to_file) == 2:
@@ -47,6 +52,7 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
         # RR interval) - this will be used in the Lomb-Scargle periodogram, which requires the time-track column
         # here the reading of the file starts
 
+        # Read each line and append each variable with a chosen column
         for line in reafile_current:
             line_content = findall(r'\b[0-9\.]+', line)
             signal.append(float(line_content[column_signal]))
