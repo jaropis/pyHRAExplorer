@@ -65,12 +65,16 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
                 # sample to sample has been specified (what is it is in the first column?) maybe change default
                 # from 0 to -1?
                 sample_to_sample.append(float(line_content[column_sample_to_sample]))
-                timetrack = cumsum(sample_to_sample)
-            # added an option for using the sample to sample column with an increasing time (rather than sample to sample time)
-            # temporary !!!!!!!! will change from == 0
-            elif column_sample_to_sample == 0 and column_sample_to_sample != column_signal:
-                sample_to_sample.append(float(line_content[column_sample_to_sample]))
-                timetrack = sample_to_sample
+                # added an option for using the sample to sample column with an increasing time (rather than sample to sample time)
+                # Changed the way sample to sample/timetrack is assigned
+                # If the first row is = 0, the time column shows the progression of time, timetrack can be returned 
+                # as is
+                if sample_to_sample[0] == 0:
+                    timetrack = sample_to_sample
+                # If it is not 0, the time column shows sample to sample time, cumsum() of the column should be 
+                # returned instead to get the timetrack
+                else: 
+                    timetrack = cumsum(sample_to_sample)        
             else:
                 # To prevent the timetrack not being returned
                 timetrack = cumsum(sample_to_sample)
