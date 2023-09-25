@@ -27,8 +27,8 @@ class PlotRR:
         plt.ylabel('RRn+1')
         #plt.set(adjustable='box', aspect='equal')
         plt.axis('square')
-        plt.show()
-        #return p_plot
+        #plt.show()
+        return p_plot
     
     def rr_histogram(self, signal, color = 'blue', edgecolor = 'darkblue', bins = 25):
         hist = plt.figure()
@@ -38,8 +38,8 @@ class PlotRR:
         plt.axvline(x = signal.poincare.meanRR - signal.poincare.SDNN, linestyle = 'dashed', color = 'lightgreen', linewidth = 1.5)
         plt.ylabel('Count')
         plt.xlabel('Rnn')
-        plt.show()
-        #return hist
+        #plt.show()
+        return hist
     
     def tachogram(self, signal, markersize = 5, linewidth = 0.3, color = 'black'):
         tacho = plt.figure()
@@ -50,9 +50,9 @@ class PlotRR:
         plt.axhline(y = signal.poincare.meanRR - signal.poincare.SDNN, linestyle = 'dashed', color = 'lightgreen', linewidth = 1)
         plt.ylabel('RR')
         plt.xlabel('Time [min]')
-        plt.show()
+        #plt.show()
 
-        #return tacho
+        return tacho
 
     #def all (return all plots as one figure? not sure how useful)
 

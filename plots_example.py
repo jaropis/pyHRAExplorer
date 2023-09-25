@@ -25,8 +25,8 @@ rr.plotRR.pplot(rr, color = 'green', size = 20)
 
 # rr_histogram default: color = 'blue', edgecolor = 'darkblue', bins = 25
 rr.plotRR.rr_histogram(rr, color = 'pink', edgecolor = 'red', bins = 10)
-#plt.show()
 
 # tachogram default: markersize = 5, linewidth = 0.3, color = 'black'z
 rr.plotRR.tachogram(rr, color = 'red', markersize = 10, linewidth = 0.5)
 
+plt.show()

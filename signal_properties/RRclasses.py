@@ -8,7 +8,8 @@ from signal_properties.plotRR import PlotRR
 
 
 class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, podniesc wyjatek w spectrum gdy nie ma timetracka!
-    def __init__(self, path_to_file, column_signal=0, column_annot=0, column_sample_to_sample=0, quotient_filter=-1, square_filter=(-8000, 8000), annotation_filter=()):
+    #changed the defualts to -1 so timetrack can be stored in and called from the first column 
+    def __init__(self, path_to_file, column_signal=-1, column_annot=-1, column_sample_to_sample=-1, quotient_filter=-1, square_filter=(-8000, 8000), annotation_filter=()):
         # 0 are there to facilitate the construction of signals from console
         self.quotient_filter = quotient_filter
         self.square_filter = square_filter
@@ -28,7 +29,7 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
     def read_data(self, path_to_file, column_signal, column_annot, column_sample_to_sample):
         '''
         This function is used to read the file, using the specified column indexes. 
-        The default value of the index is 0, so if no value is specified the first column will be used.
+        The default value of the index is -1, so if no value is specified the first column will be used.
 
         '''
         if type(path_to_file) == list:
@@ -54,13 +55,13 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
                 # variable remians empty.
                 annotation.append(int(float(line_content[column_annot])))
            
-            if column_sample_to_sample !=0 and column_sample_to_sample != column_signal: # Checks if the column
+            if column_sample_to_sample !=-1 and column_sample_to_sample != column_signal: # Checks if the column
                 # sample to sample has been specified (what is it is in the first column?) maybe change default
                 # from 0 to -1?
                 sample_to_sample.append(float(line_content[column_sample_to_sample]))
                 timetrack = cumsum(sample_to_sample)
             # added an option for using the sample to sample column with an increasing time (rather than sample to sample time)
-            # temporary !!!!!!!!
+            # temporary !!!!!!!! will change from == 0
             elif column_sample_to_sample == 0 and column_sample_to_sample != column_signal:
                 sample_to_sample.append(float(line_content[column_sample_to_sample]))
                 timetrack = sample_to_sample
