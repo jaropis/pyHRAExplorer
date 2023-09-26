@@ -36,6 +36,11 @@ class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, po
         column_annot - integer corresponding to the (column number - 1) of the column containg the RR anotations
         that will be used for filtering
         column_sample_to_sample - int corresponding to the (column number - 1) of the column containing the sample to sample time or time
+
+        the function returns arrays containg the signal, annotation and timetrack values
+        Timetrack can be both sample to sample and general, if the first time measurment is equal 0, 
+        timetrack is returned as is, if given timetrack is sample to sample (amount of time between each sample)
+        cumsum is returned instead.
         '''
         if type(path_to_file) == list:
             if len(path_to_file) == 2:

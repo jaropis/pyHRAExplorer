@@ -41,9 +41,13 @@ class Poincare:
         return xi, xii
     
     def filter_time(self,signal):
+        '''
+        Function that filteres the time, removing the same beats that were removed from the signal. As a result,
+        the signal and time remain the same length after filtering, allowing for building an accurate tachogram.
+        The function uses the timetrack property of signal and uses the same method as prepare_PP for filtering.
+        '''
         #Adding filtered time for tachygraph
         filtered_time = signal.timetrack[1:len(signal.timetrack)]
-        #compied code so the timepoints corresponding to the filtered RRs are also removed
         bad_beats = where(signal.annotation == 16)[0]
         bad_beats_minus_one = bad_beats - 1
         all_bad_beats = concatenate((bad_beats, bad_beats_minus_one))
