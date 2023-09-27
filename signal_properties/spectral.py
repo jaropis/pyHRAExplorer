@@ -50,7 +50,6 @@ class LombScargleSpectrum:
                 break
             else:
                 break
-        print("dupa", [i * df for i in power_in_bands])
         return numpy.array([i * df for i in power_in_bands])
 
     def test_cuts(self, cuts):

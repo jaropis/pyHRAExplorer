@@ -4,7 +4,8 @@ from numpy import concatenate, delete, mean, var, sqrt, where
 class Poincare:
     def __init__(self, signal):
         # signal is object of Signal class
-        self.xi, self.xii, self.filtered_time = self.prepare_PP(signal)
+        self.xi, self.xii = self.prepare_PP(signal)
+        self.filtered_time = self.filter_time(signal)
         # descriptors will be capital, functions lower case
         self.SD1 = self.sd1()
         self.SD2 = self.sd2()
@@ -28,8 +29,6 @@ class Poincare:
         # preparing the Poincare plot auxiliary vectors (see Filtering Poincare Plots)
         xi = signal.signal[0:(len(signal.signal)-1)]
         xii = signal.signal[1:len(signal.signal)]
-        #Adding filtered time for tachygraph
-        filtered_time = signal.timetrack[1:len(signal.timetrack)]
 
         bad_beats = where(signal.annotation == 16)[0]
         bad_beats_minus_one = bad_beats - 1
@@ -38,9 +37,24 @@ class Poincare:
         # now removing all bad beats from xi and xii, according to the above paper
         xi = delete(xi, all_bad_beats)
         xii = delete(xii, all_bad_beats)
+
+        return xi, xii
+    
+    def filter_time(self,signal):
+        '''
+        Function that filteres the time, removing the same beats that were removed from the signal. As a result,
+        the signal and time remain the same length after filtering, allowing for building an accurate tachogram.
+        The function uses the timetrack property of signal and uses the same method as prepare_PP for filtering.
+        '''
+        #Adding filtered time for tachygraph
+        filtered_time = signal.timetrack[1:len(signal.timetrack)]
+        bad_beats = where(signal.annotation == 16)[0]
+        bad_beats_minus_one = bad_beats - 1
+        all_bad_beats = concatenate((bad_beats, bad_beats_minus_one))
         filtered_time = delete(filtered_time, all_bad_beats)
 
-        return xi, xii, filtered_time
+        return filtered_time
+
 
     def sd1(self):
         try:
