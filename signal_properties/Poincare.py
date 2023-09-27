@@ -21,6 +21,7 @@ class Poincare:
         this function prepares the auxiliary vectors for Poincare Plot:
 
         a filtered Poincare plot is returned, the filtering method follows
+        xi and xii returned from this function are used to build the poincare Plot in plotRR.pplot()
         "Filtering Poincare plots", Piskorski, Guzik, Computational methods in science and technology 11 (1), 39-48
         """
         # the signal has already been filtered in the constructor of the Signal class - i.e. all places which should
@@ -42,8 +43,10 @@ class Poincare:
     
     def filter_time(self,signal):
         '''
-        Function that filteres the time, removing the same beats that were removed from the signal. As a result,
-        the signal and time remain the same length after filtering, allowing for building an accurate tachogram.
+        Function that filteres the time, removing the times corresponding to the beats deleted from the signal
+        (for example ventricular, supraventricular or artifact beats). 
+        As a result, the signal and time remain the same length after filtering, allowing for building an accurate 
+        tachogram.
         The function uses the timetrack property of signal and uses the same method as prepare_PP for filtering.
         '''
         #Adding filtered time for tachygraph
