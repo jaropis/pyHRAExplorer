@@ -2,6 +2,14 @@ from numpy import concatenate, delete, mean, var, sqrt, where
 
 
 class Poincare:
+    '''
+    Poincare class
+
+    Attributes:
+
+    Args:
+        signal (Signal): 
+    '''
     def __init__(self, signal):
         # signal is object of Signal class
         self.xi, self.xii = self.prepare_PP(signal)
@@ -18,11 +26,16 @@ class Poincare:
 
     def prepare_PP(self, signal):
         """
-        this function prepares the auxiliary vectors for Poincare Plot:
-
-        a filtered Poincare plot is returned, the filtering method follows
-        xi and xii returned from this function are used to build the poincare Plot in plotRR.pplot()
+        This method prepares the auxiliary vectors for Poincare Plot, the filtering method follows 
         "Filtering Poincare plots", Piskorski, Guzik, Computational methods in science and technology 11 (1), 39-48
+
+        Args:
+            signal (Signal): 
+
+        Returns:
+            xi (array): Array of filtered Rnn values
+            xii (array): Array of filtered Rnn+1 values
+
         """
         # the signal has already been filtered in the constructor of the Signal class - i.e. all places which should
         # be removed were marked in signal.annotation as 16
@@ -45,9 +58,13 @@ class Poincare:
         '''
         Function that filteres the time, removing the times corresponding to the beats deleted from the signal
         (for example ventricular, supraventricular or artifact beats). 
-        As a result, the signal and time remain the same length after filtering, allowing for building an accurate 
-        tachogram.
-        The function uses the timetrack property of signal and uses the same method as prepare_PP for filtering.
+
+        Args:
+            signal (Signal): 
+
+        Returns:
+            filtered_time (array): List of filtered time values
+
         '''
         #Adding filtered time for tachygraph
         filtered_time = signal.timetrack[1:len(signal.timetrack)]
@@ -60,6 +77,12 @@ class Poincare:
 
 
     def sd1(self):
+        '''
+        Method used to calculate the SD1 of the RR values, using xi and xii returned by prepare_PP
+
+        Returns:
+            result (float): The value of SD1 for the RR values
+        '''
         try:
             result = sqrt(var(self.xii - self.xi)/2)
         except ZeroDivisionError:
@@ -77,6 +100,13 @@ class Poincare:
         #   return None
 
     def sd2(self):
+        '''
+        Method used to calculate the SD2 of the RR values, using xi and xii returned by prepare_PP
+
+        Returns:
+            result (float): The value of SD2 for the RR values
+        '''
+
         return(sqrt(var(self.xii + self.xi)/2))
         # CAREFUL HERE!!! the definition of variance used in numpy has the denominator equal to n, NOT (n-1)!
         # this seems to be more appropriate for what we do here, so
@@ -86,6 +116,12 @@ class Poincare:
         #return(sqrt(var(self.xii - self.xi)/2 * (n/(n-1))))
 
     def sdnn(self):
+        '''
+        Method used to calculate the SDNN of the RR values, using xi and xii returned by prepare_PP
+
+        Returns:
+            result (float): The value of SD1 for the RR values
+        '''
         return(sqrt((self.SD1**2 + self.SD2**2)/2))
         # CAREFUL HERE!!! the definition of variance used in numpy has the denominator equal to n, NOT (n-1)!
         # this seems to be more appropriate for what we do here, so
@@ -99,7 +135,12 @@ class Poincare:
         #return(SDNN)
 
     def meanrr(self):
-        # calculate the meanRR after filtering for RRn
+        '''
+        Method used to calculate mean of the RR signals after filtering
+
+        Returns:
+            meanRR (float): The value of mean RR
+        '''
         try:
             meanRR = mean(self.xii)
         except ZeroDivisionError:
@@ -107,16 +148,32 @@ class Poincare:
         return(meanRR)
     
     def cv(self):
+        '''
+        Method used to calculate the SDNN of the RR values, using xi and xii returned by prepare_PP
+
+        Returns:
+            CV (float): The value of
+        '''    
         # calculate CV after filtering for RRn
         meanRR = self.meanRR 
         SDNN = self.SDNN
         try:
-            result = SDNN/meanRR
+            CV = SDNN/meanRR
         except ZeroDivisionError:
-            result = None
-        return result
+            CV = None
+        return CV
 
     def short_term_asymmetry(self):
+        '''
+        Method used to calculate the SDNN of the RR values, using xi and xii returned by prepare_PP
+
+        Returns:
+            SD1d (float): The value of
+            C1d (float): The value of  
+            SD1a (float): The value of 
+            C1a (float): The value of
+            SD1I (float): The value of
+        '''
         n = len(self.xii)
         auxilary = (self.xii - self.xi) / sqrt(2)
         decelerating_indices = where(auxilary > 0)[0]
@@ -139,6 +196,16 @@ class Poincare:
             return(SD1d, C1d, SD1a, C1a, SD1I)
 
     def long_term_asymmetry(self):
+        '''
+        Method used to calculate the SDNN of the RR values, using xi and xii returned by prepare_PP
+
+        Returns:
+            SD2d (float): The value of
+            C2d (float): The value of  
+            SD2a (float): The value of 
+            C2a (float): The value of
+            SD2I (float): The value of
+        '''
         n = len(self.xii)
         auxilary_updown = (self.xii - self.xi)
 
@@ -161,6 +228,15 @@ class Poincare:
         return(SD2d, C2d, SD2a, C2a, SD2I)
 
     def total_asymmetry(self):
+        '''
+        Method used to calculate the SDNN of the RR values, using xi and xii returned by prepare_PP
+
+        Returns:
+            SDNNd (float): The value of
+            Cd (float): The value of  
+            SDNNa (float): The value of 
+            Ca (float): The value of 
+        '''
         failed = False
         try:
             SDNNd = sqrt(1/2 * (self.SD1d**2 + self.SD2d**2))

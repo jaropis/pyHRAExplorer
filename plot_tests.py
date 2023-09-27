@@ -47,3 +47,5 @@ print(rr.poincare.filtered_time[1:])
 #print('CV:', rr.poincare.CV)
 #plt.show()
 #rr.plotRR.PPplot
+
+print(type(rr.poincare.SD1), type(rr.poincare.xii), type(rr))
