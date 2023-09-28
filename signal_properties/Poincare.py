@@ -30,11 +30,12 @@ class Poincare:
         "Filtering Poincare plots", Piskorski, Guzik, Computational methods in science and technology 11 (1), 39-48
 
         Args:
-            signal (Signal): 
+            signal (Signal): Here Signal class property signal (array) which contains values of RR reads will be used 
+            alongside the Signal class  property annotation (array) which marks the beats that should be removed with '16'
 
         Returns:
-            xi (array): Array of filtered Rnn values
-            xii (array): Array of filtered Rnn+1 values
+            xi (array): Array of filtered RRn values
+            xii (array): Array of filtered RRn+1 values
 
         """
         # the signal has already been filtered in the constructor of the Signal class - i.e. all places which should

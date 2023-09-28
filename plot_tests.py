@@ -48,4 +48,4 @@ print(rr.poincare.filtered_time[1:])
 #plt.show()
 #rr.plotRR.PPplot
 
-print(type(rr.poincare.SD1), type(rr.poincare.xii), type(rr))
+print(rr.annotation)
