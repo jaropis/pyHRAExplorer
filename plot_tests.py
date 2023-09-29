@@ -18,9 +18,9 @@ global_min = min([min(rr.poincare.xii[1:]), min(rr.poincare.xi[1:])])
 #RRplot.set_ylabel('RRn+1')
 #RRplot.set(adjustable='box', aspect='equal')
 #RRplot.axis('square')
-print(rr.poincare.xii[1:])
-print(rr.poincare.xi[1:])
-print(rr.poincare.filtered_time[1:])
+#print(rr.poincare.xii[1:])
+#print(rr.poincare.xi[1:])
+#print(rr.poincare.filtered_time[1:])
 #RRhist = plt.subplot(3,2,(5,6))
 #RRhist = plt.subplot(2,1,2)
 #RRhist.hist(rr.poincare.xi[1:], bins = 25, edgecolor = 'darkblue')
@@ -48,4 +48,7 @@ print(rr.poincare.filtered_time[1:])
 #plt.show()
 #rr.plotRR.PPplot
 
-print(rr.annotation)
+#print(rr.annotation)
+
+
+print(rr.poincare.SD2I, rr.poincare.SD2, rr.poincare.SD1I, rr.poincare.SD1)

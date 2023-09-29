@@ -3,7 +3,7 @@ from numpy import concatenate, delete, mean, var, sqrt, where
 
 class Poincare:
     '''
-    Poincare class used to calculate and store descriptors of HRV and prepere vectors needed for a Poincare plot
+    Poincare class used to calculate and store descriptors of HRV and prepere vectors needed for a Poincare plot.
 
     Attributes:
         xi (array): An array containting the filtered RRn signal values
@@ -12,22 +12,22 @@ class Poincare:
         SD1 (float): Stores the value of the square root of the short-term RR intervals variance
         SD2 (float): Stores the value of the square root of the long-term RR intervals variance
         SDNN (float): Stores the value of the square root of the total RR intervals variance
-        SD1d (float): the square root of the short-term RR intervals variance derived from decelerations
-        C1d (float): the contribution of HR decelerations to the short-term HRV
-        SD1a (float): the square root of the short-term RR intervals variance derived from accelerations
-        C1a (float):
-        SD1I (float):
-        SD2d (float): the square root of the long-term RR intervals variance derived from decelerations
-        C2d (float): the contribution of HR decelerations in long-term HRV
-        SD2a (float): the square root of the long-term RR intervals variance derived from accelerations
-        C2a (float):
-        SD2I (float):
-        SDNNd (float): the square root of the total RR intervals variance derived from decelerations
-        Cd (float): the contribution of the long-term variance to the total HRV derived from HR decelerations
-        SDNNa (float): the square root of the total RR intervals variance derived from accelerations
-        Ca (float):
+        SD1d (float): Stores the value of the square root of the short-term RR intervals variance derived from decelerations
+        C1d (float): Stores the value of the contribution of HR decelerations to the short-term HRV
+        SD1a (float): Stores the value of the square root of the short-term RR intervals variance derived from accelerations
+        C1a (float): Stores the value of the contribution of HR accelerations to the short-term HRV
+        SD1I (float): Stores the value of the square root of the sum of short-term RR variance from accelerations and decelerations
+        SD2d (float): Stores the value of the square root of the long-term RR intervals variance derived from decelerations
+        C2d (float): Stores the value of the contribution of HR decelerations in long-term HRV
+        SD2a (float): Stores the value of the square root of the long-term RR intervals variance derived from accelerations
+        C2a (float): Stores the value of the contribution of HR accelerations in long-term HRV
+        SD2I (float): Stores the value of the square root of the sum of long-term RR variance from accelerations and decelerations
+        SDNNd (float): Stores the value of the square root of the total RR intervals variance derived from decelerations
+        Cd (float): Stores the value of the contribution of HR decelerations in total HRV
+        SDNNa (float): Stores the value of the square root of the total RR intervals variance derived from accelerations
+        Ca (float): Stores the value of the contribution of HR accelerations in total HRV
         meanRR (float): Stores the value of mean RR signal after filtering
-        CV (float): the index of total variance normalized to the mean RR x100%
+        CV (float): Stores the value of the index of total variance normalized to the mean RR
 
 
     Args:
@@ -58,8 +58,8 @@ class Poincare:
             alongside the Signal class  property annotation (array) which marks the beats that should be removed with '16'
 
         Returns:
-            xi (array): Array of filtered RRn values
-            xii (array): Array of filtered RRn+1 values
+            xi (array): An array containting the filtered RRn signal values
+            xii (array): An array containting the filtered RRn+1 signal values
 
         """
         # the signal has already been filtered in the constructor of the Signal class - i.e. all places which should
@@ -88,7 +88,7 @@ class Poincare:
             signal (Signal): 
 
         Returns:
-            filtered_time (array): List of filtered time values
+            filtered_time (array): An array containting the filtered values of timetrack
 
         '''
         #Adding filtered time for tachygraph
@@ -103,10 +103,10 @@ class Poincare:
 
     def sd1(self):
         '''
-        Method used to calculate the SD1 of the RR values, using xi and xii returned by prepare_PP
+        Calculates the SD1 parameter for the signal using the xi and xii attributes of class Poincare.
 
         Returns:
-            result (float): The value of SD1 for the RR values
+            result (float): The value of the square root of the short-term RR intervals variance (SD1)
         '''
         try:
             result = sqrt(var(self.xii - self.xi)/2)
@@ -126,10 +126,10 @@ class Poincare:
 
     def sd2(self):
         '''
-        Method used to calculate the SD2 of the RR values, using xi and xii returned by prepare_PP
+        Calculates the SD2 parameter for the signal using the xi and xii attributes of class Poincare.
 
         Returns:
-            result (float): The value of SD2 for the RR values
+            result (float): The value of the square root of the long-term RR intervals variance (SD2)
         '''
 
         return(sqrt(var(self.xii + self.xi)/2))
@@ -142,10 +142,10 @@ class Poincare:
 
     def sdnn(self):
         '''
-        Method used to calculate the SDNN of the RR values, using xi and xii returned by prepare_PP
+        Calculates the SDNN parameter for the signal using the xi and xii attributes of class Poincare.
 
         Returns:
-            result (float): The value of SD1 for the RR values
+            result (float): The value of the square root of the total RR intervals variance (SDNN)
         '''
         return(sqrt((self.SD1**2 + self.SD2**2)/2))
         # CAREFUL HERE!!! the definition of variance used in numpy has the denominator equal to n, NOT (n-1)!
@@ -161,10 +161,10 @@ class Poincare:
 
     def meanrr(self):
         '''
-        Method used to calculate mean of the RR signals after filtering
+        Calculates the mean RR interval for the signal using the xi and xii attributes of class Poincare.
 
         Returns:
-            meanRR (float): The value of mean RR
+            meanRR (float): The value of mean RR signal after filtering
         '''
         try:
             meanRR = mean(self.xii)
@@ -174,10 +174,10 @@ class Poincare:
     
     def cv(self):
         '''
-        Method used to calculate the SDNN of the RR values, using xi and xii returned by prepare_PP
+        Calculates the CV parameter for the signal using the xi and xii attributes of class Poincare.
 
         Returns:
-            CV (float): The value of
+            CV (float): The value of index of total variance normalized to the mean RR
         '''    
         # calculate CV after filtering for RRn
         meanRR = self.meanRR 
@@ -190,14 +190,16 @@ class Poincare:
 
     def short_term_asymmetry(self):
         '''
-        Method used to calculate the SDNN of the RR values, using xi and xii returned by prepare_PP
+        Calculates the short-term asymmetry parameters for the signal using the xi and xii attributes of class Poincare, 
+        finds the decelerating and accelerating indeces to derive their individual short-term RR interval variance and contributions to 
+        short-term HRV
 
         Returns:
-            SD1d (float): The value of
-            C1d (float): The value of  
-            SD1a (float): The value of 
-            C1a (float): The value of
-            SD1I (float): The value of
+            SD1d (float): The value of the square root of the short-term RR intervals variance derived from decelerations
+            C1d (float): The value of the contribution of HR decelerations to the short-term HRV
+            SD1a (float): The value of the square root of the short-term RR intervals variance derived from accelerations
+            C1a (float): The value of the contribution of HR accelerations to the short-term HRV
+            SD1I (float): The value of the square root of the sum of short-term RR variance from accelerations and decelerations
         '''
         n = len(self.xii)
         auxilary = (self.xii - self.xi) / sqrt(2)
@@ -222,14 +224,16 @@ class Poincare:
 
     def long_term_asymmetry(self):
         '''
-        Method used to calculate the SDNN of the RR values, using xi and xii returned by prepare_PP
+        Calculates the long-term asymmetry parameters for the signal using the xi and xii attributes of class Poincare, 
+        finds the decelerating and accelerating indeces to derive their individual long-term RR interval variance and contributions to 
+        long-term HRV
 
         Returns:
-            SD2d (float): The value of
-            C2d (float): The value of  
-            SD2a (float): The value of 
-            C2a (float): The value of
-            SD2I (float): The value of
+            SD2d (float): The value of the square root of the long-term RR intervals variance derived from decelerations
+            C2d (float): The value of the contribution of HR decelerations in long-term HRV
+            SD2a (float): The value of the square root of the long-term RR intervals variance derived from accelerations
+            C2a (float): The value of the contribution of HR accelerations in long-term HRV
+            SD2I (float): The value of the square root of the sum of long-term RR variance from accelerations and decelerations
         '''
         n = len(self.xii)
         auxilary_updown = (self.xii - self.xi)
@@ -254,13 +258,13 @@ class Poincare:
 
     def total_asymmetry(self):
         '''
-        Method used to calculate the SDNN of the RR values, using xi and xii returned by prepare_PP
+        Calculates the total asymmetry parameters for the signal using the SD1d and SD2d attributes of class Poincare  
 
         Returns:
-            SDNNd (float): The value of
-            Cd (float): The value of  
-            SDNNa (float): The value of 
-            Ca (float): The value of 
+            SDNNd (float): The value of the square root of the total RR intervals variance derived from decelerations
+            Cd (float): The value of the contribution of HR decelerations in total HRV
+            SDNNa (float): The value of the square root of the total RR intervals variance derived from accelerations
+            Ca (float): The value of the contribution of HR accelerations in total HRV
         '''
         failed = False
         try:
