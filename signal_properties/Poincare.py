@@ -28,7 +28,19 @@ class Poincare:
         Ca (float): Stores the value of the contribution of HR accelerations in total HRV
         meanRR (float): Stores the value of mean RR signal after filtering
         CV (float): Stores the value of the index of total variance normalized to the mean RR
-
+        #ND #todo
+        #pNN50 #todo
+        #SD2/SD1 #todo
+        CS (float):
+        CSa (float):
+        CSd (float):
+        CLa (float):
+        CLd (float):
+        HRA1 (int):
+        HRA2 (int):
+        HRAT (int):
+        HRAN (int):
+        HRAcomp (int):
 
     Args:
         signal (Signal): Contains information about the RR signal, such as RR values, annotation and timetrack.
@@ -42,11 +54,17 @@ class Poincare:
         self.SD1 = self.sd1()
         self.SD2 = self.sd2()
         self.SDNN = self.sdnn()
+        self.meanRR = self.meanrr()
+        self.CV = self.cv()
+        # HRA
         self.SD1d, self.C1d, self.SD1a, self.C1a, self.SD1I = self.short_term_asymmetry()
         self.SD2d, self.C2d, self.SD2a, self.C2a, self.SD2I = self.long_term_asymmetry()
         self.SDNNd, self.Cd, self.SDNNa, self.Ca = self.total_asymmetry()
-        self.meanRR = self.meanrr()
-        self.CV = self.cv()
+        self.HRA1, self.HRA2, self.HRAT, self.HRAN, self.HRAcomp = self.hra_forms()
+        # HRV
+        self.CS, self.CSa, self.CSd = self.short_term_variability()
+        self.CLa, self.CLd = self.long_term_variability()
+        
 
     def prepare_PP(self, signal):
         """
@@ -278,3 +296,50 @@ class Poincare:
             return None, None, None, None
         else:
             return(SDNNd, Cd, SDNNa, Ca)
+        
+    def hra_forms(self):
+        failed = False
+        try:
+            hra1 = 1 if self.C1d > 0.5 else 0
+            hra2 = 1 if self.C2d < 0.5 else 0
+            hrat = 1 if self.Cd < 0.5 else 0
+            hran = 1 if self.C1d > 0.5 else 0 #FIX
+            hracomp = 1 if (hra1 + hra2) == 2 else 0
+        except TypeError:
+            failed = True
+        if failed:
+            return None, None, None, None, None
+        else:
+            return(hra1, hra2, hrat, hran, hracomp)
+        
+    def short_term_variability(self):
+        '''
+        
+        '''
+        failed = False
+        try:
+            Cs = self.SD1**2/(2*self.SDNN**2)
+            Csa = self.SD1a**2/(2*self.SDNN**2)
+            Csd = self.SD1d**2/(2*self.SDNN**2)
+        except TypeError:
+            failed = True
+        if failed:
+            return None, None, None
+        else:
+            return(Cs, Csa, Csd)
+        
+    def long_term_variability(self):
+        '''
+        
+        '''
+        failed = False
+        try:
+            Cla = self.SD2a**2/(2*self.SDNN**2)
+            Cld = self.SD2d**2/(2*self.SDNN**2)
+        except TypeError:
+            failed = True
+        if failed:
+            return None, None
+        else:
+            return(Cla, Cld)
+
