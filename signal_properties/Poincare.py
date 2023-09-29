@@ -3,14 +3,38 @@ from numpy import concatenate, delete, mean, var, sqrt, where
 
 class Poincare:
     '''
-    Poincare class
+    Poincare class used to calculate and store descriptors of HRV and prepere vectors needed for a Poincare plot
 
     Attributes:
+        xi (array): An array containting the filtered RRn signal values
+        xii (array): An array containting the filtered RRn+1 signal values
+        filtered_time (array): An array containting the filtered values of timetrack (corresponding to xi)
+        SD1 (float): Stores the value of the square root of the short-term RR intervals variance
+        SD2 (float): Stores the value of the square root of the long-term RR intervals variance
+        SDNN (float): Stores the value of the square root of the total RR intervals variance
+        SD1d (float): the square root of the short-term RR intervals variance derived from decelerations
+        C1d (float): the contribution of HR decelerations to the short-term HRV
+        SD1a (float): the square root of the short-term RR intervals variance derived from accelerations
+        C1a (float):
+        SD1I (float):
+        SD2d (float): the square root of the long-term RR intervals variance derived from decelerations
+        C2d (float): the contribution of HR decelerations in long-term HRV
+        SD2a (float): the square root of the long-term RR intervals variance derived from accelerations
+        C2a (float):
+        SD2I (float):
+        SDNNd (float): the square root of the total RR intervals variance derived from decelerations
+        Cd (float): the contribution of the long-term variance to the total HRV derived from HR decelerations
+        SDNNa (float): the square root of the total RR intervals variance derived from accelerations
+        Ca (float):
+        meanRR (float): Stores the value of mean RR signal after filtering
+        CV (float): the index of total variance normalized to the mean RR x100%
+
 
     Args:
-        signal (Signal): 
+        signal (Signal): Contains information about the RR signal, such as RR values, annotation and timetrack.
     '''
     def __init__(self, signal):
+
         # signal is object of Signal class
         self.xi, self.xii = self.prepare_PP(signal)
         self.filtered_time = self.filter_time(signal)
