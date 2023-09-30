@@ -31,16 +31,16 @@ class Poincare:
         #ND #todo
         #pNN50 #todo
         #SD2/SD1 #todo
-        CS (float):
-        CSa (float):
-        CSd (float):
-        CLa (float):
-        CLd (float):
-        HRA1 (int):
-        HRA2 (int):
-        HRAT (int):
+        CS (float): Stores the value of the contribution of the short-term variance to the total HRV
+        CSa (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR accelerations
+        CSd (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR decelerations
+        CLa (float): Stores the value of the contribution of the long-term variance to the total HRV derived from HR accelerations
+        CLd (float): Stores the value of the contribution of the long-term variance to the total HRV derived from HR decelerations
+        HRA1 (int): Presence of short-term HRA, either 1 or 0
+        HRA2 (int): Presence of long-term HRA, either 1 or 0
+        HRAT (int): Presence of total HRA, either 1 or 0
         HRAN (int):
-        HRAcomp (int):
+        HRAcomp (int): HRA compensation, either 1 or 0
 
     Args:
         signal (Signal): Contains information about the RR signal, such as RR values, annotation and timetrack.
@@ -298,6 +298,16 @@ class Poincare:
             return(SDNNd, Cd, SDNNa, Ca)
         
     def hra_forms(self):
+        '''
+        Determines the presence of different types of HRA based on contributions of decelerations to different types of HRV
+
+        Returns:
+            HRA1 (int): Presence of short-term HRA, either 1 or 0
+            HRA2 (int): Presence of long-term HRA, either 1 or 0
+            HRAT (int): Presence of total HRA, either 1 or 0
+            HRAN (int):
+            HRAcomp (int): HRA compensation, either 1 or 0
+        '''
         failed = False
         try:
             hra1 = 1 if self.C1d > 0.5 else 0
@@ -314,7 +324,12 @@ class Poincare:
         
     def short_term_variability(self):
         '''
-        
+        Calculates and returns the short-term HRV parameters, using the SD1, SD1a, SD1d and SDNN attributes of class Poincare
+
+        Returns:
+            CS (float): Stores the value of the contribution of the short-term variance to the total HRV
+            CSa (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR accelerations
+            CSd (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR decelerations
         '''
         failed = False
         try:
@@ -330,7 +345,11 @@ class Poincare:
         
     def long_term_variability(self):
         '''
-        
+        Calculates and returns the long-term HRV parameters, using the SD2a, SD2d and SDNN attributes of class Poincare  
+
+        Returns:
+            CLa (float): Stores the value of the contribution of the long-term variance to the total HRV derived from HR accelerations
+            CLd (float): Stores the value of the contribution of the long-term variance to the total HRV derived from HR decelerations
         '''
         failed = False
         try:
