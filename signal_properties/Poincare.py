@@ -29,7 +29,7 @@ class Poincare:
         meanRR (float): Stores the value of mean RR signal after filtering
         CV (float): Stores the value of the index of total variance normalized to the mean RR
         ND (float): (PI = Porta's index) the contribution of the number of HR decelerations to all normal heartbeats.
-        #pNN50 #todo
+        pNN50 (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than 50ms
         #SD2/SD1 #todo
         CS (float): Stores the value of the contribution of the short-term variance to the total HRV
         CSa (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR accelerations
@@ -56,6 +56,8 @@ class Poincare:
         self.SDNN = self.sdnn()
         self.meanRR = self.meanrr()
         self.CV = self.cv()
+        # pNNn
+        self.pNN50 = self.pnnx()
         # HRA
         self.SD1d, self.C1d, self.SD1a, self.C1a, self.SD1I, self.ND = self.short_term_asymmetry()
         self.SD2d, self.C2d, self.SD2a, self.C2a, self.SD2I = self.long_term_asymmetry()
@@ -205,6 +207,17 @@ class Poincare:
         except ZeroDivisionError:
             CV = None
         return CV
+    
+    def pnnx(self):
+        '''
+        Calculates the pNN based on the differences between consequtive RR intervals (xi and xii)
+
+        Returns:
+            pNN50 (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than 50ms
+        '''
+        differences = abs(self.xii - self.xi)
+        pnn50 = 100*len(where(differences > 50)[0])/len(self.xi)
+        return pnn50
 
     def short_term_asymmetry(self):
         '''
