@@ -30,7 +30,7 @@ class Poincare:
         CV (float): Stores the value of the index of total variance normalized to the mean RR
         ND (float): (PI = Porta's index) the contribution of the number of HR decelerations to all normal heartbeats.
         pNN50 (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than 50ms
-        #SD2/SD1 #todo
+        SD2/SD1 (float): The ratio of SD2 to SD1 that measures the balance between the long- and short-term HRV
         CS (float): Stores the value of the contribution of the short-term variance to the total HRV
         CSa (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR accelerations
         CSd (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR decelerations
@@ -53,7 +53,7 @@ class Poincare:
         # descriptors will be capital, functions lower case
         self.SD1 = self.sd1()
         self.SD2 = self.sd2()
-        self.SDNN = self.sdnn()
+        self.SDNN, self.SD2_SD1 = self.sd1sd2()
         self.meanRR = self.meanrr()
         self.CV = self.cv()
         # pNNn
@@ -160,14 +160,20 @@ class Poincare:
         #n = len(self.xii)
         #return(sqrt(var(self.xii - self.xi)/2 * (n/(n-1))))
 
-    def sdnn(self):
+    def sd1sd2(self):
         '''
         Calculates the SDNN parameter for the signal using the xi and xii attributes of class Poincare.
 
         Returns:
-            result (float): The value of the square root of the total RR intervals variance (SDNN)
+            SDNN (float): The value of the square root of the total RR intervals variance (SDNN)
+            SD2/SD1 (float): The ratio of SD2 to SD1 that measures the balance between the long- and short-term HRV
         '''
-        return(sqrt((self.SD1**2 + self.SD2**2)/2))
+        try:
+            SDNN = sqrt((self.SD1**2 + self.SD2**2)/2)
+            SD2_SD1 = self.SD2 / self.SD1
+        except ZeroDivisionError:
+            SD2_SD1 = None
+        return(SDNN, SD2_SD1)
         # CAREFUL HERE!!! the definition of variance used in numpy has the denominator equal to n, NOT (n-1)!
         # this seems to be more appropriate for what we do here, so
         # if you want to get the result you would get in R or Matlab comment the line above, uncomment the lines below and go to the
