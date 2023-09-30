@@ -39,7 +39,7 @@ class Poincare:
         HRA1 (int): Presence of short-term HRA, either 1 or 0
         HRA2 (int): Presence of long-term HRA, either 1 or 0
         HRAT (int): Presence of total HRA, either 1 or 0
-        HRAN (int):
+        HRAN (int): Presence of fewer HR decelerations than accelerations, either 1 or 0
         HRAcomp (int): HRA compensation, either 1 or 0
 
     Args:
@@ -320,13 +320,13 @@ class Poincare:
         
     def hra_forms(self):
         '''
-        Determines the presence of different types of HRA based on contributions of decelerations to different types of HRV
+        Determines the presence of different types of HRA based on contributions of decelerations to different forms of HRV
 
         Returns:
             HRA1 (int): Presence of short-term HRA, either 1 or 0
             HRA2 (int): Presence of long-term HRA, either 1 or 0
             HRAT (int): Presence of total HRA, either 1 or 0
-            HRAN (int):
+            HRAN (int): Presence of fewer HR decelerations than accelerations, either 1 or 0
             HRAcomp (int): HRA compensation, either 1 or 0
         '''
         failed = False
@@ -334,7 +334,7 @@ class Poincare:
             hra1 = 1 if self.C1d > 0.5 else 0
             hra2 = 1 if self.C2d < 0.5 else 0
             hrat = 1 if self.Cd < 0.5 else 0
-            hran = 1 if self.C1d > 0.5 else 0 #FIX
+            hran = 1 if self.ND < 0.5 else 0
             hracomp = 1 if (hra1 + hra2) == 2 else 0
         except TypeError:
             failed = True
