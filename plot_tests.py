@@ -51,4 +51,4 @@ global_min = min([min(rr.poincare.xii[1:]), min(rr.poincare.xi[1:])])
 #print(rr.annotation)
 
 
-print(type(rr.poincare.HRA1), rr.poincare.HRA2, rr.poincare.HRAT, rr.poincare.HRAN, rr.poincare.HRAcomp)
+print(type(rr.poincare.HRA1), rr.poincare.HRA2, rr.poincare.HRAT, rr.poincare.HRAN, rr.poincare.ND)

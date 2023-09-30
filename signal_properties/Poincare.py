@@ -28,7 +28,7 @@ class Poincare:
         Ca (float): Stores the value of the contribution of HR accelerations in total HRV
         meanRR (float): Stores the value of mean RR signal after filtering
         CV (float): Stores the value of the index of total variance normalized to the mean RR
-        #ND #todo
+        ND (float): (PI = Porta's index) the contribution of the number of HR decelerations to all normal heartbeats.
         #pNN50 #todo
         #SD2/SD1 #todo
         CS (float): Stores the value of the contribution of the short-term variance to the total HRV
@@ -57,7 +57,7 @@ class Poincare:
         self.meanRR = self.meanrr()
         self.CV = self.cv()
         # HRA
-        self.SD1d, self.C1d, self.SD1a, self.C1a, self.SD1I = self.short_term_asymmetry()
+        self.SD1d, self.C1d, self.SD1a, self.C1a, self.SD1I, self.ND = self.short_term_asymmetry()
         self.SD2d, self.C2d, self.SD2a, self.C2a, self.SD2I = self.long_term_asymmetry()
         self.SDNNd, self.Cd, self.SDNNa, self.Ca = self.total_asymmetry()
         self.HRA1, self.HRA2, self.HRAT, self.HRAN, self.HRAcomp = self.hra_forms()
@@ -218,6 +218,7 @@ class Poincare:
             SD1a (float): The value of the square root of the short-term RR intervals variance derived from accelerations
             C1a (float): The value of the contribution of HR accelerations to the short-term HRV
             SD1I (float): The value of the square root of the sum of short-term RR variance from accelerations and decelerations
+            ND (float): (PI = Porta's index) the contribution of the number of HR decelerations to all normal heartbeats.
         '''
         n = len(self.xii)
         auxilary = (self.xii - self.xi) / sqrt(2)
@@ -233,12 +234,13 @@ class Poincare:
         except ZeroDivisionError:
             failed = True
         if failed:
-            return None, None, None, None, None
+            return None, None, None, None, None, None
         else:
             SD1I = sqrt(SD1d**2 + SD1a**2)
             C1d = SD1d**2/SD1I**2
             C1a = SD1a**2/SD1I**2
-            return(SD1d, C1d, SD1a, C1a, SD1I)
+            Nd = len(decelerating_indices)/(len(decelerating_indices) + (len(accelerating_indices)))
+            return(SD1d, C1d, SD1a, C1a, SD1I, Nd)
 
     def long_term_asymmetry(self):
         '''
