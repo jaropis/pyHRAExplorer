@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # PLACE TO TEST PLOTS WILL BE REMOVED (code moved to the plotRR.py)
 
-rr = Signal("C:/Users/k52672mg/OneDrive - The University of Manchester/Analysis/PIPS_HRAEXPLORER/test_files/0582a.rea", 1, 2, 0, annotation_filter=(1, 2, 3))
+rr = Signal("C:/Users/k52672mg/OneDrive - The University of Manchester/Analysis/PIPS_HRAEXPLORER/test_files/0582a.rea", 1, 2, 0, square_filter=(500,1500), annotation_filter=(1, 2, 3))
 rr.set_poincare()
 global_min = min([min(rr.poincare.xii[1:]), min(rr.poincare.xi[1:])])
 #print(rr.poincare.xi)
@@ -51,4 +51,6 @@ global_min = min([min(rr.poincare.xii[1:]), min(rr.poincare.xi[1:])])
 #print(rr.annotation)
 
 
-print(type(rr.poincare.HRA1), rr.poincare.HRA2, rr.poincare.SD2_SD1, rr.poincare.pNN50, rr.poincare.ND)
+#print(rr.poincare.HRA1, rr.poincare.HRA2, rr.poincare.HRAT, rr.poincare.HRAN, rr.poincare.HRAcomp)
+#print(rr.poincare.SDNN, rr.poincare.SD1, rr.poincare.SD1, rr.poincare.SD2I, rr.poincare.meanRR, rr.poincare.SDNNd, rr.poincare.SDNNa, rr.poincare.SD1d, rr.poincare.SD1a, rr.poincare.SD2a, rr.poincare.ND)
+print(rr.annotation, rr.annotation_filter)

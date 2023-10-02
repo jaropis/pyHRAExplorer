@@ -50,7 +50,7 @@ class Poincare:
         # signal is object of Signal class
         self.xi, self.xii = self.prepare_PP(signal)
         self.filtered_time = self.filter_time(signal)
-        # descriptors will be capital, functions lower case
+        # descriptors will be capital, methods lower case
         self.SD1 = self.sd1()
         self.SD2 = self.sd2()
         self.SDNN, self.SD2_SD1 = self.sd1sd2()
@@ -101,7 +101,7 @@ class Poincare:
     
     def filter_time(self,signal):
         '''
-        Function that filteres the time, removing the times corresponding to the beats deleted from the signal
+        Method that filteres the time, removing the times corresponding to the beats deleted from the signal
         (for example ventricular, supraventricular or artifact beats). 
 
         Args:
@@ -193,7 +193,7 @@ class Poincare:
             meanRR (float): The value of mean RR signal after filtering
         '''
         try:
-            meanRR = mean(self.xii)
+            meanRR = mean(self.xi)
         except ZeroDivisionError:
             meanRR = None
         return(meanRR)
