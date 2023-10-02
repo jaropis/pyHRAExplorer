@@ -214,16 +214,23 @@ class Poincare:
             CV = None
         return CV
     
-    def pnnx(self):
+    def pnnx(self, x = 50):
         '''
         Calculates the pNN based on the differences between consequtive RR intervals (xi and xii)
 
+        Args:
+            x (int): The desired difference between the RR intervals, default 50
+
         Returns:
-            pNN50 (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than 50ms
+            pNNX (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than 50ms
         '''
         differences = abs(self.xii - self.xi)
-        pnn50 = 100*len(where(differences > 50)[0])/len(self.xi)
-        return pnn50
+        if x < 0:
+            print('Invalid x value')
+            return None
+        else: 
+            pnnX = 100*len(where(differences > x)[0])/len(self.xi)
+            return pnnX
 
     def short_term_asymmetry(self):
         '''
