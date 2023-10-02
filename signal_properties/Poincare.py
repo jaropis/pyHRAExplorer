@@ -28,7 +28,19 @@ class Poincare:
         Ca (float): Stores the value of the contribution of HR accelerations in total HRV
         meanRR (float): Stores the value of mean RR signal after filtering
         CV (float): Stores the value of the index of total variance normalized to the mean RR
-
+        ND (float): (PI = Porta's index) the contribution of the number of HR decelerations to all normal heartbeats.
+        pNN50 (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than 50ms
+        SD2/SD1 (float): The ratio of SD2 to SD1 that measures the balance between the long- and short-term HRV
+        CS (float): Stores the value of the contribution of the short-term variance to the total HRV
+        CSa (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR accelerations
+        CSd (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR decelerations
+        CLa (float): Stores the value of the contribution of the long-term variance to the total HRV derived from HR accelerations
+        CLd (float): Stores the value of the contribution of the long-term variance to the total HRV derived from HR decelerations
+        HRA1 (int): Presence of short-term HRA, either 1 or 0
+        HRA2 (int): Presence of long-term HRA, either 1 or 0
+        HRAT (int): Presence of total HRA, either 1 or 0
+        HRAN (int): Presence of fewer HR decelerations than accelerations, either 1 or 0
+        HRAcomp (int): HRA compensation, either 1 or 0
 
     Args:
         signal (Signal): Contains information about the RR signal, such as RR values, annotation and timetrack.
@@ -38,15 +50,23 @@ class Poincare:
         # signal is object of Signal class
         self.xi, self.xii = self.prepare_PP(signal)
         self.filtered_time = self.filter_time(signal)
-        # descriptors will be capital, functions lower case
+        # descriptors will be capital, methods lower case
         self.SD1 = self.sd1()
         self.SD2 = self.sd2()
-        self.SDNN = self.sdnn()
-        self.SD1d, self.C1d, self.SD1a, self.C1a, self.SD1I = self.short_term_asymmetry()
-        self.SD2d, self.C2d, self.SD2a, self.C2a, self.SD2I = self.long_term_asymmetry()
-        self.SDNNd, self.Cd, self.SDNNa, self.Ca = self.total_asymmetry()
+        self.SDNN, self.SD2_SD1 = self.sd1sd2()
         self.meanRR = self.meanrr()
         self.CV = self.cv()
+        # pNNn
+        self.pNN50 = self.pnnx()
+        # HRA
+        self.SD1d, self.C1d, self.SD1a, self.C1a, self.SD1I, self.ND = self.short_term_asymmetry()
+        self.SD2d, self.C2d, self.SD2a, self.C2a, self.SD2I = self.long_term_asymmetry()
+        self.SDNNd, self.Cd, self.SDNNa, self.Ca = self.total_asymmetry()
+        self.HRA1, self.HRA2, self.HRAT, self.HRAN, self.HRAcomp = self.hra_forms()
+        # HRV
+        self.CS, self.CSa, self.CSd = self.short_term_variability()
+        self.CLa, self.CLd = self.long_term_variability()
+        
 
     def prepare_PP(self, signal):
         """
@@ -81,7 +101,7 @@ class Poincare:
     
     def filter_time(self,signal):
         '''
-        Function that filteres the time, removing the times corresponding to the beats deleted from the signal
+        Method that filteres the time, removing the times corresponding to the beats deleted from the signal
         (for example ventricular, supraventricular or artifact beats). 
 
         Args:
@@ -140,14 +160,20 @@ class Poincare:
         #n = len(self.xii)
         #return(sqrt(var(self.xii - self.xi)/2 * (n/(n-1))))
 
-    def sdnn(self):
+    def sd1sd2(self):
         '''
         Calculates the SDNN parameter for the signal using the xi and xii attributes of class Poincare.
 
         Returns:
-            result (float): The value of the square root of the total RR intervals variance (SDNN)
+            SDNN (float): The value of the square root of the total RR intervals variance (SDNN)
+            SD2/SD1 (float): The ratio of SD2 to SD1 that measures the balance between the long- and short-term HRV
         '''
-        return(sqrt((self.SD1**2 + self.SD2**2)/2))
+        try:
+            SDNN = sqrt((self.SD1**2 + self.SD2**2)/2)
+            SD2_SD1 = self.SD2 / self.SD1
+        except ZeroDivisionError:
+            SD2_SD1 = None
+        return(SDNN, SD2_SD1)
         # CAREFUL HERE!!! the definition of variance used in numpy has the denominator equal to n, NOT (n-1)!
         # this seems to be more appropriate for what we do here, so
         # if you want to get the result you would get in R or Matlab comment the line above, uncomment the lines below and go to the
@@ -167,7 +193,7 @@ class Poincare:
             meanRR (float): The value of mean RR signal after filtering
         '''
         try:
-            meanRR = mean(self.xii)
+            meanRR = mean(self.xi)
         except ZeroDivisionError:
             meanRR = None
         return(meanRR)
@@ -187,6 +213,24 @@ class Poincare:
         except ZeroDivisionError:
             CV = None
         return CV
+    
+    def pnnx(self, x = 50):
+        '''
+        Calculates the pNN based on the differences between consequtive RR intervals (xi and xii)
+
+        Args:
+            x (int): The desired difference between the RR intervals, default 50
+
+        Returns:
+            pNNX (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than 50ms
+        '''
+        differences = abs(self.xii - self.xi)
+        if x < 0:
+            print('Invalid x value')
+            return None
+        else: 
+            pnnX = 100*len(where(differences > x)[0])/len(self.xi)
+            return pnnX
 
     def short_term_asymmetry(self):
         '''
@@ -200,6 +244,7 @@ class Poincare:
             SD1a (float): The value of the square root of the short-term RR intervals variance derived from accelerations
             C1a (float): The value of the contribution of HR accelerations to the short-term HRV
             SD1I (float): The value of the square root of the sum of short-term RR variance from accelerations and decelerations
+            ND (float): (PI = Porta's index) the contribution of the number of HR decelerations to all normal heartbeats.
         '''
         n = len(self.xii)
         auxilary = (self.xii - self.xi) / sqrt(2)
@@ -215,12 +260,13 @@ class Poincare:
         except ZeroDivisionError:
             failed = True
         if failed:
-            return None, None, None, None, None
+            return None, None, None, None, None, None
         else:
             SD1I = sqrt(SD1d**2 + SD1a**2)
             C1d = SD1d**2/SD1I**2
             C1a = SD1a**2/SD1I**2
-            return(SD1d, C1d, SD1a, C1a, SD1I)
+            Nd = len(decelerating_indices)/(len(decelerating_indices) + (len(accelerating_indices)))
+            return(SD1d, C1d, SD1a, C1a, SD1I, Nd)
 
     def long_term_asymmetry(self):
         '''
@@ -278,3 +324,69 @@ class Poincare:
             return None, None, None, None
         else:
             return(SDNNd, Cd, SDNNa, Ca)
+        
+    def hra_forms(self):
+        '''
+        Determines the presence of different types of HRA based on contributions of decelerations to different forms of HRV
+
+        Returns:
+            HRA1 (int): Presence of short-term HRA, either 1 or 0
+            HRA2 (int): Presence of long-term HRA, either 1 or 0
+            HRAT (int): Presence of total HRA, either 1 or 0
+            HRAN (int): Presence of fewer HR decelerations than accelerations, either 1 or 0
+            HRAcomp (int): HRA compensation, either 1 or 0
+        '''
+        failed = False
+        try:
+            hra1 = 1 if self.C1d > 0.5 else 0
+            hra2 = 1 if self.C2d < 0.5 else 0
+            hrat = 1 if self.Cd < 0.5 else 0
+            hran = 1 if self.ND < 0.5 else 0
+            hracomp = 1 if (hra1 + hra2) == 2 else 0
+        except TypeError:
+            failed = True
+        if failed:
+            return None, None, None, None, None
+        else:
+            return(hra1, hra2, hrat, hran, hracomp)
+        
+    def short_term_variability(self):
+        '''
+        Calculates and returns the short-term HRV parameters, using the SD1, SD1a, SD1d and SDNN attributes of class Poincare
+
+        Returns:
+            CS (float): Stores the value of the contribution of the short-term variance to the total HRV
+            CSa (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR accelerations
+            CSd (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR decelerations
+        '''
+        failed = False
+        try:
+            Cs = self.SD1**2/(2*self.SDNN**2)
+            Csa = self.SD1a**2/(2*self.SDNN**2)
+            Csd = self.SD1d**2/(2*self.SDNN**2)
+        except TypeError:
+            failed = True
+        if failed:
+            return None, None, None
+        else:
+            return(Cs, Csa, Csd)
+        
+    def long_term_variability(self):
+        '''
+        Calculates and returns the long-term HRV parameters, using the SD2a, SD2d and SDNN attributes of class Poincare  
+
+        Returns:
+            CLa (float): Stores the value of the contribution of the long-term variance to the total HRV derived from HR accelerations
+            CLd (float): Stores the value of the contribution of the long-term variance to the total HRV derived from HR decelerations
+        '''
+        failed = False
+        try:
+            Cla = self.SD2a**2/(2*self.SDNN**2)
+            Cld = self.SD2d**2/(2*self.SDNN**2)
+        except TypeError:
+            failed = True
+        if failed:
+            return None, None
+        else:
+            return(Cla, Cld)
+
