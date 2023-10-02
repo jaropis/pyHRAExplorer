@@ -7,7 +7,24 @@ from signal_properties.plotRR import PlotRR
 
 
 
-class Signal: ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, podniesc wyjatek w spectrum gdy nie ma timetracka!
+class Signal: 
+    '''
+    Signal class used to read, annotate and filter the files contaning the RR signals. Attributes of this class
+    are the basis of the HRAExplorer.
+
+    Attributes:
+        signal (array):
+        annotation (array):
+        timetrack (array):
+        quotient_filter (int):
+        square_filter (tuple):
+        annotation_filter (tuple):
+        poincare
+        runs
+        LS_spectrum
+        plotRR
+    '''
+    ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, podniesc wyjatek w spectrum gdy nie ma timetracka!
     #changed the defualts to -1 so timetrack can be stored in and called from the first column 
     def __init__(self, path_to_file, column_signal=-1, column_annot=-1, column_sample_to_sample=-1, quotient_filter=-1, square_filter=(-8000, 8000), annotation_filter=()):
         # 0 are there to facilitate the construction of signals from console
