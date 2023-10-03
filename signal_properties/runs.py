@@ -3,7 +3,15 @@ from signal_properties.my_exceptions import WrongSignal
 
 
 class Runs:
+    '''
+    Runs class that splits the signal into segments and runs, counting the number of accelerations, decelerations and neutral runs
 
+    Attributes:
+        runs (tuple): 
+        dec_runs (list): lengths of
+        acc_runs (list):
+        neutral_runs (list):
+    '''
     def __init__(self, signal):
         # self.sinus_segments = self.split_on_annot(signal) # - uncomment here and in tests
         self.runs = self.count_for_all(signal)
@@ -93,6 +101,13 @@ class Runs:
 
 
     def split_all_into_runs(self, signal):
+        '''
+        This method splits the chunks of sinus origin beats into separate runs and directions (acceleration/deceleration/neutral) of these runs
+        Args:
+	        signal (Signal): Here Signal class attribute signal (array) and Signal class attribute annotation (array) will be used to find the sinus beats and separate them into runs
+        Returns:
+	        separate_runs_and_directions (dict): A dictionary with lists of consequtive runs of a given type as keys and directions (acc/dec/neutral) as values
+        '''
         # this function splits the chunks of sinus origin (or "correct") beats
         #  (samples) into separate runs and directions of these runs
         list_of_separate_segments = self.split_on_annot(signal)
@@ -106,6 +121,16 @@ class Runs:
         return separate_runs_and_directions
 
     def count_for_all(self, signal):
+        '''
+        Counts how many times a run of a given type (acceleration, deceleration, neutral) and length occurs in the signal
+
+        Args:
+	        signal (Signal): Here Signal class property signal (array) will be used to find the acceleration, deceleration or neutral runs and count the number of times a run of a given length and type shows up 
+        Returns:
+	        dec_runs_all (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for decelerations
+	        acc_runs_all (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for accelerations
+	        neutral_runs_all (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for neutral 
+        '''
         if (len(signal.signal) < 2):
             raise WrongSignal
         # THIS IS THE MAIN FUNCTION OF THIS SOURCEFILE
