@@ -45,19 +45,22 @@ class Signal:
 
     def read_data(self, path_to_file, column_signal, column_annot, column_sample_to_sample):
         '''
-        This function is used to read the file, using the specified column indexes. 
-        The default value of the index is -1, so if no value is specified the last column will be used.
-        path_to_file - string containg the file to the file that will be used for the analysis
-        column_signal - integer that correstponding to the (column number - 1) of the column containing the RR 
-        signals
-        column_annot - integer corresponding to the (column number - 1) of the column containg the RR anotations
-        that will be used for filtering
-        column_sample_to_sample - int corresponding to the (column number - 1) of the column containing the sample to sample time or time
+        This method is used to read the file, using the specified column indexes. The default value of the index is -1, so if no value is specified the last column will be used.
 
-        the function returns arrays containg the signal, annotation and timetrack values
-        Timetrack can be both sample to sample and general, if the first time measurment is equal 0, 
-        timetrack is returned as is, if given timetrack is sample to sample (amount of time between each sample)
-        cumsum is returned instead.
+        Args:
+            path_to_file (str): Path to the file that will be used for the analysis
+            column_signal (int): Correstponds to the index (column number - 1) of the column containing the RR 
+            the RR signals
+            column_annot (int): Corresponds to the index (column number - 1) of the column containg the RR anotations
+            that will be used for filtering 
+            column_sample_to_sample (int): Corresponds to the index (column number - 1) of the column containing the sample to sample time or time
+
+        Returns:
+            signal (array): An array containing the values of RR signal
+            annotation (array): An array containg the beats flag (0, 1, 2, 3 values corrsponding to sinus, ventricular, supraventricular or artifact beats respecitively)
+            tat will be used for filtering.
+            timetrack (array): An array containing the time track values. Timetrack can be both sample to sample and general, if the first time measurment is equal 0, 
+            timetrack is returned without modifications, if given timetrack is sample to sample (amount of time between each sample) cumsum is returned instead.
         '''
         if type(path_to_file) == list:
             if len(path_to_file) == 2:
