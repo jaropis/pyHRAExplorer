@@ -117,6 +117,10 @@ class Signal:
 
     def filter_data(self):
         """
+        This method filters the signal based on the filter attributes of the Signal class.
+
+        Args:
+
         this function defines the filter method. It uses the following parameters accepted by the constructor:
         quotient - parameters of the quotient filter - the rejectance ratio - the initial value of -1 means "do not filter"
         square - parameters of the square filter
@@ -153,13 +157,25 @@ class Signal:
         return None
 
     def set_poincare(self):
+        '''
+        Method that creates a poincare attribute for the Signal class, making it possible to pass the Signal class attributes to the Poincare class methods.
+        '''
         self.poincare = Poincare(self)
 
     def set_runs(self):
+        '''
+        Method that creates a runs attribute for the Signal class, making it possible to pass the Signal class attributes to the Runs class methods.
+        '''
         self.runs = Runs(self)
 
     def set_LS_spectrum(self):
+        '''
+        Method that creates a LS_spectrum attribute for the Signal class, making it possible to pass the Signal class attributes to the LombScargleSpectrum and FFTSpectrum class methods.
+        '''
         self.LS_spectrum = LombScargleSpectrum(self)
 
     def set_plots(self):
+        '''
+        Method that creates a plotRR attribute for the Signal class, making it possible to pass the Signal class attributes to the PlotRR class method.
+        '''
         self.plotRR = PlotRR(self)
