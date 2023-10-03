@@ -13,20 +13,41 @@ class Signal:
     are the basis of the HRAExplorer.
 
     Attributes:
-        signal (array):
-        annotation (array):
-        timetrack (array):
-        quotient_filter (int):
-        square_filter (tuple):
-        annotation_filter (tuple):
-        poincare
-        runs
-        LS_spectrum
-        plotRR
+        signal (array): An array containing the values of RR signal
+        annotation (array): An array containg the beats flag (0, 1, 2, 3 values corrsponding to sinus, ventricular, supraventricular or artifact beats respecitively)
+        that will be used for filtering.
+        timetrack (array): An array containing the time track values. Timetrack can be both sample to sample and general, if the first time measurment is equal 0, 
+        timetrack is returned without modifications, if given timetrack is sample to sample (amount of time between each sample) cumsum is returned instead.
+        quotient_filter (int): the rejectance ratio - the initial value of -1 means "do not filter"
+        square_filter (tuple): A tuple containg the values for the square filter, the values indicates 
+        the minimal and maximum RR values which are accepted
+        annotation_filter (tuple): A tuple containing the flags of bbeats that need to be removed. The 0, 1, 2 and 3 flags refer to 
+        sinus, ventricular, supraventricular and artifact respectively
+        poincare (None): allows passing the Signal class attributes to the Poincare class methods.
+        runs (None): Signal allows passing the class attributes to the Runs class methods.
+        LS_spectrum (None): allows passing the Signal class attributes to the LombScargleSpectrum and FFTSpectrum class methods.
+        plotRR (None): allows passing the Signal class attributes to the PlotRR class method
     '''
     ### uwaga! timetrack! dodac, przetestowac, zdefiniowac wyjatek, podniesc wyjatek w spectrum gdy nie ma timetracka!
     #changed the defualts to -1 so timetrack can be stored in and called from the first column 
     def __init__(self, path_to_file, column_signal=-1, column_annot=-1, column_sample_to_sample=-1, quotient_filter=-1, square_filter=(-8000, 8000), annotation_filter=()):
+        '''
+        Initializes the attributes of the Signal class, passing arguments to methods.
+
+        Args:
+            path_to_file (str): Path to the file that will be used for the analysis
+            column_signal (int): Correstponds to the index (column number - 1) of the column containing the RR 
+            the RR signals
+            column_annot (int): Corresponds to the index (column number - 1) of the column containg the RR anotations
+            that will be used for filtering 
+            column_sample_to_sample (int): Corresponds to the index (column number - 1) of the column containing the sample to sample time or time
+            quotient_filter (int): the rejectance ratio - the initial value of -1 means "do not filter"
+            square_filter (tuple): A tuple containg the values for the square filter, the values indicates 
+            the minimal and maximum RR values which are accepted
+            annotation_filter (tuple): A tuple containing the flags of bbeats that need to be removed. The 0, 1, 2 and 3 flags refer to 
+            sinus, ventricular, supraventricular and artifact respectively
+
+        '''
         # 0 are there to facilitate the construction of signals from console
         self.quotient_filter = quotient_filter
         self.square_filter = square_filter
@@ -117,15 +138,14 @@ class Signal:
 
     def filter_data(self):
         """
-        This method filters the signal based on the filter attributes of the Signal class.
-
-        Args:
-
-        this function defines the filter method. It uses the following parameters accepted by the constructor:
-        quotient - parameters of the quotient filter - the rejectance ratio - the initial value of -1 means "do not filter"
-        square - parameters of the square filter
-        annotation - parameters of the annotation filter - 1 means "remove from analysis" and refers to
-        (sinus, ventricular, supraventricular, artifact) respectively
+        This method filters the signal based on the following filter attributes of the Signal class:
+            quotient_filter (int): the rejectance ratio - the initial value of -1 means "do not filter"
+            square_filter (tuple): A tuple containg the values for the square filter, the values indicates 
+            the minimal and maximum RR values which are accepted
+            annotation_filter (tuple): A tuple containing the flags of bbeats that need to be removed. The 0, 1, 2 and 3 flags refer to 
+            sinus, ventricular, supraventricular and artifact respectively
+        Returns:
+            None (manipulates the annotation attribute of the Signal class)
         """
 
         # now, let the filtering begin
