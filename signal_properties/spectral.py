@@ -11,8 +11,8 @@ class LombScargleSpectrum:
 	Attributes:
 		filtered_signal (array): An array with the filtered RR signal
 	    filtered_timetrack (array): An array with the filtered timetrack
-		periodogram ():
-		frequency ():
+		frequency (array): Array with angular frequecies needed to build the periodogram
+        periodogram (array): Array contaning the values of the periodogram, showing which angular frequencies are most common
 
     '''
     def __init__(self, signal):
@@ -44,6 +44,13 @@ class LombScargleSpectrum:
         return filtered_signal, filtered_timetrack
 
     def build_spectrum(self):
+        '''
+        Method for creating a periodogram, showing the periodic behaviour in the time series
+
+        Returns:
+            frequency (array): Array with angular frequecies needed to build the periodogram
+            periodogram (array): Array contaning the values of the periodogram, showing which angular frequencies are most common
+        '''
         frequency = numpy.linspace(0.01, 2*numpy.pi, len(self.filtered_time_track))
         # here the assumption is that the frequencies are below 1Hz
         # which obviously may not be true
@@ -51,9 +58,18 @@ class LombScargleSpectrum:
         return periodogram, frequency
 
     def get_bands(self, cuts, df):
+        '''
+        Method 
+        
+        Args:
+            cuts (list): Holds the frequency bands of interest
+            df (int): Integration measure
+
+        Returns:
+            bands (array): An array containing total power in each band (bands specified by cuts) multiplied by the integration measure
+        '''
         self.test_cuts(cuts)
-        # cuts is a list holding the frequency bands of interest
-        # df is the integration measure
+
         first = cuts[0]
         power_in_bands = []
         for second in cuts[1:]:
@@ -74,14 +90,23 @@ class LombScargleSpectrum:
                 break
             else:
                 break
-        return numpy.array([i * df for i in power_in_bands])
+        return (numpy.array([i * df for i in power_in_bands]), power_in_bands)
 
     def test_cuts(self, cuts):
+        '''
+        Method for testing the validity of the cuts argument for the get_bands() method, raises WrongCuts if the cuts are unvalid
+
+        Args:
+            cuts (list): Holds the frequency bands of interest
+        '''
         if len(cuts) != len(numpy.unique(cuts)) or (cuts != sorted(cuts)):
             raise WrongCuts
 
 
 class FFTSpectrum:
+    '''
+    
+    '''
 
     def __init__(self, signal, resampling_rate):
         self.filtered_signal, self.filtered_time_track = FFTSpectrum.filter_and_timetrack(signal)
