@@ -6,7 +6,7 @@ import numpy as np
 
 class LombScargleSpectrum:
     '''
-    Class LombAcragleSpectrum used to build periodogram .....
+    Class LombAcragleSpectrum used to build periodogram and perform spectral analysis
 	
 	Attributes:
 		filtered_signal (array): An array with the filtered RR signal
@@ -31,6 +31,7 @@ class LombScargleSpectrum:
     def filter_and_timetrack(self, signal):
         '''
         This method prepares data for Lomb-Scargle by removing the 'bad beats' and returning filtered data.
+        
         Args:
 	        signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
         Returns:
@@ -59,7 +60,7 @@ class LombScargleSpectrum:
 
     def get_bands(self, cuts, df):
         '''
-        Method 
+        Method for finsing the total power in bands specified by cuts
         
         Args:
             cuts (list): Holds the frequency bands of interest
@@ -105,7 +106,15 @@ class LombScargleSpectrum:
 
 class FFTSpectrum:
     '''
-    
+    Class used to create FFT Spectrum
+
+    Attributes:
+        filtered_signal (array): An array with the filtered RR signal
+	    filtered_time_track (array): An array with the filtered timetrack
+        resampling_rate (): Resampling frequency in Hz
+        magnitude (float): magnitude of the fft
+        phase (float): phase of the fft
+        frequency_axis (float): frequency axis (from minimum to maximum (in the middle, and back)
     '''
 
     def __init__(self, signal, resampling_rate):
@@ -118,8 +127,15 @@ class FFTSpectrum:
 
     @staticmethod
     def filter_and_timetrack(signal):
-        # this function prepares data for Lomb-Scargle and FFT periodograms - i.e. filtered cumulative sum of time,
-        # filtered signal
+        '''
+        This method prepares data for Lomb-Scargle and FFT periodograms by removing the 'bad beats' and returning filtered data.
+        
+        Args:
+	        signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+        Returns:
+	        filtered_signal (array): An array with the filtered RR signal
+	        filtered_timetrack (array): An array with the filtered timetrack
+        '''
         bad_beats = numpy.where(signal.annotation != 0)[0]
         filtered_timetrack = numpy.delete(signal.timetrack, bad_beats)
         filtered_signal = numpy.delete(signal.signal, bad_beats)
@@ -127,6 +143,18 @@ class FFTSpectrum:
 
     @staticmethod
     def resample(signal, time_track, resampling_rate):
+        '''
+        This method resamples signal and time_track based on the specified resampling rate
+
+        Args:
+            signal (array): The signal after filtering, e.g. RR intervals time series after filtering
+            time_track (array): The time track  after filtering, effectively cum summed filtered RR intervals time series
+            resampling_rate (float): The rate (in Hz) at which the signal (and the time - track) is to be resampled
+        
+        Returns:
+            signal_resampled (array): An array containg the signal following the resampling
+            time_track_resampled (array): An array containg the time_track following the resampling
+        '''
         # this method does not use the object in which it is enclosed, so I am making it static
         from numpy.interpolate import interp1d
         f_interp = interp1d(time_track, signal)
@@ -138,17 +166,19 @@ class FFTSpectrum:
 
     @staticmethod
     def build_fft_spectrum(signal, time_track, resampling_rate):
-        # fft method, uses resampling for fft calculations with resampling rate passed to the function
-        # ARGUMENTS
-        # signal - the signal after filtering, e.g. RR intervals time series after filtering
-        # time_track - the time track  after filtering, effectively cum summed filtered
-        #     RR intervals time series
-        # resampling rate - the rate (in Hz) at which the signal (and the time - track) is to be resampled
-        # RETURNS
-        # magnitude - magnitude of the fft
-        # phase - phase of the fft
-        # frequency axis - frequency axis (from minimum to maximum (in the middle, and back)
-
+        '''
+        An fast fourier transform (fft) method that uses resampling for fft calculations with resampling rate passed to the function
+        
+        Args:
+            signal (array): The signal after filtering, e.g. RR intervals time series after filtering
+            time_track (array): The time track  after filtering, effectively cum summed filtered RR intervals time series
+            resampling_rate (float): The rate (in Hz) at which the signal (and the time - track) is to be resampled
+        
+        Returns:
+            magnitude (float): magnitude of the fft
+            phase (float): phase of the fft
+            frequency_axis (float): frequency axis (from minimum to maximum (in the middle, and back)
+        '''
         # now, since we want this to be a static method, we will call the resample function form the class
         signal_resampled, time_track_resampled = FFTSpectrum.resample(signal, time_track, resampling_rate)
         print(len(signal_resampled))
