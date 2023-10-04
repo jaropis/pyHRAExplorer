@@ -5,7 +5,23 @@ import numpy as np
 
 
 class LombScargleSpectrum:
+    '''
+    Class LombAcragleSpectrum used to build periodogram .....
+	
+	Attributes:
+		filtered_signal (array): An array with the filtered RR signal
+	    filtered_timetrack (array): An array with the filtered timetrack
+		periodogram ():
+		frequency ():
+
+    '''
     def __init__(self, signal):
+        '''
+        Initiazes the LombScargleSpectrum
+
+        Args:
+	        signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+        '''
         self.filtered_signal, self.filtered_time_track = self.filter_and_timetrack(signal)
         self.periodogram, self.frequency = self.build_spectrum()
         # self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) # this
@@ -13,6 +29,14 @@ class LombScargleSpectrum:
         # entries may be combined to VLF in short recordings
 
     def filter_and_timetrack(self, signal):
+        '''
+        This method prepares data for Lomb-Scargle by removing the 'bad beats' and returning filtered data.
+        Args:
+	        signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+        Returns:
+	        filtered_signal (array): An array with the filtered RR signal
+	        filtered_timetrack (array): An array with the filtered timetrack
+        '''
         # this function prepares data for Lomb-Scargle - i.e. filtered cumulative sum of time,   filtered signal
         bad_beats = numpy.where(signal.annotation != 0)[0]
         filtered_timetrack = numpy.delete(signal.timetrack, bad_beats)
