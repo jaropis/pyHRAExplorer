@@ -104,13 +104,15 @@ class LombScargleSpectrum:
         if len(cuts) != len(numpy.unique(cuts)) or (cuts != sorted(cuts)):
             raise WrongCuts
         
-    def plot_periodogram(self, mode = 'angular', **kwargs):
+    def plot_periodogram(self, mode = 'angular', xlim = [], **kwargs):
         '''
         Method for plotting a periodogram
         '''
         frequency, x_label = (self.frequency/(2*np.pi), 'Frequency [Hz]') if mode == 'Hz' else (self.frequency, 'Angular frequency [rad/s]') 
         fig, periodogram_plot = plt.subplots()
         periodogram_plot.plot(frequency, self.periodogram, **kwargs)
+        xlim = plt.xlim() if xlim == [] else xlim
+        periodogram_plot.set_xlim(xlim[0], xlim[1])
         periodogram_plot.set_xlabel(x_label)
         periodogram_plot.set_ylabel('Amplitude')
 
