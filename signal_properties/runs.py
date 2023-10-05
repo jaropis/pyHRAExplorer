@@ -3,8 +3,22 @@ from signal_properties.my_exceptions import WrongSignal
 
 
 class Runs:
+    '''
+    Runs class that splits the signal into segments and runs, counting the number of accelerations, decelerations and neutral runs
 
+    Attributes:
+        runs (tuple): A tuple containg all the lists with summary of the number and type of the decelerated, accelerated or neutral runs.
+        dec_runs (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for decelerations
+	    acc_runs (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for accelerations
+	    neutral_runs (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for neutral 
+    '''
     def __init__(self, signal):
+        '''
+        Initializes the attributes of the Signal class, passing arguments to methods.
+
+        Args:
+            signal (Signal): Object of class signal, its signal and annotation properties will be used to find the types and counts of the RR signal runs
+        '''
         # self.sinus_segments = self.split_on_annot(signal) # - uncomment here and in tests
         self.runs = self.count_for_all(signal)
         self.dec_runs, self.acc_runs, self.neutral_runs = self.count_for_all(signal)
@@ -12,11 +26,17 @@ class Runs:
         # the algorithm is the same I used in the PCSS time series suit
 
     def split_on_annot(self, signal):
-        # this function splits the signal time series into disjoint subseries,
-        #  breaking the signal on annotations which are not 0
-        # this is necessary for the "split_segments_into_runs" function, which accepts a "clean" segment
-        # it accepts an object of the Signal class (varname: signal)
-        # it returns a list of "clean" subjects without annotations (annotations are assumed to be 0 for all of them)
+        '''
+        This method splits the signal time series into disjoint subseries, breaking the signal on annotations which are not 0
+        this is necessary for the "split_segments_into_runs" function, which accepts a "clean" segment
+        
+        Args: 
+            signal (Signal): Here Signal class attribute signal (array) and Signal class attribute annotation (array) will be used to find the sinus beats and separate them into runs
+
+        Returns:
+            signal_segments(list): List of "clean" subjects without annotations (annotations are assumed to be 0 for all of them)
+        '''
+
         bad_indices = where(signal.annotation != 0)[0]
 
         # checking if there is anything to do
@@ -39,8 +59,21 @@ class Runs:
         return signal_segments
 
     def split_segments_into_runs(self, signal_segment, all_runs = [], directions = []):
-        # this function accepts a signal without annotations - this signal comes from the
-        #  segmentation into "normal" (correct) beats ("samples") segments
+        '''
+        This method accepts a signal without annotations, which has already been split into the "normal" (correct) beats ("samples") segments by the split_on_annot() method     
+        
+        Args:
+            signal_segment (list): List of "clean" subjects without annotations (annotations are assumed to be 0 for all of them)
+            all_runs (list): creates an empty list
+            directions (list): creates an empty list
+            
+        Returns:
+            A dictionary containing two keys:
+            ['all_runs'] which contains the list with all the runs in order
+            ['directions'] which contains a list keeps the directions of the runs in the "all_runs", indicating if the runs is a decelerating list (1) 
+            or an accelerating list (-1) or no_change list (0)
+        '''
+        # 
         # it return dictionary with two keys: all_runs and directions
         # all_runs - this list keeps all the runs in order
         # directions - this list keeps the designations - thether the run in the "all_runs"
@@ -93,6 +126,15 @@ class Runs:
 
 
     def split_all_into_runs(self, signal):
+        '''
+        This method splits the chunks of sinus origin beats into separate runs and directions (acceleration/deceleration/neutral) of these runs
+        
+        Args:
+	        signal (Signal): Here Signal class attribute signal (array) and Signal class attribute annotation (array) will be used to find the sinus beats and separate them into runs
+        
+        Returns:
+	        separate_runs_and_directions (dict): A dictionary with two keys: ['all_runs'] which contain the lists of consequtive runs of a given type and ['directions'] with types of runs (acc/dec/neutral)
+        '''
         # this function splits the chunks of sinus origin (or "correct") beats
         #  (samples) into separate runs and directions of these runs
         list_of_separate_segments = self.split_on_annot(signal)
@@ -106,6 +148,17 @@ class Runs:
         return separate_runs_and_directions
 
     def count_for_all(self, signal):
+        '''
+        Counts how many times a run of a given type (acceleration, deceleration, neutral) and length occurs in the signal
+
+        Args:
+	        signal (Signal): Here Signal class property signal (array) will be used to find the acceleration, deceleration or neutral runs and count the number of times a run of a given length and type shows up 
+        
+        Returns:
+	        dec_runs_all (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for decelerations
+	        acc_runs_all (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for accelerations
+	        neutral_runs_all (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for neutral 
+        '''
         if (len(signal.signal) < 2):
             raise WrongSignal
         # THIS IS THE MAIN FUNCTION OF THIS SOURCEFILE
