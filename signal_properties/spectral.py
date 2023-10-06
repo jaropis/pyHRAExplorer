@@ -2,6 +2,7 @@ from signal_properties.my_exceptions import WrongCuts
 import numpy
 import scipy.signal as sc
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class LombScargleSpectrum:
@@ -102,6 +103,31 @@ class LombScargleSpectrum:
         '''
         if len(cuts) != len(numpy.unique(cuts)) or (cuts != sorted(cuts)):
             raise WrongCuts
+        
+    def plot_periodogram(self, mode = 'angular', xlim = [], **kwargs):
+        '''
+        Method for plotting a periodogram
+
+        Args:
+            mode (str): Specifies the mode of the plot, angular (rad/sec) by default but can be changed into Hz, changing the mode changes
+            the values and descriptions for the frequency (Hz = rad/sec / 2*pi)
+            xlim (list): A list of values which is passed to determine the range of the x axis, full range (0 - 6.28 for rad/sec or 0 - 1 for Hz) shown by default
+            **kwargs: key word arguments which can be passed to the matplotlib.pyplots to change the appearance of the plot
+
+        Returns:
+            periodogram_plot (Axes): A plot showing the values of the periodogram against the frequency (either rad/sec or Hz)
+        '''
+        frequency, x_label = (self.frequency/(2*np.pi), 'Frequency [Hz]') if mode == 'Hz' else (self.frequency, 'Angular frequency [rad/s]') 
+        fig, periodogram_plot = plt.subplots()
+        periodogram_plot.plot(frequency, self.periodogram, **kwargs)
+        xlim = plt.xlim() if xlim == [] else xlim
+        periodogram_plot.set_xlim(xlim[0], xlim[1])
+        periodogram_plot.set_xlabel(x_label)
+        periodogram_plot.set_ylabel('Amplitude')
+
+        return periodogram_plot
+
+
 
 
 class FFTSpectrum:
