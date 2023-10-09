@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 # 3. Tachogram showing filtered RRn against time[min] with meanRR +/- sdnn shown
 
 # WORK IN PROGRESS SOME PLOTS ARE MISSING LEGENDS/AXIS NAMES
+# Add **kwargs ? , make mean and sd lines optional ? 
 
 class PlotRR:
     '''
@@ -35,15 +36,15 @@ class PlotRR:
 
     def pplot(self, color = 'darkblue', size = 30):
         '''
-        This method builds a Poincare plot, whrer Rnn (xi) is plotted against Rnn+1 (xii). Alongside the the points, the plot also includes
+        This method builds a Poincare plot, where Rnn (xi) is plotted against Rnn+1 (xii). Alongside the the points, the plot also includes
         a dashed identity line (x = y).
 
         Args:
-            color (string): Astring that indicates the desired colour of the points, dark blue by default.
+            color (string): A string that determines the colour of the points on the plot, dark blue by default.
             size (int): Integer that determines the size of the points, 30 by default
 
         Returns:
-            p_plot (pyplot): The completed plot 
+            p_plot (pyplot): The completed Poincare plot 
         '''
         global_min = min([min(self.xii[1:]), min(self.xi[1:])])
         p_plot = plt.figure()
@@ -58,10 +59,15 @@ class PlotRR:
     
     def rr_histogram(self, color = 'blue', edgecolor = 'darkblue', bins = 25):
         '''
-        This function uses xi created from prepare_PP function to plot the distribution of RR signals as a histogram.
-        Alongside the histogram, mean and mean +/- sd are shown as red and green lines respectively.
-        Functions accepts parameters color, edgecolor and binds that modify the color of the bins, their edges and their 
-        number. 
+        This method creates a histogram plot of the fltered RR singals. Alongside the histogram, mean and mean +/- sd are shown as red and green lines respectively.
+        
+        Args:
+            color (string): A string that determines the fill colour of the bars on the plot, blue by default.
+            edgecolor (string): A string that determines the edge colour of the bars on the plot,  dark blue by default.
+            bins (int): An integer that determines the number of bins on the histogram, 25 by default.
+
+        Returns:
+            hist (pyplot): A finished plot
         '''
         hist = plt.figure()
         plt.hist(self.xi[1:], bins = bins, edgecolor = edgecolor, color = color)
@@ -75,11 +81,16 @@ class PlotRR:
     
     def tachogram(self, markersize = 5, linewidth = 0.3, color = 'black'):
         '''
-        Function that uses the xii and filtered_time to create a tachogram, ploting RRsignal against time. 
-        Together with the tachogram, the mean and mean +/- sd of the RR signal are also displayed as red and green 
+        Method that creates a tachogram, showing the changes in RR signals over time. Together with the tachogram, the mean and mean +/- sd of the RR signal are also displayed as red and green 
         dashed lines respectively.
-        Alongside signal, the function also excepts markersize, linewidth and color parameters that control the size,
-        edge thickness and colour of the ploted points. 
+        
+        Args:
+            markersize (int): An integer that determines the size of the markers 
+            linewidth (int): An integer that determines the width of the line
+            color (string): A string that controls the colour of the line and markers. 
+
+        Returns:
+            tacho (pyplot): A finished tachogram plot. 
         '''
         tacho = plt.figure()
         plt.plot(self.filtered_time, self.xii, color=color, linestyle='--', linewidth=linewidth)

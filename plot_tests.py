@@ -13,5 +13,5 @@ print(rr.poincare.pNN50, rr.poincare.pnnx(), rr.poincare.pnnx(100))
 
 #rr.LS_spectrum.plot_periodogram(mode = 'Hz', color = 'red', xlim = (0, 0.2))
 
-rr.plotRR.pplot()
+rr.plotRR.tachogram(color = 'red')
 plt.show()
