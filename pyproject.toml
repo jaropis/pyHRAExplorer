@@ -7,13 +7,13 @@ name = "pyhraexplorer"
 version = "1.0"
 authors = [
   { name="Jaroslaw Piskorski", email="jaropis@zg.home.pl" },
-{ name = "Maria Guzik", email = "myguzik@gmail.com"]
+{ name = "Maria Guzik", email = "myguzik@gmail.com"}]
 description = "Package for analysis of HRV (Heart Rate Variability) and HRA (Heart Rate Asymmetry)"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: GPL 3",
+    "License :: GPLv3",
 ]
 dependencies = [
 	"numpy",
