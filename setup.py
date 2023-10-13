@@ -6,7 +6,7 @@ setup(name='pyHRAExplorer',
       url='https://github.com/jaropis/pyHRAExplorer',
       author='Jarosław Piskorski, Maria Guzik',
       author_email='jaropis@zg.home.pl, myguzik@gmail.com',
-      license='GPLv3',
+      license='MIT',
       packages=['signal_properties'],
       install_requires = [
             'numpy',
