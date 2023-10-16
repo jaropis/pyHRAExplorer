@@ -11,6 +11,9 @@ class Runs:
         dec_runs (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for decelerations
 	    acc_runs (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for accelerations
 	    neutral_runs (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for neutral 
+        dec_runs_share (list): A list of shares (in %) of runs that are decelerations and have a length ranging from 1 to the maximum length of the run 
+        acc_runs_share (list): A list of shares (in %) of runs that are accelerations and have a length ranging from 1 to the maximum length of the run 
+        neutral_runs_share (list): A list of shares (in %) of runs that are neutral and have a length ranging from 1 to the maximum length of the run 
     '''
     def __init__(self, signal):
         '''
@@ -22,7 +25,7 @@ class Runs:
         # self.sinus_segments = self.split_on_annot(signal) # - uncomment here and in tests
         self.runs = self.count_for_all(signal)
         self.dec_runs, self.acc_runs, self.neutral_runs = self.count_for_all(signal)
-        #self.dec_runs_share, self.acc_runs_share, self.neutral_runs_share = self.count_for_all_share(signal)
+        [self.dec_runs_share, self.acc_runs_share, self.neutral_runs_share] = self.count_for_all_share(signal)
         #self.test = self.count_for_all_share(signal)
         # the algorithm is the same I used in the PCSS time series suit
 
@@ -220,6 +223,17 @@ class Runs:
         return dec_runs_all, acc_runs_all, neutral_runs_all
     
     def count_for_all_share(self, signal):
+        '''
+        Method for calculating the share of each run direction and length in the total number of qualified runs.
+
+        Args:
+        signal (Signal): Here Signal class property signal (array) will be used to find the acceleration, deceleration or neutral runs and count the number of times a run of a given length and type shows up and total number of runs
+        
+        Returns:
+            dec_runs_share (list): A list of shares (in %) of runs that are decelerations and have a length ranging from 1 to the maximum length of the run 
+            acc_runs_share (list): A list of shares (in %) of runs that are accelerations and have a length ranging from 1 to the maximum length of the run 
+            neutral_runs_share (list): A list of shares (in %) of runs that are neutral and have a length ranging from 1 to the maximum length of the run 
+        '''
         run_count = self.count_for_all(signal)
         split_signal = self.split_all_into_runs(signal)
         runs = split_signal["all_runs"]
