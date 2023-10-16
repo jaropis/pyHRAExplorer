@@ -261,7 +261,7 @@ class Runs:
 
         Args:
             runs (tuple): A tuple containg lists with runs for each directions (counts or shares)
-            n (int): The desired length of the outputed runs
+            n (int): The desired length of the outputed runs, n = 10 by default
         
         Returns:
             equal_runs (tuple): A tuple containing runs to the desired maximal length.
