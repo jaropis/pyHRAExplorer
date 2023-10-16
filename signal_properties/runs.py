@@ -22,7 +22,8 @@ class Runs:
         # self.sinus_segments = self.split_on_annot(signal) # - uncomment here and in tests
         self.runs = self.count_for_all(signal)
         self.dec_runs, self.acc_runs, self.neutral_runs = self.count_for_all(signal)
-        # signal is an object of the "Signal" class
+        #self.dec_runs_share, self.acc_runs_share, self.neutral_runs_share = self.count_for_all_share(signal)
+        #self.test = self.count_for_all_share(signal)
         # the algorithm is the same I used in the PCSS time series suit
 
     def split_on_annot(self, signal):
@@ -217,3 +218,27 @@ class Runs:
                         neutral_runs_all[idx_neutral - 1] += 1
 
         return dec_runs_all, acc_runs_all, neutral_runs_all
+    
+    def count_for_all_share(self, signal):
+        run_count = self.count_for_all(signal)
+        split_signal = self.split_all_into_runs(signal)
+        runs = split_signal["all_runs"]
+        n = 0
+        for run in runs:
+            n = n + len(run)
+        
+        try: 
+            1/n
+        except ZeroDivisionError:
+            count_all_share = None
+
+        count_all_share = []
+        for direction in run_count:
+            for i in range(1, len(direction) + 1):
+                direction[i-1] = round(100*(direction[i-1]*i)/n, 2)
+            count_all_share.append(direction)
+
+        return count_all_share
+
+
+
