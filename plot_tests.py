@@ -14,6 +14,5 @@ rr.set_runs()
 
 runs = rr.runs.count_for_all_share(rr)
 
-
-print(runs)
-print(rr.runs.dec_runs_share)
+equal = rr.runs.equalise_runs(runs)
+print(equal)
