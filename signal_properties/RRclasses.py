@@ -1,5 +1,5 @@
 from re import findall
-from numpy import array, where, cumsum
+from numpy import array, where, cumsum, unique
 from signal_properties.Poincare import Poincare
 from signal_properties.runs import Runs
 from signal_properties.spectral import LombScargleSpectrum
@@ -54,6 +54,7 @@ class Signal:
         self.annotation_filter = annotation_filter
         self.signal, self.annotation, self.timetrack = self.read_data(path_to_file, column_signal, column_annot,
                                                                              column_sample_to_sample)
+        self.n_total, self.n_s, self.n_v, self.n_sv, self.n_x, self.n_u = self.quality(self.annotation)
         # here the data is filtered - this filtration will apply throughout the whole application
         self.filter_data()
 
@@ -175,6 +176,18 @@ class Signal:
             print("no good beats")
 
         return None
+
+    def quality(self, annotation):
+        all_flags = range(0, 4)
+        flags, count = unique(annotation, return_counts=True)
+        counts = dict(zip(flags, count))
+        all_counts = [len(annotation), 0, 0, 0, 0, 0]
+        for flag in flags:
+            if flag not in all_flags:
+                break
+            all_counts[flag+1] = counts[flag]
+        all_counts[5] = all_counts[0] - sum(all_counts[1:5])
+        return all_counts
 
     def set_poincare(self):
         '''
