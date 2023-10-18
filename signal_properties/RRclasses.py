@@ -18,6 +18,13 @@ class Signal:
         that will be used for filtering.
         timetrack (array): An array containing the time track values. Timetrack can be both sample to sample and general, if the first time measurment is equal 0, 
         timetrack is returned without modifications, if given timetrack is sample to sample (amount of time between each sample) cumsum is returned instead.
+        n_total (int): Number of all beats
+        n_s (int): Number of sinus beats
+        n_v (int): Number of ventricular beats
+        n_sv (int): Number of supraventricular beats
+        n_x (int): Number of artifacts
+        n_u (int): Number of beats with an unknown flag
+        quality_counts(list): List containing counts of each type of flag in the following order: all beats, sinus beats, ventricular beats, supraventricular beats, artifacts, unknown flags.
         quotient_filter (int): the rejectance ratio - the initial value of -1 means "do not filter"
         square_filter (tuple): A tuple containg the values for the square filter, the values indicates 
         the minimal and maximum RR values which are accepted
@@ -55,6 +62,7 @@ class Signal:
         self.signal, self.annotation, self.timetrack = self.read_data(path_to_file, column_signal, column_annot,
                                                                              column_sample_to_sample)
         self.n_total, self.n_s, self.n_v, self.n_sv, self.n_x, self.n_u = self.quality(self.annotation)
+        self.quality_counts = self.quality(self.annotation)
         # here the data is filtered - this filtration will apply throughout the whole application
         self.filter_data()
 
@@ -178,6 +186,15 @@ class Signal:
         return None
 
     def quality(self, annotation):
+        '''
+        Method for determining the counts of different kinds of signal flags (0, 1, 2, 3 values corrsponding to sinus, ventricular, supraventricular or artifact beats respecitively).
+        
+        Args: 
+            annotation (array): An array containg all the flags for beats
+        
+        Returns:
+            all_counts(list): List containing counts of each type of flag in the following order: all beats, sinus beats, ventricular beats, supraventricular beats, artifacts, unknown flags.
+        '''
         all_flags = range(0, 4)
         flags, count = unique(annotation, return_counts=True)
         counts = dict(zip(flags, count))
