@@ -57,7 +57,7 @@ class Poincare:
         self.meanRR = self.meanrr()
         self.CV = self.cv()
         # pNNn
-        self.pNN50 = self.pnnx()
+        self.pNN50 = self.pnnx()[0]
         # HRA
         self.SD1d, self.C1d, self.SD1a, self.C1a, self.SD1I, self.ND = self.short_term_asymmetry()
         self.SD2d, self.C2d, self.SD2a, self.C2a, self.SD2I = self.long_term_asymmetry()
@@ -222,15 +222,41 @@ class Poincare:
             x (int): The desired difference between the RR intervals, default 50
 
         Returns:
-            pNNX (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than 50ms
+            pNNX (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than X ms
+            pNNX_d (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than X ms and decelerate 
+            pNNX_a (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than X ms and accelerate
         '''
-        differences = abs(self.xii - self.xi)
+        differences = self.xii - self.xi
         if x < 0:
             print('Invalid x value')
-            return None
+            return None, None, None
         else: 
-            pnnX = 100*len(where(differences > x)[0])/len(self.xi)
-            return pnnX
+            pnnX_d = 100*len(where(differences > x)[0])/len(self.xi)
+            pnnX_a = 100*len(where(differences < -1*x)[0])/len(self.xi)
+            pnnX = pnnX_d + pnnX_a
+            return pnnX, pnnX_d, pnnX_a
+
+    def pnn_pro(self, x = 5):
+        '''
+        Calculates the pNN% based on the changes between consequtive RR intervals (xi and xii)
+
+        Args:
+            x (int): The desired procentage change between the RR intervals, default 5%
+
+        Returns:
+            pNNX (float): Proportion of consecutive RR intervals of normal (sinus) orign that are changed by more than X% compared to the previous beat
+            pNNX_d (float): Proportion of consecutive RR intervals of normal (sinus) orign that are increased by X% or more compared to the previous beat
+            pNNX_a (float): Proportion of consecutive RR intervals of normal (sinus) orign that are decreased by X% or more compared to the previous beat
+        '''
+        changes = 100*self.xii/self.xi
+        if x < 0:
+            print('Invalid x value')
+            return None, None, None
+        else: 
+            pnnX_d_pro = 100*len(where(changes - 100 > x)[0])/len(self.xi)
+            pnnX_a_pro = 100*len(where(100 - changes > x)[0])/len(self.xi)
+            pnnX_pro = pnnX_d_pro + pnnX_a_pro
+            return pnnX_pro, pnnX_d_pro, pnnX_a_pro
 
     def short_term_asymmetry(self):
         '''
