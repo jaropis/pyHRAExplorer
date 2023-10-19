@@ -11,6 +11,10 @@ class Runs:
         dec_runs (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for decelerations
 	    acc_runs (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for accelerations
 	    neutral_runs (list): A list of counts of runs in length ranging from 1 to the maximum length of the run for neutral 
+        runs_share (tuple): A tuple containg all the lists with shares of different lengths for each direction
+        dec_runs_share (list): A list of shares (in %) of runs that are decelerations and have a length ranging from 1 to the maximum length of the run 
+        acc_runs_share (list): A list of shares (in %) of runs that are accelerations and have a length ranging from 1 to the maximum length of the run 
+        neutral_runs_share (list): A list of shares (in %) of runs that are neutral and have a length ranging from 1 to the maximum length of the run 
     '''
     def __init__(self, signal):
         '''
@@ -22,7 +26,9 @@ class Runs:
         # self.sinus_segments = self.split_on_annot(signal) # - uncomment here and in tests
         self.runs = self.count_for_all(signal)
         self.dec_runs, self.acc_runs, self.neutral_runs = self.count_for_all(signal)
-        # signal is an object of the "Signal" class
+        self.runs_share = self.count_for_all_share(signal)
+        self.dec_runs_share, self.acc_runs_share, self.neutral_runs_share = self.count_for_all_share(signal)
+        #self.test = self.count_for_all_share(signal)
         # the algorithm is the same I used in the PCSS time series suit
 
     def split_on_annot(self, signal):
@@ -217,3 +223,57 @@ class Runs:
                         neutral_runs_all[idx_neutral - 1] += 1
 
         return dec_runs_all, acc_runs_all, neutral_runs_all
+    
+    def count_for_all_share(self, signal):
+        '''
+        Method for calculating the share of each run direction and length in the total number of qualified runs.
+
+        Args:
+        signal (Signal): Here Signal class property signal (array) will be used to find the acceleration, deceleration or neutral runs and count the number of times a run of a given length and type shows up and total number of runs
+        
+        Returns:
+        count_all_share (tuple): Atuple containg all the lists with shares of different lengths for each direction
+        '''
+        run_count = self.count_for_all(signal)
+        split_signal = self.split_all_into_runs(signal)
+        runs = split_signal["all_runs"]
+        n = 0
+        for run in runs:
+            n = n + len(run)
+        
+        try: 
+            1/n
+        except ZeroDivisionError:
+            count_all_share = None
+
+        count_all_share = []
+        for direction in run_count:
+            for i in range(1, len(direction) + 1):
+                direction[i-1] = round(100*(direction[i-1]*i)/n, 2)
+            count_all_share.append(direction)
+
+        return tuple(count_all_share)
+    
+    # Separete for now, can be merged with the actual method later 
+    def equalise_runs(self, runs, n = 10):
+        '''
+        Method for setting an equal output length for each direction, regardless of the longest run. 
+
+        Args:
+            runs (tuple): A tuple containg lists with runs for each directions (counts or shares)
+            n (int): The desired length of the outputed runs, n = 10 by default
+        
+        Returns:
+            equal_runs (tuple): A tuple containing runs to the desired maximal length.
+        '''
+        equal_runs = []
+        for run in runs:
+            equal_run = run[:n] + [0]*(n - len(run))
+            equal_runs.append(equal_run)
+
+        return tuple(equal_runs)
+
+
+
+
+
