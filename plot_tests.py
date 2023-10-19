@@ -13,4 +13,4 @@ rr.set_LS_spectrum()
 #print(rr.poincare.pNN50, rr.poincare.pnnx(), rr.poincare.pnnx(100))
 #14.316820903647251 14.316820903647251 0.43549265106151336
 
-print(rr.n_total, rr.n_s, rr.n_v, rr.n_sv, rr.n_x, rr.n_u)
+print(rr.poincare.pnnx()[1], rr.poincare.pnn_pro(x = 10) )
