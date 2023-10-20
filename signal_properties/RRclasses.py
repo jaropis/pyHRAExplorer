@@ -71,6 +71,7 @@ class Signal:
         self.poincare = None
         self.runs = None
         self.LS_spectrum = None
+        self.Welch_spectrum = None
         self.plotRR = None
 
     def read_data(self, path_to_file, column_signal, column_annot, column_sample_to_sample):
@@ -223,6 +224,12 @@ class Signal:
         Method that creates a LS_spectrum attribute for the Signal class, making it possible to pass the Signal class attributes to the LombScargleSpectrum and FFTSpectrum class methods.
         '''
         self.LS_spectrum = LombScargleSpectrum(self)
+
+    def sel_Welch_spectrum(self):
+        '''
+        Method that creates a Welch_spectrum attribute for the Signal class, making it possible to pass the Signal class attributes to the WelchSpectrum class methods.
+        '''
+        self.Welch_spectrum = WelchSpectrum(self)
 
     def set_plots(self):
         '''
