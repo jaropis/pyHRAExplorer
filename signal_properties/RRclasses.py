@@ -3,6 +3,7 @@ from numpy import array, where, cumsum, unique
 from signal_properties.Poincare import Poincare
 from signal_properties.runs import Runs
 from signal_properties.spectral import LombScargleSpectrum
+from signal_properties.spectral import WelchSpectrum
 from signal_properties.plotRR import PlotRR
 
 
@@ -225,7 +226,7 @@ class Signal:
         '''
         self.LS_spectrum = LombScargleSpectrum(self)
 
-    def sel_Welch_spectrum(self):
+    def set_Welch_spectrum(self):
         '''
         Method that creates a Welch_spectrum attribute for the Signal class, making it possible to pass the Signal class attributes to the WelchSpectrum class methods.
         '''
