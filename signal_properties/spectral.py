@@ -1,8 +1,9 @@
 from signal_properties.my_exceptions import WrongCuts
-import numpy
-import scipy.signal as sc
 import numpy as np
+import scipy.signal as sc
+from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 class LombScargleSpectrum:
@@ -129,6 +130,95 @@ class LombScargleSpectrum:
 
 
 
+class WelchSpectrum:
+    def __init__(self, signal):
+        self.interpolated_rr = self.interpolate_non_sinus(signal.signal, signal.annotation)
+        self.resampled_timetrack, self.resampled_rr = self.resample_rr(interpolated_rr, signal.timetrack)
+        self.welch_spectrum = self.calculate_welch(resampled_rr)
+        self.welch_bands = calculate_bands(welch_spectrum)
+
+    def optimal_division(self, signal, start, stop):
+        # the optimal rr interval is to be taken as the mean of the two correct
+        # rr intervals surrounding the non-sinus segment
+        optimal_rr = (signal.signal[start] + signal.signal[stop])/2
+        segment_length = np.cumsum(signal.signal[0:stop])[-1] - np.cumsum(signal.signal[0:start + 1])[-1]
+        
+        # now searching for optimal division
+        optimal = False
+        divisions = 1
+        delta = np.abs(segment_length - optimal_rr)
+        while not optimal:
+            current_rr = segment_length / (divisions + 1)
+            if np.abs(current_rr - optimal_rr) > delta:
+                optimal = True
+            else:
+                delta = np.abs(current_rr - optimal_rr)
+            divisions += 1
+        optimal_rr = [segment_length / (divisions - 1)]
+        optimal_division = np.array(optimal_rr * (divisions - 1))
+        return optimal_division
+
+    def resample_rr(self, signal, period = 250, period_type = 'sec' method = 'cubic'):
+        """
+        this function resamples the RR time series at period - the default value is 250 ms, which corresponds to 0.25 s or 4 Hz
+        :rr: the RR intervals time series
+        :timetrack: timetrack
+        :period: resampling period, default value 250 ms
+        :method: interpolation method, default is cubic splines
+        """
+        if period_type == 'Hz':
+            period = 1 / period * 1000
+        interp_object = interp1d(np.cumsum(signal.signal), signal.signal, kind=method, fill_value='extrapolate')
+        timetrack_resampled = np.arange(signal.timetrack[0], signal.timetrack[-1], step = period)
+        rr_resampled = interp_object(timetrack_resampled)
+        return timetrack_resampled, rr_resampled
+
+
+    def calculate_welch(self, rr_resampled, fs=4, window='hanning', segment_min = 5,
+                    noverlap_frac = 0.5):
+        """
+        function to calculate the actual Welch periodogram
+        :param rr_resampled: resampled RR-intervals time series
+        :param fs: resampling frequency
+        :param window: type of window
+        :param segment_min: length of Welch segments in minutes
+        :param noverlap_frac: how much to overlap - default is half
+        :return: the spectrum in frequency bands
+        """
+        w_spectrum = sc.welch(rr_resampled - np.mean(rr_resampled), fs=4, window=window, nperseg=segment_min * 60 * fs,
+                       noverlap= segment_min * 60 * fs * noverlap_frac, return_onesided=False, scaling='spectrum')
+
+        return w_spectrum
+
+    def calculate_bands(w_spectrum, bands=[0.003, 0.04, 0.15, 0.4], ulf=True):
+        """
+        function to calculate the spectral bands
+        :param w_spectrum: Welch spectrum
+        :param bands: bands for calculating spectrum
+        :param ulf: should I calculate ULF?
+        :return: dictionary with band names as keys and spectral bands as values
+        """
+        #print("pierwsze bandy", bands, bands == [0.003, 0.04, 0.15, 0.4])
+        if not ulf and bands == [0.003, 0.04, 0.15, 0.4]:
+            bands = [0.04, 0.15, 0.4]
+            band_names = ["vls", "lf", "hf"]
+        elif bands == [0.003, 0.04, 0.15, 0.4]:
+            band_names = ["ulf", "vlf", "lf", "hf"]
+        else:
+            band_names = [str(_) for _ in bands]
+        #print(bands, band_names)
+        extended_bands = [0]; extended_bands.extend(bands)
+        spectral_bands = []
+        for band_idx in range(1, len(extended_bands)):
+            spectral_bands.append(np.sum(np.abs(w_spectrum[1][np.logical_and(w_spectrum[0] > extended_bands[band_idx - 1],
+                                                                  w_spectrum[0] <= extended_bands[band_idx])])) * 2)
+        spectral_bands.append(np.sum(spectral_bands))
+        band_names.append("tp")
+        #results = pd.DataFrame([spectral_bands], columns=band_names)
+        results = dict(band_names, spectral_bands)
+
+        return results
+
 
 class FFTSpectrum:
     '''
@@ -185,7 +275,7 @@ class FFTSpectrum:
         from numpy.interpolate import interp1d
         f_interp = interp1d(time_track, signal)
         time_step = 1 / resampling_rate * 1000
-        print(time_step)
+        #print(time_step)
         time_track_resampled = np.arange(np.min(time_track), np.max(time_track), step=time_step)
         signal_resampled = f_interp(time_track_resampled)
         return signal_resampled, time_track_resampled
