@@ -57,7 +57,8 @@ class LombScargleSpectrum:
         frequency = np.linspace(0.01, 2*np.pi, len(self.filtered_time_track))
         # here the assumption is that the frequencies are below 1Hz
         # which obviously may not be true
-        periodogram = sc.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*np.pi) / 2
+        #periodogram = sc.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*np.pi) / 2
+        periodogram = sc.lombscargle(self.filtered_time_track, self.filtered_signal, frequency)
         return periodogram, frequency
 
     def get_bands(self, cuts, df):
@@ -137,6 +138,7 @@ class WelchSpectrum:
         self.resampled_timetrack, self.resampled_rr = self.resample_rr(self.interpolated_rr, signal.timetrack)
         self.welch_spectrum = self.calculate_welch(self.resampled_rr)
         self.welch_bands = self.calculate_bands(self.welch_spectrum)
+        self.welch_bands_ulf, self.welch_bands_vlf, self.welch_bands_lf, self.welch_bands_hf, self.welch_bands_tp = self.welch_bands.values()
 
     def interpolate_non_sinus(self, signal):
         """
@@ -232,7 +234,6 @@ class WelchSpectrum:
         :return: dictionary with band names as keys and spectral bands as values
         """
         #print("pierwsze bandy", bands, bands == [0.003, 0.04, 0.15, 0.4])
-        #w_spectrum = list(w_spectrum)
         if not ulf and bands == [0.003, 0.04, 0.15, 0.4]:
             bands = [0.04, 0.15, 0.4]
             band_names = ["vls", "lf", "hf"]
