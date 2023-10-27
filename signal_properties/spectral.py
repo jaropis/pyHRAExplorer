@@ -15,7 +15,12 @@ class LombScargleSpectrum:
 	    filtered_timetrack (array): An array with the filtered timetrack
 		frequency (array): Array with angular frequecies needed to build the periodogram
         periodogram (array): Array contaning the values of the periodogram, showing which angular frequencies are most common
-
+        spectral_bands (dict): A dictionary containing the names and total power within each band. 
+        By default returns the vlf, lf, hf and tp values, correspondng to very low frequency, low frequency, high frequency and total power.
+        spectral_bands_24 (dict): A dictionary containing the names and total power within each band for long term spectral analysis. 
+        By default the values of bands in Hz are used (vlf: 0-0.4, lf: 0.4-0.15, hf: 0.15-0.4)
+        By default returns the ulf, vlf, lf, hf and tp values, correspondng to ultra low frequency, very low frequency, low frequency, high frequency and total power.
+        By default the values of bands in Hz are used (ulf: 0-0.003, vlf: 0.003-0.4, lf: 0.4-0.15, hf: 0.15-0.4)
     '''
     def __init__(self, signal):
         '''
@@ -26,7 +31,8 @@ class LombScargleSpectrum:
         '''
         self.filtered_signal, self.filtered_time_track = self.filter_and_timetrack(signal)
         self.periodogram, self.frequency = self.build_spectrum()
-        #self.spectral_bands = self.spectral_values()
+        self.spectral_bands = self.spectral_values()
+        self.spectral_bands_24h = self.spectral_values(ulf = True)
         #self.ulf, self.vlf, self.lf, self.hf, self.tp = self.spectral_bands.values
         # self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) # this
         # is basically the result which is expected in HRV - depending on the length of the recording the first two
@@ -54,9 +60,10 @@ class LombScargleSpectrum:
 
         Returns:
             frequency (array): Array with angular frequecies needed to build the periodogram
-            periodogram (array): Array contaning the values of the periodogram, showing which angular frequencies are most common
+            periodogram (array): Array contaning the values of the periodogram
         '''
         # old version 
+        # CAREFUL! The old normalisation method no longer works!
         # frequency = np.linspace(0.01, 2*np.pi, len(self.filtered_time_track))
         # here the assumption is that the frequencies are below 1Hz which obviously may not be true
         # periodogram = sc.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*np.pi) / 2
@@ -68,6 +75,16 @@ class LombScargleSpectrum:
         return periodogram, frequency
     
     def lombscargle_press(self, signal):
+        '''
+        Method calculating the Lombscargle spectrum using Press normalisation, adapted for python from the lomb function from lsc R package 
+        
+        Args:
+            signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+
+        Returns:
+            power (numpy.array): An array containing normalised values of amplitudes at each corresponding frequency
+            frequency (numpy.array): An array containg the tested frequencies (in Hz)
+        '''
         timetrack = np.cumsum(signal)/1000
         rr = signal
 
@@ -103,8 +120,19 @@ class LombScargleSpectrum:
         return power, frequency
 
     def get_spectral_bands(self, cuts):
+        '''
+        Method for calculating the spectral bands for a given set of cuts
+
+        Args:
+            cuts(list): Holds the frequency bands of interest
+        
+        Returns:
+            power_in_bands (list): An array containing total power in each band (bands specified by cuts) 
+        '''
         self.test_cuts(cuts)
         first = cuts[0]
+        if first > max(self.frequency):
+            return None
         power_in_bands = []
         for second in cuts[1:]:
             # no interpolation since the frequencies are closely spaced in self.frequency (see the build_spectrum method)
@@ -127,6 +155,7 @@ class LombScargleSpectrum:
         return power_in_bands
 
     def get_bands(self, cuts, df):
+        # OLD VERSION! Uisng an integration measure no longer works!
         '''
         Method for finsing the total power in bands specified by cuts
         
@@ -171,14 +200,28 @@ class LombScargleSpectrum:
         if len(cuts) != len(np.unique(cuts)) or (cuts != sorted(cuts)):
             raise WrongCuts
 
-    def spectral_values(self, ulf = False):
+    def spectral_values(self, cuts = [0.0, 0.04, 0.15, 0.4], ulf = False):
+        """
+        Method for calculating the spectral bands and assigning them to common spectral analysis parameters
+        
+        Args:
+            ulf (logical): Specifies whether ulf should be calculated (should only be used for long reads)
+        
+        Return:
+            results (dict): A dictionary with band names as keys and corresponding spectral bands as values
+        """
         spectral_bands = []
-        if not ulf:
+        if ulf or cuts == [0.0, 0.003, 0.04, 0.15, 0.4]:
+            band_names = ["ulf", "vlf", "lf", "hf"]
+            spectral_bands = self.get_spectral_bands([0.0, 0.003, 0.04, 0.15, 0.4])
+        elif not ulf or cuts == [0.0, 0.04, 0.15, 0.4]:
             band_names = ["vlf", "lf", "hf"]
             spectral_bands = self.get_spectral_bands([0.0, 0.04, 0.15, 0.4])
         else:
-            band_names = ["ulf", "vlf", "lf", "hf"]
-            spectral_bands = self.get_spectral_bands([0.0, 0.003, 0.04, 0.15, 0.4])
+            band_names = [str(cut) for cut in cuts]
+            spectral_bands = self.get_spectral_bands(cuts)
+        if spectral_bands is None:
+            return None
         spectral_bands.append(np.sum(spectral_bands))
         band_names.append("tp")
         #results = pd.DataFrame([spectral_bands], columns=band_names)
@@ -187,12 +230,12 @@ class LombScargleSpectrum:
         return results
 
         
-    def plot_periodogram(self, mode = 'angular', xlim = [], **kwargs):
+    def plot_periodogram(self, mode = 'Hz', xlim = [], **kwargs):
         '''
         Method for plotting a periodogram
 
         Args:
-            mode (str): Specifies the mode of the plot, angular (rad/sec) by default but can be changed into Hz, changing the mode changes
+            mode (str): Specifies the mode of the plot, in Hz by default but can be changed into rad/sec, changing the mode changes
             the values and descriptions for the frequency (Hz = rad/sec / 2*pi)
             xlim (list): A list of values which is passed to determine the range of the x axis, full range (0 - 6.28 for rad/sec or 0 - 1 for Hz) shown by default
             **kwargs: key word arguments which can be passed to the matplotlib.pyplots to change the appearance of the plot
@@ -200,7 +243,7 @@ class LombScargleSpectrum:
         Returns:
             periodogram_plot (Axes): A plot showing the values of the periodogram against the frequency (either rad/sec or Hz)
         '''
-        frequency, x_label = (self.frequency/(2*np.pi), 'Frequency [Hz]') if mode == 'Hz' else (self.frequency, 'Angular frequency [rad/s]') 
+        frequency, x_label = (self.frequency, 'Frequency [Hz]') if mode == 'Hz' else (self.frequency*(2*np.pi), 'Angular frequency [rad/s]') 
         fig, periodogram_plot = plt.subplots()
         periodogram_plot.plot(frequency, self.periodogram, **kwargs)
         xlim = plt.xlim() if xlim == [] else xlim

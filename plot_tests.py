@@ -44,7 +44,7 @@ print('power:', total_power2, sum(rr.LS_spectrum.periodogram), sum(bands), sum(b
 #print(bands, sum(bands))
 print(rr.LS_spectrum.spectral_values(), 'variance', numpy.var(rr.LS_spectrum.filtered_signal))
 
-print(rr.LS_spectrum.periodogram)
+print(rr.LS_spectrum.spectral_bands, rr.LS_spectrum.spectral_bands_24h)
 
 
 rr.LS_spectrum.plot_periodogram()
