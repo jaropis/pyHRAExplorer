@@ -204,7 +204,7 @@ class Signal:
         for flag in flags:
             if flag not in all_flags:
                 break
-            all_counts[flag+1] = counts[flag]
+            all_counts[int(flag)+1] = counts[int(flag)]
         all_counts[5] = all_counts[0] - sum(all_counts[1:5])
         return all_counts
 

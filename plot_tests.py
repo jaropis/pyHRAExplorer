@@ -22,8 +22,30 @@ print(rr.Welch_spectrum.welch_bands)
 #print(rr.Welch_spectrum.welch_bands_ulf, rr.Welch_spectrum.welch_bands_vlf, rr.Welch_spectrum.welch_bands_lf, rr.Welch_spectrum.welch_bands_hf, rr.Welch_spectrum.welch_bands_tp, rr.poincare.SDNN**2, rr.poincare.SDNN**2/rr.Welch_spectrum.welch_bands_tp)
 df = (rr.LS_spectrum.frequency[1] -  rr.LS_spectrum.frequency[0])
 #print(rr.LS_spectrum.get_bands([0.003, 0.04, 0.15, 0.4], df))
+#print(rr.LS_spectrum.get_bands([0.04, 0.15, 0.4], df))
 #print(rr.Welch_spectrum.test_resample)
-total_power = sum(rr.LS_spectrum.periodogram) * ((rr.LS_spectrum.frequency[1] -  rr.LS_spectrum.frequency[0]))
-total_power2 = sum(rr.LS_spectrum.periodogram) * (rr.LS_spectrum.frequency[1] -  rr.LS_spectrum.frequency[0])                                            
-print(total_power, total_power2)
+#total_power = sum(rr.LS_spectrum.periodogram) * ((rr.LS_spectrum.frequency[1] -  rr.LS_spectrum.frequency[0]))
+#total_power2 = sum(rr.LS_spectrum.periodogram) * (rr.LS_spectrum.frequency[1] -  rr.LS_spectrum.frequency[0])                                            
+#print(total_power, total_power2)
 #print(rr.LS_spectrum.build_spectrum())
+
+'''print(rr.LS_spectrum.periodogram, rr.LS_spectrum.frequency)
+bands = rr.LS_spectrum.get_bands(cuts=[0, 0.25, 0.94, 2.5], df=rr.LS_spectrum.frequency[1]-rr.LS_spectrum.frequency[0])
+bands2 = rr.LS_spectrum.get_bands(cuts=[0, 0.04, 0.15, 0.4], df=rr.LS_spectrum.frequency[1]-rr.LS_spectrum.frequency[0])
+total_power2 = sum(rr.LS_spectrum.periodogram) * (rr.LS_spectrum.frequency[1] -  rr.LS_spectrum.frequency[0])                                            
+print('power:', total_power2, sum(rr.LS_spectrum.periodogram), sum(bands), sum(bands2))
+#rr.LS_spectrum.plot_periodogram()
+#plt.show()
+'''
+#bands = rr.LS_spectrum.get_bands(cuts=[0, 0.25, 0.94, 2.5], df=rr.LS_spectrum.frequency[1]-rr.LS_spectrum.frequency[0])
+#print(rr.LS_spectrum.periodogram, rr.LS_spectrum.frequency)
+
+#bands = rr.LS_spectrum.get_spectral_bands(cuts = [0, 0.04, 0.15, 0.4])
+#print(bands, sum(bands))
+print(rr.LS_spectrum.spectral_values(), 'variance', numpy.var(rr.LS_spectrum.filtered_signal))
+
+print(rr.LS_spectrum.periodogram)
+
+
+rr.LS_spectrum.plot_periodogram()
+plt.show()

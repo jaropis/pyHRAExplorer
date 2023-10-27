@@ -26,6 +26,8 @@ class LombScargleSpectrum:
         '''
         self.filtered_signal, self.filtered_time_track = self.filter_and_timetrack(signal)
         self.periodogram, self.frequency = self.build_spectrum()
+        #self.spectral_bands = self.spectral_values()
+        #self.ulf, self.vlf, self.lf, self.hf, self.tp = self.spectral_bands.values
         # self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) # this
         # is basically the result which is expected in HRV - depending on the length of the recording the first two
         # entries may be combined to VLF in short recordings
@@ -54,12 +56,75 @@ class LombScargleSpectrum:
             frequency (array): Array with angular frequecies needed to build the periodogram
             periodogram (array): Array contaning the values of the periodogram, showing which angular frequencies are most common
         '''
-        frequency = np.linspace(0.01, 2*np.pi, len(self.filtered_time_track))
-        # here the assumption is that the frequencies are below 1Hz
-        # which obviously may not be true
-        #periodogram = sc.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*np.pi) / 2
-        periodogram = sc.lombscargle(self.filtered_time_track, self.filtered_signal, frequency)
+        # old version 
+        # frequency = np.linspace(0.01, 2*np.pi, len(self.filtered_time_track))
+        # here the assumption is that the frequencies are below 1Hz which obviously may not be true
+        # periodogram = sc.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*np.pi) / 2
+        
+        # new version 
+        periodogram, frequency = self.lombscargle_press(self.filtered_signal)
+        periodogram = periodogram * 1/len(periodogram) * np.var(self.filtered_signal)
+
         return periodogram, frequency
+    
+    def lombscargle_press(self, signal):
+        timetrack = np.cumsum(signal)/1000
+        rr = signal
+
+        ofac = 1 
+
+        n = len(rr)
+        timetrack_span = timetrack[n-1] - timetrack[0]
+        fr_d = 1/timetrack_span
+        step = 1/(timetrack_span * ofac)
+
+        f_max = np.floor(0.5 * n * ofac) * step
+        frequency = np.arange(fr_d, f_max, step)
+        n_out = len(frequency)
+        rr = rr - np.mean(rr)
+
+        press_norm = 1/(2 * np.var(rr))
+
+        w = 2 * np.pi * frequency
+        power = [0] * n_out
+        for i in range(0, n_out) :
+            wi = w[i]
+            tau = 0.5 * np.arctan2(sum(np.sin(wi * timetrack)), sum(np.cos(wi * timetrack)))/wi
+            arg = wi * (timetrack - tau)
+            cs = np.cos(arg)
+            sn = np.sin(arg)
+            A = (sum(rr * cs))**2
+            B = sum(cs * cs)
+            C = (sum(rr * sn))**2
+            D = sum(sn * sn)
+            power[i] = A/B + C/D
+
+        power = np.array([i * press_norm for i in power])
+        return power, frequency
+
+    def get_spectral_bands(self, cuts):
+        self.test_cuts(cuts)
+        first = cuts[0]
+        power_in_bands = []
+        for second in cuts[1:]:
+            # no interpolation since the frequencies are closely spaced in self.frequency (see the build_spectrum method)
+            first_index = np.where(self.frequency >= first)[0]
+            second_index = np.where(self.frequency >= second)[0]
+            # print(first_index, second_index, self.frequency[0])
+            if first_index[0] == second_index[0]:
+                # here, if there is no power in the first band, and there is some in the following one,
+                # this condition must hold
+                power_in_bands.append(0.0)
+                first = second # go to the next band
+            elif len(second_index > 0): # if there is any power in the band above the current band
+                power_in_bands.append(sum(self.periodogram[first_index[0]:second_index[0]]))
+                first = second
+            elif len(first_index) >= 1: # so, there is no power in the band above - is there any power
+                power_in_bands.append(sum(self.periodogram[first_index[0]:first_index[-1]]))
+                break
+            else:
+                break
+        return power_in_bands
 
     def get_bands(self, cuts, df):
         '''
@@ -94,7 +159,7 @@ class LombScargleSpectrum:
                 break
             else:
                 break
-        return (np.array([i * df for i in power_in_bands]), power_in_bands)
+        return np.array([i * df for i in power_in_bands])
 
     def test_cuts(self, cuts):
         '''
@@ -105,6 +170,22 @@ class LombScargleSpectrum:
         '''
         if len(cuts) != len(np.unique(cuts)) or (cuts != sorted(cuts)):
             raise WrongCuts
+
+    def spectral_values(self, ulf = False):
+        spectral_bands = []
+        if not ulf:
+            band_names = ["vlf", "lf", "hf"]
+            spectral_bands = self.get_spectral_bands([0.0, 0.04, 0.15, 0.4])
+        else:
+            band_names = ["ulf", "vlf", "lf", "hf"]
+            spectral_bands = self.get_spectral_bands([0.0, 0.003, 0.04, 0.15, 0.4])
+        spectral_bands.append(np.sum(spectral_bands))
+        band_names.append("tp")
+        #results = pd.DataFrame([spectral_bands], columns=band_names)
+        results = dict(zip(band_names, spectral_bands))
+
+        return results
+
         
     def plot_periodogram(self, mode = 'angular', xlim = [], **kwargs):
         '''
