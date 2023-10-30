@@ -256,20 +256,49 @@ class LombScargleSpectrum:
 
 
 class WelchSpectrum:
+    '''
+    Class WelchSpectrum used to perform spectral analysis using the Welch method
+	
+	Attributes:
+    timetrack (array): An array with timetrack values in ms
+    interpolated_rr (array): An array containg interpolated signal values. 
+    resampled_timetrack (array): An array containing resampled timetrack values.
+    resampled_rr (array): An array contining resampled signal values
+    welch_spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in the Welch spectrum
+    welch_bands (dict): A dictionary storing the names and values of the spectral bands (vlf, lf, hf) and total power (tp) for short term spectral analysis
+    welch_bands_24h (dict): A dictionary storing the names and values of the spectral bands (ulf, vlf, lf, hf) and total power (tp) for long term spectral analysis
+    welch_bands_ulf (int): The value of the ultra low frequency band in the Welch spectrum (0.0-0.03 Hz) in the long term spectral analysis only
+    welch_bands_vlf (int): The value of the very low frequency band in the Welch spectrum (0.0-0.4 Hz) in short term and (0.003-0.4 Hz) in long term spectral analysis
+    welch_bands_lf (int): The value of the low frequency band in the Welch spectrum (0.04-0.15 Hz) 
+    welch_bands_hf (int): The value of the high frequency band in the Welch spectrum (0.15-0.4 Hz)
+    welch_bands_tp (int): The value of the total power in the Welch spectrum (0.0-0.4 Hz)
+    '''
+
     def __init__(self, signal):
+        '''
+        Intializes the WelchSpectrum class
+
+        Args:
+            signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+        '''
+        self.timetrack = np.cumsum(signal.signal)
         self.interpolated_rr = self.interpolate_non_sinus(signal)
         #self.test_resample = self.resample_rr(self.interpolated_rr, signal.timetrack)
-        self.resampled_timetrack, self.resampled_rr = self.resample_rr(self.interpolated_rr, signal.timetrack)
+        self.resampled_timetrack, self.resampled_rr = self.resample_rr(self.interpolated_rr, self.timetrack)
         self.welch_spectrum = self.calculate_welch(self.resampled_rr)
         self.welch_bands = self.calculate_bands(self.welch_spectrum)
-        self.welch_bands_ulf, self.welch_bands_vlf, self.welch_bands_lf, self.welch_bands_hf, self.welch_bands_tp = self.welch_bands.values()
-
+        self.welch_bands_24h = self.calculate_bands(self.welch_spectrum, ulf = True)
+        self.welch_bands_ulf, self.welch_bands_vlf, self.welch_bands_lf, self.welch_bands_hf, self.welch_bands_tp = self.welch_bands_24h.values()
+    
     def interpolate_non_sinus(self, signal):
         """
-         this function linearly interpolates the non-sinus beats
-        :param rr: the RR intervals time series
-        :param flags: the RR intervals annotations
-        :return:
+        This method linearly interpolates the non-sinus beats
+        
+        Args:
+            signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+        
+        Returns:
+            good_intervals (array): An array containg interpolated signal values. 
         """
         inside_non_sinus = False
         segment_end = 0
@@ -294,9 +323,21 @@ class WelchSpectrum:
         # now adding the last good segment to good_intervals_list
         if keep_last:
             good_intervals_list.append(signal.signal[good_segment_start:])
-        return np.concatenate(good_intervals_list)
+        good_intervals = np.concatenate(good_intervals_list)
+        return good_intervals
 
     def optimal_division(self, signal, start, stop):
+        '''
+        Method for finding the optimal division
+
+        Args:
+            signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+            start (int): Index of the start of the segment
+            stop (int): Index of the end of the segment
+        
+        Returns:
+            optimal_division (array): Array with an optimal rr interval
+        '''
         # the optimal rr interval is to be taken as the mean of the two correct
         # rr intervals surrounding the non-sinus segment
         optimal_rr = (signal.signal[start] + signal.signal[stop])/2
@@ -317,50 +358,68 @@ class WelchSpectrum:
         optimal_division = np.array(optimal_rr * (divisions - 1))
         return optimal_division
 
-    def resample_rr(self, signal, timetrack, period = 250, period_type = 'sec', method = 'cubic'):
+    def resample_rr(self, signal, timetrack, period = 250, method = 'cubic'):
         """
-        this function resamples the RR time series at period - the default value is 250 ms, which corresponds to 0.25 s or 4 Hz
-        :rr: the RR intervals time series
-        :timetrack: timetrack
-        :period: resampling period, default value 250 ms
-        :method: interpolation method, default is cubic splines
+        This method resamples the RR time series at period - the default value is 250 ms, which corresponds to 0.25 s or 4 Hz
+        
+        Args:
+            signal (array): The RR intervals time series
+            timetrack (array): Timetrack values
+            period (int): Resampling period, default value 250 ms
+            method (str):  Interpolation method, default is cubic splines
+
+        Returns:
+            timetrack_resampled (array): An array containing resampled timetrack values.
+            rr_resampled (array): An array contining resampled signal values
         """
+        #transforming timetrack from mins to sec
+        '''timetrack = timetrack*60
         if period_type == 'Hz':
             period = 1 / period * 1000
+        elif period_type == 'sec':
+            period = period / 1000'''
         interp_object = interp1d(np.cumsum(signal), signal, kind=method, fill_value='extrapolate')
         # timetrack is in min, converting period in ms to min
-        timetrack_resampled = np.arange(timetrack[0], timetrack[-1], step = period/(60*1000))
+        timetrack_resampled = np.arange(timetrack[0], timetrack[-1], step = period)
         rr_resampled = interp_object(timetrack_resampled)
         return timetrack_resampled, rr_resampled
 
     def calculate_welch(self, rr_resampled, fs=4, window='hamming', segment_min = 5,
                     noverlap_frac = 0.5):
-        """
-        function to calculate the actual Welch periodogram
-        :param rr_resampled: resampled RR-intervals time series
-        :param fs: resampling frequency
-        :param window: type of window
-        :param segment_min: length of Welch segments in minutes
-        :param noverlap_frac: how much to overlap - default is half
-        :return: the spectrum in frequency bands
-        """
+        '''
+        Method that calculates the Welch periodogram
+        
+        Args:
+            rr_resampled (array): An array with resampled RR-intervals time series
+            fs (int): Resampling frequency
+            window (str): A type of window
+            segment_min (int): Length of Welch segments in minutes
+            noverlap_frac (float): Determines the value of the overlap, 0.5 by default
+        
+        Returns: 
+            w_spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in the Welch spectrum
+        '''
         w_spectrum = sc.welch(rr_resampled - np.mean(rr_resampled), fs=4, window=window, nperseg=segment_min * 60 * fs,
                        noverlap= segment_min * 60 * fs * noverlap_frac, return_onesided=False, scaling='spectrum')
 
         return w_spectrum
 
-    def calculate_bands(self, w_spectrum, bands=[0.003, 0.04, 0.15, 0.4], ulf=True):
-        """
-        function to calculate the spectral bands
-        :param w_spectrum: Welch spectrum
-        :param bands: bands for calculating spectrum
-        :param ulf: should I calculate ULF?
-        :return: dictionary with band names as keys and spectral bands as values
-        """
+    def calculate_bands(self, w_spectrum, bands=[0.003, 0.04, 0.15, 0.4], ulf=False):
+        '''
+        Method to calculate the spectral bands
+        
+        Args: 
+            w_spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in the Welch spectrum
+            bands (list): A list of bands for calculating the Welch spectrum (in Hz)
+            ulf (logical): Determines if ultra low frequency should be calculated. False by defualt
+        
+        Returns: 
+            welch_bands (dict): A dictionary with band names as keys and power in the corresponding bands as values
+        '''
         #print("pierwsze bandy", bands, bands == [0.003, 0.04, 0.15, 0.4])
         if not ulf and bands == [0.003, 0.04, 0.15, 0.4]:
             bands = [0.04, 0.15, 0.4]
-            band_names = ["vls", "lf", "hf"]
+            band_names = ["vlf", "lf", "hf"]
         elif bands == [0.003, 0.04, 0.15, 0.4]:
             band_names = ["ulf", "vlf", "lf", "hf"]
         else:
@@ -374,9 +433,9 @@ class WelchSpectrum:
         spectral_bands.append(np.sum(spectral_bands))
         band_names.append("tp")
         #results = pd.DataFrame([spectral_bands], columns=band_names)
-        results = dict(zip(band_names, spectral_bands))
+        welch_bands = dict(zip(band_names, spectral_bands))
 
-        return results
+        return welch_bands
 
 
 class FFTSpectrum:

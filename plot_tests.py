@@ -18,9 +18,14 @@ rr.set_Welch_spectrum()
 #print(rr.Welch_spectrum.resampled_rr, rr.Welch_spectrum.resampled_timetrack, rr.Welch_spectrum.interpolated_rr)
 #print(type(rr.Welch_spectrum.welch_spectrum))
 print(rr.Welch_spectrum.welch_bands)
-
+for n in [rr.Welch_spectrum.interpolated_rr, rr.Welch_spectrum.resampled_timetrack, rr.Welch_spectrum.resampled_rr, rr.Welch_spectrum.welch_spectrum, rr.Welch_spectrum.welch_bands]:
+    print(type(n))
+x = rr.Welch_spectrum.welch_bands
+xx = rr.Welch_spectrum.welch_bands_24h
+print(x, xx)
+print(type(rr.Welch_spectrum.optimal_division(rr, 3, 5)))
 #print(rr.Welch_spectrum.welch_bands_ulf, rr.Welch_spectrum.welch_bands_vlf, rr.Welch_spectrum.welch_bands_lf, rr.Welch_spectrum.welch_bands_hf, rr.Welch_spectrum.welch_bands_tp, rr.poincare.SDNN**2, rr.poincare.SDNN**2/rr.Welch_spectrum.welch_bands_tp)
-df = (rr.LS_spectrum.frequency[1] -  rr.LS_spectrum.frequency[0])
+
 #print(rr.LS_spectrum.get_bands([0.003, 0.04, 0.15, 0.4], df))
 #print(rr.LS_spectrum.get_bands([0.04, 0.15, 0.4], df))
 #print(rr.Welch_spectrum.test_resample)
@@ -42,6 +47,8 @@ print('power:', total_power2, sum(rr.LS_spectrum.periodogram), sum(bands), sum(b
 
 #bands = rr.LS_spectrum.get_spectral_bands(cuts = [0, 0.04, 0.15, 0.4])
 #print(bands, sum(bands))
+
+'''
 print(rr.LS_spectrum.spectral_values(), 'variance', numpy.var(rr.LS_spectrum.filtered_signal))
 
 print(rr.LS_spectrum.spectral_bands, rr.LS_spectrum.spectral_bands_24h)
@@ -49,3 +56,4 @@ print(rr.LS_spectrum.spectral_bands, rr.LS_spectrum.spectral_bands_24h)
 
 rr.LS_spectrum.plot_periodogram()
 plt.show()
+'''
