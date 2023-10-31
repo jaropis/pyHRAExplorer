@@ -29,7 +29,9 @@ class TestLombSpectrum(unittest.TestCase):
         A = 8.
         omega = 1.
         nin = 1000
-        x = numpy.linspace(0.01, 2*numpy.pi, nin)
+        # Chanaged from rad/sec to Hz to match the R version
+        #x = numpy.linspace(0.01, 2*nimpy.pi, nin)
+        x = numpy.linspace(0.01, 1, nin)
         y = A * numpy.sin(omega*(x + 0.5 * numpy.pi))
         self.signal4 = Signal([y, numpy.absolute(y*0), x]) # this is for the constructor that takes 3 elements
         self.signal4.set_LS_spectrum()
@@ -80,7 +82,7 @@ class TestLombSpectrum(unittest.TestCase):
         omega1 = 1
         omega2 = 2
         nin = 1000
-        x = numpy.linspace(0.01, 2*numpy.pi, nin)
+        x = numpy.linspace(0.01, 1, nin)
         y1 = A1 * numpy.sin(omega1*(x))
         y2 = A2 * numpy.sin(omega2*(x))
         y = y1+y2
@@ -95,10 +97,18 @@ class TestLombSpectrum(unittest.TestCase):
         variance2 = numpy.var(y2)
         df = (self.signal5.LS_spectrum.frequency[1] -  self.signal5.LS_spectrum.frequency[0])
         print(df)
+        #old
+        '''
         spectral_content = self.signal5.LS_spectrum.get_bands(cuts=[0.2, 2.0], df=df)
         # this should be equal to the variance of the whole signal - the peaks are quite broad here, so wide integration interval
         spectral_content1 = self.signal51.LS_spectrum.get_bands(cuts=[0.2, 2.0], df=df)
         spectral_content2 = self.signal52.LS_spectrum.get_bands(cuts=[0.2, 2.5], df=df)
+        '''
+        #new 
+        spectral_content = self.signal5.LS_spectrum.get_spectral_bands(cuts=[(0.2/6.28), (2.0/6.28)])
+        # this should be equal to the variance of the whole signal - the peaks are quite broad here, so wide integration interval
+        spectral_content1 = self.signal51.LS_spectrum.get_spectral_bands(cuts=[0.2/6.28, 2.0/6.28])
+        spectral_content2 = self.signal52.LS_spectrum.get_spectral_bands(cuts=[0.2/6.28, 2.5/6.28])
         self.assertAlmostEqual(spectral_content[0], variance, places = -1)
         self.assertAlmostEqual(spectral_content1[0], variance1, places = -1)
         self.assertAlmostEqual(spectral_content2[0], variance2, places = -1)

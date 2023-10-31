@@ -3,6 +3,7 @@ from numpy import array, where, cumsum, unique
 from signal_properties.Poincare import Poincare
 from signal_properties.runs import Runs
 from signal_properties.spectral import LombScargleSpectrum
+from signal_properties.spectral import WelchSpectrum
 from signal_properties.plotRR import PlotRR
 
 
@@ -71,6 +72,7 @@ class Signal:
         self.poincare = None
         self.runs = None
         self.LS_spectrum = None
+        self.Welch_spectrum = None
         self.plotRR = None
 
     def read_data(self, path_to_file, column_signal, column_annot, column_sample_to_sample):
@@ -202,7 +204,7 @@ class Signal:
         for flag in flags:
             if flag not in all_flags:
                 break
-            all_counts[flag+1] = counts[flag]
+            all_counts[int(flag)+1] = counts[int(flag)]
         all_counts[5] = all_counts[0] - sum(all_counts[1:5])
         return all_counts
 
@@ -223,6 +225,12 @@ class Signal:
         Method that creates a LS_spectrum attribute for the Signal class, making it possible to pass the Signal class attributes to the LombScargleSpectrum and FFTSpectrum class methods.
         '''
         self.LS_spectrum = LombScargleSpectrum(self)
+
+    def set_Welch_spectrum(self):
+        '''
+        Method that creates a Welch_spectrum attribute for the Signal class, making it possible to pass the Signal class attributes to the WelchSpectrum class methods.
+        '''
+        self.Welch_spectrum = WelchSpectrum(self)
 
     def set_plots(self):
         '''

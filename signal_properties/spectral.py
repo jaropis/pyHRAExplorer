@@ -1,8 +1,9 @@
 from signal_properties.my_exceptions import WrongCuts
-import numpy
-import scipy.signal as sc
 import numpy as np
+import scipy.signal as sc
+from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 class LombScargleSpectrum:
@@ -14,7 +15,12 @@ class LombScargleSpectrum:
 	    filtered_timetrack (array): An array with the filtered timetrack
 		frequency (array): Array with angular frequecies needed to build the periodogram
         periodogram (array): Array contaning the values of the periodogram, showing which angular frequencies are most common
-
+        spectral_bands (dict): A dictionary containing the names and total power within each band. 
+        By default returns the vlf, lf, hf and tp values, correspondng to very low frequency, low frequency, high frequency and total power.
+        spectral_bands_24 (dict): A dictionary containing the names and total power within each band for long term spectral analysis. 
+        By default the values of bands in Hz are used (vlf: 0-0.4, lf: 0.4-0.15, hf: 0.15-0.4)
+        By default returns the ulf, vlf, lf, hf and tp values, correspondng to ultra low frequency, very low frequency, low frequency, high frequency and total power.
+        By default the values of bands in Hz are used (ulf: 0-0.003, vlf: 0.003-0.4, lf: 0.4-0.15, hf: 0.15-0.4)
     '''
     def __init__(self, signal):
         '''
@@ -25,6 +31,9 @@ class LombScargleSpectrum:
         '''
         self.filtered_signal, self.filtered_time_track = self.filter_and_timetrack(signal)
         self.periodogram, self.frequency = self.build_spectrum()
+        self.spectral_bands = self.spectral_values()
+        self.spectral_bands_24h = self.spectral_values(ulf = True)
+        #self.ulf, self.vlf, self.lf, self.hf, self.tp = self.spectral_bands.values
         # self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) # this
         # is basically the result which is expected in HRV - depending on the length of the recording the first two
         # entries may be combined to VLF in short recordings
@@ -40,9 +49,9 @@ class LombScargleSpectrum:
 	        filtered_timetrack (array): An array with the filtered timetrack
         '''
         # this function prepares data for Lomb-Scargle - i.e. filtered cumulative sum of time,   filtered signal
-        bad_beats = numpy.where(signal.annotation != 0)[0]
-        filtered_timetrack = numpy.delete(signal.timetrack, bad_beats)
-        filtered_signal = numpy.delete(signal.signal, bad_beats)
+        bad_beats = np.where(signal.annotation != 0)[0]
+        filtered_timetrack = np.delete(signal.timetrack, bad_beats)
+        filtered_signal = np.delete(signal.signal, bad_beats)
         return filtered_signal, filtered_timetrack
 
     def build_spectrum(self):
@@ -51,15 +60,102 @@ class LombScargleSpectrum:
 
         Returns:
             frequency (array): Array with angular frequecies needed to build the periodogram
-            periodogram (array): Array contaning the values of the periodogram, showing which angular frequencies are most common
+            periodogram (array): Array contaning the values of the periodogram
         '''
-        frequency = numpy.linspace(0.01, 2*numpy.pi, len(self.filtered_time_track))
-        # here the assumption is that the frequencies are below 1Hz
-        # which obviously may not be true
-        periodogram = sc.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*numpy.pi) / 2
+        # old version 
+        # CAREFUL! The old normalisation method no longer works!
+        # frequency = np.linspace(0.01, 2*np.pi, len(self.filtered_time_track))
+        # here the assumption is that the frequencies are below 1Hz which obviously may not be true
+        # periodogram = sc.lombscargle(self.filtered_time_track, self.filtered_signal, frequency) / len(self.filtered_time_track) * 4 * self.filtered_time_track[len(self.filtered_time_track)-1] / (2*np.pi) / 2
+        
+        # new version 
+        periodogram, frequency = self.lombscargle_press(self.filtered_signal)
+        periodogram = periodogram * 1/len(periodogram) * np.var(self.filtered_signal)
+
         return periodogram, frequency
+    
+    def lombscargle_press(self, signal):
+        '''
+        Method calculating the Lombscargle spectrum using Press normalisation, adapted for python from the lomb function from lsc R package 
+        
+        Args:
+            signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+
+        Returns:
+            power (numpy.array): An array containing normalised values of amplitudes at each corresponding frequency
+            frequency (numpy.array): An array containg the tested frequencies (in Hz)
+        '''
+        timetrack = np.cumsum(signal)/1000
+        rr = signal
+
+        ofac = 1 
+
+        n = len(rr)
+        timetrack_span = timetrack[n-1] - timetrack[0]
+        fr_d = 1/timetrack_span
+        step = 1/(timetrack_span * ofac)
+
+        f_max = np.floor(0.5 * n * ofac) * step
+        frequency = np.arange(fr_d, f_max, step)
+        n_out = len(frequency)
+        rr = rr - np.mean(rr)
+
+        press_norm = 1/(2 * np.var(rr))
+
+        w = 2 * np.pi * frequency
+        power = [0] * n_out
+        for i in range(0, n_out) :
+            wi = w[i]
+            tau = 0.5 * np.arctan2(sum(np.sin(wi * timetrack)), sum(np.cos(wi * timetrack)))/wi
+            arg = wi * (timetrack - tau)
+            cs = np.cos(arg)
+            sn = np.sin(arg)
+            A = (sum(rr * cs))**2
+            B = sum(cs * cs)
+            C = (sum(rr * sn))**2
+            D = sum(sn * sn)
+            power[i] = A/B + C/D
+
+        power = np.array([i * press_norm for i in power])
+        return power, frequency
+
+    def get_spectral_bands(self, cuts):
+        '''
+        Method for calculating the spectral bands for a given set of cuts
+
+        Args:
+            cuts(list): Holds the frequency bands of interest
+        
+        Returns:
+            power_in_bands (list): An array containing total power in each band (bands specified by cuts) 
+        '''
+        self.test_cuts(cuts)
+        first = cuts[0]
+        if first > max(self.frequency):
+            return None
+        power_in_bands = []
+        for second in cuts[1:]:
+            # no interpolation since the frequencies are closely spaced in self.frequency (see the build_spectrum method)
+            first_index = np.where(self.frequency >= first)[0]
+            second_index = np.where(self.frequency >= second)[0]
+            # print(first_index, second_index, self.frequency[0])
+            if first_index[0] == second_index[0]:
+                # here, if there is no power in the first band, and there is some in the following one,
+                # this condition must hold
+                power_in_bands.append(0.0)
+                first = second # go to the next band
+            elif len(second_index > 0): # if there is any power in the band above the current band
+                power_in_bands.append(sum(self.periodogram[first_index[0]:second_index[0]]))
+                first = second
+            elif len(first_index) >= 1: # so, there is no power in the band above - is there any power
+                power_in_bands.append(sum(self.periodogram[first_index[0]:first_index[-1]]))
+                break
+            else:
+                break
+        return power_in_bands
 
     def get_bands(self, cuts, df):
+        # OLD VERSION! Uisng an integration measure no longer works!
         '''
         Method for finsing the total power in bands specified by cuts
         
@@ -76,8 +172,8 @@ class LombScargleSpectrum:
         power_in_bands = []
         for second in cuts[1:]:
             # no interpolation since the frequencies are closely spaced in self.frequency (see the build_spectrum method)
-            first_index = numpy.where(self.frequency >= first)[0]
-            second_index = numpy.where(self.frequency >= second)[0]
+            first_index = np.where(self.frequency >= first)[0]
+            second_index = np.where(self.frequency >= second)[0]
             # print(first_index, second_index, self.frequency[0])
             if first_index[0] == second_index[0]:
                 # here, if there is no power in the first band, and there is some in the following one,
@@ -92,7 +188,7 @@ class LombScargleSpectrum:
                 break
             else:
                 break
-        return (numpy.array([i * df for i in power_in_bands]), power_in_bands)
+        return np.array([i * df for i in power_in_bands])
 
     def test_cuts(self, cuts):
         '''
@@ -101,15 +197,45 @@ class LombScargleSpectrum:
         Args:
             cuts (list): Holds the frequency bands of interest
         '''
-        if len(cuts) != len(numpy.unique(cuts)) or (cuts != sorted(cuts)):
+        if len(cuts) != len(np.unique(cuts)) or (cuts != sorted(cuts)):
             raise WrongCuts
+
+    def spectral_values(self, cuts = [0.0, 0.04, 0.15, 0.4], ulf = False):
+        """
+        Method for calculating the spectral bands and assigning them to common spectral analysis parameters
         
-    def plot_periodogram(self, mode = 'angular', xlim = [], **kwargs):
+        Args:
+            ulf (logical): Specifies whether ulf should be calculated (should only be used for long reads)
+        
+        Return:
+            results (dict): A dictionary with band names as keys and corresponding spectral bands as values
+        """
+        spectral_bands = []
+        if ulf or cuts == [0.0, 0.003, 0.04, 0.15, 0.4]:
+            band_names = ["ulf", "vlf", "lf", "hf"]
+            spectral_bands = self.get_spectral_bands([0.0, 0.003, 0.04, 0.15, 0.4])
+        elif not ulf or cuts == [0.0, 0.04, 0.15, 0.4]:
+            band_names = ["vlf", "lf", "hf"]
+            spectral_bands = self.get_spectral_bands([0.0, 0.04, 0.15, 0.4])
+        else:
+            band_names = [str(cut) for cut in cuts]
+            spectral_bands = self.get_spectral_bands(cuts)
+        if spectral_bands is None:
+            return None
+        spectral_bands.append(np.sum(spectral_bands))
+        band_names.append("tp")
+        #results = pd.DataFrame([spectral_bands], columns=band_names)
+        results = dict(zip(band_names, spectral_bands))
+
+        return results
+
+        
+    def plot_periodogram(self, mode = 'Hz', xlim = [], **kwargs):
         '''
         Method for plotting a periodogram
 
         Args:
-            mode (str): Specifies the mode of the plot, angular (rad/sec) by default but can be changed into Hz, changing the mode changes
+            mode (str): Specifies the mode of the plot, in Hz by default but can be changed into rad/sec, changing the mode changes
             the values and descriptions for the frequency (Hz = rad/sec / 2*pi)
             xlim (list): A list of values which is passed to determine the range of the x axis, full range (0 - 6.28 for rad/sec or 0 - 1 for Hz) shown by default
             **kwargs: key word arguments which can be passed to the matplotlib.pyplots to change the appearance of the plot
@@ -117,7 +243,7 @@ class LombScargleSpectrum:
         Returns:
             periodogram_plot (Axes): A plot showing the values of the periodogram against the frequency (either rad/sec or Hz)
         '''
-        frequency, x_label = (self.frequency/(2*np.pi), 'Frequency [Hz]') if mode == 'Hz' else (self.frequency, 'Angular frequency [rad/s]') 
+        frequency, x_label = (self.frequency, 'Frequency [Hz]') if mode == 'Hz' else (self.frequency*(2*np.pi), 'Angular frequency [rad/s]') 
         fig, periodogram_plot = plt.subplots()
         periodogram_plot.plot(frequency, self.periodogram, **kwargs)
         xlim = plt.xlim() if xlim == [] else xlim
@@ -128,6 +254,188 @@ class LombScargleSpectrum:
         return periodogram_plot
 
 
+
+class WelchSpectrum:
+    '''
+    Class WelchSpectrum used to perform spectral analysis using the Welch method
+	
+	Attributes:
+    timetrack (array): An array with timetrack values in ms
+    interpolated_rr (array): An array containg interpolated signal values. 
+    resampled_timetrack (array): An array containing resampled timetrack values.
+    resampled_rr (array): An array contining resampled signal values
+    welch_spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in the Welch spectrum
+    welch_bands (dict): A dictionary storing the names and values of the spectral bands (vlf, lf, hf) and total power (tp) for short term spectral analysis
+    welch_bands_24h (dict): A dictionary storing the names and values of the spectral bands (ulf, vlf, lf, hf) and total power (tp) for long term spectral analysis
+    welch_bands_ulf (int): The value of the ultra low frequency band in the Welch spectrum (0.0-0.03 Hz) in the long term spectral analysis only
+    welch_bands_vlf (int): The value of the very low frequency band in the Welch spectrum (0.0-0.4 Hz) in short term and (0.003-0.4 Hz) in long term spectral analysis
+    welch_bands_lf (int): The value of the low frequency band in the Welch spectrum (0.04-0.15 Hz) 
+    welch_bands_hf (int): The value of the high frequency band in the Welch spectrum (0.15-0.4 Hz)
+    welch_bands_tp (int): The value of the total power in the Welch spectrum (0.0-0.4 Hz)
+    '''
+
+    def __init__(self, signal):
+        '''
+        Intializes the WelchSpectrum class
+
+        Args:
+            signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+        '''
+        self.timetrack = np.cumsum(signal.signal)
+        self.interpolated_rr = self.interpolate_non_sinus(signal)
+        #self.test_resample = self.resample_rr(self.interpolated_rr, signal.timetrack)
+        self.resampled_timetrack, self.resampled_rr = self.resample_rr(self.interpolated_rr, self.timetrack)
+        self.welch_spectrum = self.calculate_welch(self.resampled_rr)
+        self.welch_bands = self.calculate_bands(self.welch_spectrum)
+        self.welch_bands_24h = self.calculate_bands(self.welch_spectrum, ulf = True)
+        self.welch_bands_ulf, self.welch_bands_vlf, self.welch_bands_lf, self.welch_bands_hf, self.welch_bands_tp = self.welch_bands_24h.values()
+    
+    def interpolate_non_sinus(self, signal):
+        """
+        This method linearly interpolates the non-sinus beats
+        
+        Args:
+            signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+        
+        Returns:
+            good_intervals (array): An array containg interpolated signal values. 
+        """
+        inside_non_sinus = False
+        segment_end = 0
+        segment_start = 0
+        good_segment_start = 0
+        good_intervals_list = []
+        keep_last = True
+        for idx in range(len(signal.signal)):
+            if signal.annotation[idx] != 0 and not inside_non_sinus:
+                segment_start = idx - 1
+                good_intervals_list.append(signal.signal[good_segment_start:(segment_start + 1)])
+                inside_non_sinus = True
+            if inside_non_sinus and (signal.annotation[idx] == 0  or idx == len(signal.signal) - 1):
+                if idx == len(signal.signal) - 1:
+                    keep_last = False
+                    break
+                segment_end = idx
+                good_segment_start = segment_end
+                interpolated_sequence = self.optimal_division(signal, segment_start, segment_end)
+                good_intervals_list.append(interpolated_sequence)
+                inside_non_sinus = False
+        # now adding the last good segment to good_intervals_list
+        if keep_last:
+            good_intervals_list.append(signal.signal[good_segment_start:])
+        good_intervals = np.concatenate(good_intervals_list)
+        return good_intervals
+
+    def optimal_division(self, signal, start, stop):
+        '''
+        Method for finding the optimal division
+
+        Args:
+            signal (Signal): Object of class Signal containing signal, annotation and timetrack arrays
+            start (int): Index of the start of the segment
+            stop (int): Index of the end of the segment
+        
+        Returns:
+            optimal_division (array): Array with an optimal rr interval
+        '''
+        # the optimal rr interval is to be taken as the mean of the two correct
+        # rr intervals surrounding the non-sinus segment
+        optimal_rr = (signal.signal[start] + signal.signal[stop])/2
+        segment_length = np.cumsum(signal.signal[0:stop])[-1] - np.cumsum(signal.signal[0:start + 1])[-1]
+        
+        # now searching for optimal division
+        optimal = False
+        divisions = 1
+        delta = np.abs(segment_length - optimal_rr)
+        while not optimal:
+            current_rr = segment_length / (divisions + 1)
+            if np.abs(current_rr - optimal_rr) > delta:
+                optimal = True
+            else:
+                delta = np.abs(current_rr - optimal_rr)
+            divisions += 1
+        optimal_rr = [segment_length / (divisions - 1)]
+        optimal_division = np.array(optimal_rr * (divisions - 1))
+        return optimal_division
+
+    def resample_rr(self, signal, timetrack, period = 250, method = 'cubic'):
+        """
+        This method resamples the RR time series at period - the default value is 250 ms, which corresponds to 0.25 s or 4 Hz
+        
+        Args:
+            signal (array): The RR intervals time series
+            timetrack (array): Timetrack values
+            period (int): Resampling period, default value 250 ms
+            method (str):  Interpolation method, default is cubic splines
+
+        Returns:
+            timetrack_resampled (array): An array containing resampled timetrack values.
+            rr_resampled (array): An array contining resampled signal values
+        """
+        #transforming timetrack from mins to sec
+        '''timetrack = timetrack*60
+        if period_type == 'Hz':
+            period = 1 / period * 1000
+        elif period_type == 'sec':
+            period = period / 1000'''
+        interp_object = interp1d(np.cumsum(signal), signal, kind=method, fill_value='extrapolate')
+        # timetrack is in min, converting period in ms to min
+        timetrack_resampled = np.arange(timetrack[0], timetrack[-1], step = period)
+        rr_resampled = interp_object(timetrack_resampled)
+        return timetrack_resampled, rr_resampled
+
+    def calculate_welch(self, rr_resampled, fs=4, window='hamming', segment_min = 5,
+                    noverlap_frac = 0.5):
+        '''
+        Method that calculates the Welch periodogram
+        
+        Args:
+            rr_resampled (array): An array with resampled RR-intervals time series
+            fs (int): Resampling frequency
+            window (str): A type of window
+            segment_min (int): Length of Welch segments in minutes
+            noverlap_frac (float): Determines the value of the overlap, 0.5 by default
+        
+        Returns: 
+            w_spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in the Welch spectrum
+        '''
+        w_spectrum = sc.welch(rr_resampled - np.mean(rr_resampled), fs=4, window=window, nperseg=segment_min * 60 * fs,
+                       noverlap= segment_min * 60 * fs * noverlap_frac, return_onesided=False, scaling='spectrum')
+
+        return w_spectrum
+
+    def calculate_bands(self, w_spectrum, bands=[0.003, 0.04, 0.15, 0.4], ulf=False):
+        '''
+        Method to calculate the spectral bands
+        
+        Args: 
+            w_spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in the Welch spectrum
+            bands (list): A list of bands for calculating the Welch spectrum (in Hz)
+            ulf (logical): Determines if ultra low frequency should be calculated. False by defualt
+        
+        Returns: 
+            welch_bands (dict): A dictionary with band names as keys and power in the corresponding bands as values
+        '''
+        #print("pierwsze bandy", bands, bands == [0.003, 0.04, 0.15, 0.4])
+        if not ulf and bands == [0.003, 0.04, 0.15, 0.4]:
+            bands = [0.04, 0.15, 0.4]
+            band_names = ["vlf", "lf", "hf"]
+        elif bands == [0.003, 0.04, 0.15, 0.4]:
+            band_names = ["ulf", "vlf", "lf", "hf"]
+        else:
+            band_names = [str(_) for _ in bands]
+        #print(bands, band_names)
+        extended_bands = [0]; extended_bands.extend(bands)
+        spectral_bands = []
+        for band_idx in range(1, len(extended_bands)):
+            spectral_bands.append(np.sum(np.abs(w_spectrum[1][np.logical_and(w_spectrum[0] > extended_bands[band_idx - 1],
+                                                                  w_spectrum[0] <= extended_bands[band_idx])])) * 2)
+        spectral_bands.append(np.sum(spectral_bands))
+        band_names.append("tp")
+        #results = pd.DataFrame([spectral_bands], columns=band_names)
+        welch_bands = dict(zip(band_names, spectral_bands))
+
+        return welch_bands
 
 
 class FFTSpectrum:
@@ -162,9 +470,9 @@ class FFTSpectrum:
 	        filtered_signal (array): An array with the filtered RR signal
 	        filtered_timetrack (array): An array with the filtered timetrack
         '''
-        bad_beats = numpy.where(signal.annotation != 0)[0]
-        filtered_timetrack = numpy.delete(signal.timetrack, bad_beats)
-        filtered_signal = numpy.delete(signal.signal, bad_beats)
+        bad_beats = np.where(signal.annotation != 0)[0]
+        filtered_timetrack = np.delete(signal.timetrack, bad_beats)
+        filtered_signal = np.delete(signal.signal, bad_beats)
         return filtered_signal, filtered_timetrack
 
     @staticmethod
@@ -182,10 +490,10 @@ class FFTSpectrum:
             time_track_resampled (array): An array containg the time_track following the resampling
         '''
         # this method does not use the object in which it is enclosed, so I am making it static
-        from numpy.interpolate import interp1d
+        from np.interpolate import interp1d
         f_interp = interp1d(time_track, signal)
         time_step = 1 / resampling_rate * 1000
-        print(time_step)
+        #print(time_step)
         time_track_resampled = np.arange(np.min(time_track), np.max(time_track), step=time_step)
         signal_resampled = f_interp(time_track_resampled)
         return signal_resampled, time_track_resampled
