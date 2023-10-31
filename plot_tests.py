@@ -1,5 +1,4 @@
 from signal_properties.RRclasses import Signal
-from signal_properties.spectral import Spectrum
 import numpy
 import matplotlib.pyplot as plt
 import scipy.signal as sc
