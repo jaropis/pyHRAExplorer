@@ -1,4 +1,5 @@
 from signal_properties.RRclasses import Signal
+from signal_properties.spectral import Spectrum
 import numpy
 import matplotlib.pyplot as plt
 import scipy.signal as sc
@@ -52,8 +53,9 @@ print('power:', total_power2, sum(rr.LS_spectrum.periodogram), sum(bands), sum(b
 print(rr.LS_spectrum.spectral_values(), 'variance', numpy.var(rr.LS_spectrum.filtered_signal))
 
 print(rr.LS_spectrum.spectral_bands, rr.LS_spectrum.spectral_bands_24h)
-
-
-rr.LS_spectrum.plot_periodogram()
-plt.show()
 '''
+
+
+rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Rad')
+plt.show()
+

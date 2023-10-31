@@ -5,6 +5,71 @@ from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import pandas as pd
 
+class Spectrum:
+    '''
+    Class Spectrum for accessing, converting and plotting periodograms based on frequency and power
+
+    Attributes:
+        frequency_rad (array): Array with frequencies in rad/sec
+        frequency_hz (array): Array with frequencies in Hz
+        power (array): Power for a given frequency calculated during spectral analysis   
+
+    '''
+    def __init__(self, frequency, power, mode = 'Hz'):
+        '''
+        Initializes class Spectrum
+
+        Args:
+            frequency (array): An array with frequencies tested during spectral analysis
+            power (array): Power at given frequencies calculated during spectral analysis
+            mode (str): Specifies if the inputed frequency is in Hz or Rad/sec, Hz by default
+        '''
+        
+        self.frequency_rad, self.frequency_hz = self.frequency_conversion(frequency, mode) 
+        self.power = power
+
+    def frequency_conversion(self, frequency, mode):
+        '''
+        Method for converting a given frequency into a frequency in Rad and Hz. 
+
+        Args:
+            frequency (array): An array with frequencies tested during spectral analysis
+            mode (str): Specifies if the inputed frequency is in Hz or Rad/sec, Hz by default
+        '''
+        modes = ['Hz', 'Rad']
+        if mode not in modes:
+            raise ValueError("Invalid mode type. Select either 'Rad' or 'Hz'")
+        rad_frequency, hz_frequency = (frequency*2*np.pi, frequency) if mode == 'Hz' else (frequency, frequency/(2*np.pi)) if mode == 'Rad' else (None, None)
+
+        return rad_frequency, hz_frequency
+    
+    def plot_spectrum(self, mode = 'Hz', xlim = [], **kwargs):
+        '''
+        Method for plotting a periodogram
+
+        Args:
+            mode (str): Specifies the mode of the plot, in Hz by default but can be changed into rad/sec, changing the mode changes
+            the values and descriptions for the frequency (Hz = rad/sec / 2*pi)
+            xlim (list): A list of values which is passed to determine the range of the x axis, full range shown by default
+            **kwargs: key word arguments which can be passed to the matplotlib.pyplots to change the appearance of the plot
+
+        Returns:
+            periodogram_plot (Axes): A plot showing the values of the periodogram against the frequency (either rad/sec or Hz)
+        '''
+        modes = ['Hz', 'Rad']
+        if mode not in modes:
+            raise ValueError("Invalid mode type. Select either 'Rad' or 'Hz'")
+        frequency, x_label = (self.frequency_hz, 'Frequency [Hz]') if mode == 'Hz' else (self.frequency_rad, 'Angular frequency [rad/s]') 
+        fig, periodogram_plot = plt.subplots()
+        periodogram_plot.plot(frequency, self.power, **kwargs)
+        xlim = plt.xlim() if xlim == [] else xlim
+        periodogram_plot.set_xlim(xlim[0], xlim[1])
+        periodogram_plot.set_xlabel(x_label)
+        periodogram_plot.set_ylabel('Power')
+
+        return periodogram_plot
+
+
 
 class LombScargleSpectrum:
     '''
@@ -33,6 +98,7 @@ class LombScargleSpectrum:
         self.periodogram, self.frequency = self.build_spectrum()
         self.spectral_bands = self.spectral_values()
         self.spectral_bands_24h = self.spectral_values(ulf = True)
+        self.spectrum = Spectrum(self.frequency, self.periodogram)
         #self.ulf, self.vlf, self.lf, self.hf, self.tp = self.spectral_bands.values
         # self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) # this
         # is basically the result which is expected in HRV - depending on the length of the recording the first two
@@ -289,6 +355,7 @@ class WelchSpectrum:
         self.welch_bands = self.calculate_bands(self.welch_spectrum)
         self.welch_bands_24h = self.calculate_bands(self.welch_spectrum, ulf = True)
         self.welch_bands_ulf, self.welch_bands_vlf, self.welch_bands_lf, self.welch_bands_hf, self.welch_bands_tp = self.welch_bands_24h.values()
+        self.spectrum = Spectrum(self.welch_spectrum[0], self.welch_spectrum[1])
     
     def interpolate_non_sinus(self, signal):
         """
