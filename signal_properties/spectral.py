@@ -12,10 +12,12 @@ class Spectrum:
     Attributes:
         frequency_rad (array): Array with frequencies in rad/sec
         frequency_hz (array): Array with frequencies in Hz
-        power (array): Power for a given frequency calculated during spectral analysis   
+        power (array): Power for a given frequency calculated during spectral analysis
+        spectral_bands (dict):  A dictionary containing the names and total power within each band. 
+        By default returns the vlf, lf, hf and tp values, correspondng to very low frequency, low frequency, high frequency and total power. When true, ulf or ultra law frequency can be calculated as well.
 
     '''
-    def __init__(self, frequency, power, mode = 'Hz'):
+    def __init__(self, frequency, power, mode = 'Hz', ulf = False):
         '''
         Initializes class Spectrum
 
@@ -23,10 +25,12 @@ class Spectrum:
             frequency (array): An array with frequencies tested during spectral analysis
             power (array): Power at given frequencies calculated during spectral analysis
             mode (str): Specifies if the inputed frequency is in Hz or Rad/sec, Hz by default
+            ulf (bool): Specifies if ultra low frequency should be calculated (for long term spectral analysis)
         '''
         
         self.frequency_rad, self.frequency_hz = self.frequency_conversion(frequency, mode) 
         self.power = power
+        self.spectral_bands = self.get_bands((frequency, self.power))
 
     def frequency_conversion(self, frequency, mode):
         '''
@@ -43,6 +47,40 @@ class Spectrum:
 
         return rad_frequency, hz_frequency
     
+    def get_bands(self, w_spectrum, bands=[0.003, 0.04, 0.15, 0.4], ulf=False):
+        '''
+        Method to calculate the spectral bands
+        
+        Args: 
+            w_spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in spectrum
+            bands (list): A list of bands for calculating the spectrum (in Hz)
+            ulf (logical): Determines if ultra low frequency should be calculated. False by defualt
+        
+        Returns: 
+            spectral_bands (dict): A dictionary with band names as keys and power in the corresponding bands as values
+        '''
+        #print("pierwsze bandy", bands, bands == [0.003, 0.04, 0.15, 0.4])
+        if not ulf and bands == [0.003, 0.04, 0.15, 0.4]:
+            bands = [0.04, 0.15, 0.4]
+            band_names = ["vlf", "lf", "hf"]
+        elif bands == [0.003, 0.04, 0.15, 0.4]:
+            band_names = ["ulf", "vlf", "lf", "hf"]
+        else:
+            band_names = [str(_) for _ in bands]
+        #print(bands, band_names)
+        extended_bands = [0]; extended_bands.extend(bands)
+        spectral_bands = []
+        for band_idx in range(1, len(extended_bands)):
+            spectral_bands.append(np.sum(np.abs(w_spectrum[1][np.logical_and(w_spectrum[0] > extended_bands[band_idx - 1],
+                                                                  w_spectrum[0] <= extended_bands[band_idx])])))
+
+        spectral_bands.append(np.sum(spectral_bands))
+        band_names.append("tp")
+        #results = pd.DataFrame([spectral_bands], columns=band_names)
+        power_bands = dict(zip(band_names, spectral_bands))
+
+        return power_bands
+
     def plot_spectrum(self, mode = 'Hz', xlim = [], **kwargs):
         '''
         Method for plotting a periodogram
@@ -352,10 +390,11 @@ class WelchSpectrum:
         #self.test_resample = self.resample_rr(self.interpolated_rr, signal.timetrack)
         self.resampled_timetrack, self.resampled_rr = self.resample_rr(self.interpolated_rr, self.timetrack)
         self.welch_spectrum = self.calculate_welch(self.resampled_rr)
+        self.onesided_welch_spectrum = self.onesided_ws(self.welch_spectrum)
         self.welch_bands = self.calculate_bands(self.welch_spectrum)
         self.welch_bands_24h = self.calculate_bands(self.welch_spectrum, ulf = True)
         self.welch_bands_ulf, self.welch_bands_vlf, self.welch_bands_lf, self.welch_bands_hf, self.welch_bands_tp = self.welch_bands_24h.values()
-        self.spectrum = Spectrum(self.welch_spectrum[0], self.welch_spectrum[1])
+        self.spectrum = Spectrum(self.onesided_welch_spectrum[0], self.onesided_welch_spectrum[1])
     
     def interpolate_non_sinus(self, signal):
         """
@@ -470,6 +509,12 @@ class WelchSpectrum:
                        noverlap= segment_min * 60 * fs * noverlap_frac, return_onesided=False, scaling='spectrum')
 
         return w_spectrum
+
+    def onesided_ws(self, w_spectrum):
+        onesided_freq = w_spectrum[0][w_spectrum[0] >= 0]
+        onesided_power = w_spectrum[1][w_spectrum[0] >= 0] * 2
+        return onesided_freq, onesided_power
+        
 
     def calculate_bands(self, w_spectrum, bands=[0.003, 0.04, 0.15, 0.4], ulf=False):
         '''

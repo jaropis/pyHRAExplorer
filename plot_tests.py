@@ -17,13 +17,10 @@ rr.set_Welch_spectrum()
 #print(rr.poincare.pnnx()[1], rr.poincare.pnn_pro(x = 10), rr.poincare.pNN50)
 #print(rr.Welch_spectrum.resampled_rr, rr.Welch_spectrum.resampled_timetrack, rr.Welch_spectrum.interpolated_rr)
 #print(type(rr.Welch_spectrum.welch_spectrum))
-print(rr.Welch_spectrum.welch_bands)
-for n in [rr.Welch_spectrum.interpolated_rr, rr.Welch_spectrum.resampled_timetrack, rr.Welch_spectrum.resampled_rr, rr.Welch_spectrum.welch_spectrum, rr.Welch_spectrum.welch_bands]:
-    print(type(n))
+
 x = rr.Welch_spectrum.welch_bands
 xx = rr.Welch_spectrum.welch_bands_24h
-print(x, xx)
-print(type(rr.Welch_spectrum.optimal_division(rr, 3, 5)))
+
 #print(rr.Welch_spectrum.welch_bands_ulf, rr.Welch_spectrum.welch_bands_vlf, rr.Welch_spectrum.welch_bands_lf, rr.Welch_spectrum.welch_bands_hf, rr.Welch_spectrum.welch_bands_tp, rr.poincare.SDNN**2, rr.poincare.SDNN**2/rr.Welch_spectrum.welch_bands_tp)
 
 #print(rr.LS_spectrum.get_bands([0.003, 0.04, 0.15, 0.4], df))
@@ -55,6 +52,13 @@ print(rr.LS_spectrum.spectral_bands, rr.LS_spectrum.spectral_bands_24h)
 '''
 
 
-rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Rad')
-plt.show()
+#rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Rad')
+#plt.show()
 
+for r in rr.LS_spectrum.spectrum.spectral_bands:
+    print(r)
+
+for r in rr.Welch_spectrum.spectrum.spectral_bands:
+    print(r)
+
+print(rr.LS_spectrum.spectrum.spectral_bands, rr.Welch_spectrum.spectrum.spectral_bands)
