@@ -55,10 +55,8 @@ print(rr.LS_spectrum.spectral_bands, rr.LS_spectrum.spectral_bands_24h)
 #rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Rad')
 #plt.show()
 
-for r in rr.LS_spectrum.spectrum.spectral_bands:
-    print(r)
 
-for r in rr.Welch_spectrum.spectrum.spectral_bands:
-    print(r)
+#print(rr.LS_spectrum.spectrum.spectral_bands, rr.Welch_spectrum.spectrum.spectral_bands)
 
-print(rr.LS_spectrum.spectrum.spectral_bands, rr.Welch_spectrum.spectrum.spectral_bands)
+rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Hz', ulf = True)
+plt.show()

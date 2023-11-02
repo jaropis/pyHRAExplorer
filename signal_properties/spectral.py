@@ -17,7 +17,7 @@ class Spectrum:
         By default returns the vlf, lf, hf and tp values, correspondng to very low frequency, low frequency, high frequency and total power. When true, ulf or ultra law frequency can be calculated as well.
 
     '''
-    def __init__(self, frequency, power, mode = 'Hz', ulf = False):
+    def __init__(self, frequency, power, bands = [0.003, 0.04, 0.15, 0.4], mode = 'Hz', ulf = False):
         '''
         Initializes class Spectrum
 
@@ -54,7 +54,7 @@ class Spectrum:
         Args: 
             w_spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in spectrum
             bands (list): A list of bands for calculating the spectrum (in Hz)
-            ulf (logical): Determines if ultra low frequency should be calculated. False by defualt
+            ulf (bool): Determines if ultra low frequency should be calculated. False by defualt
         
         Returns: 
             spectral_bands (dict): A dictionary with band names as keys and power in the corresponding bands as values
@@ -81,7 +81,7 @@ class Spectrum:
 
         return power_bands
 
-    def plot_spectrum(self, mode = 'Hz', xlim = [], **kwargs):
+    def plot_spectrum(self, mode = 'Hz', xlim = [], color_bands = True, ulf = False, spectrum_units = '', **kwargs):
         '''
         Method for plotting a periodogram
 
@@ -89,6 +89,8 @@ class Spectrum:
             mode (str): Specifies the mode of the plot, in Hz by default but can be changed into rad/sec, changing the mode changes
             the values and descriptions for the frequency (Hz = rad/sec / 2*pi)
             xlim (list): A list of values which is passed to determine the range of the x axis, full range shown by default
+            color_bands (bool): Specifies if the spectral bands should be coloured
+            ulf (bool): Determines if ultra low frequency should be displayed. False by defualt
             **kwargs: key word arguments which can be passed to the matplotlib.pyplots to change the appearance of the plot
 
         Returns:
@@ -101,9 +103,23 @@ class Spectrum:
         fig, periodogram_plot = plt.subplots()
         periodogram_plot.plot(frequency, self.power, **kwargs)
         xlim = plt.xlim() if xlim == [] else xlim
+        if color_bands:
+            if ulf:
+                bands = [0, 0.003, 0.04, 0.15, 0.4]
+                band_names = ['ulf', 'vlf', 'lf', 'hf']
+            else:
+                bands = [0, 0.04, 0.15, 0.4]
+                band_names = ['vlf', 'lf', 'hf']
+            colors = ['#E69F00', '#56B4E9', '#F0E442', '#009E73', '#0072B2']
+            for i in range(1, len(bands)):
+                periodogram_plot.fill_between(x = frequency, y1 = self.power, where = (bands[i-1] < frequency)&(frequency <= bands[i]), color = colors[i-1])
+                #periodogram_plot.axvline(x = bands[i], ymin= 0, color = colors[i], label = '_nolegend_')
+            names = ['Spectrum']
+            names.extend(band_names)
+            plt.legend(names, loc=0, frameon=True)
         periodogram_plot.set_xlim(xlim[0], xlim[1])
         periodogram_plot.set_xlabel(x_label)
-        periodogram_plot.set_ylabel('Power')
+        periodogram_plot.set_ylabel(('Power ' + spectrum_units))
 
         return periodogram_plot
 
