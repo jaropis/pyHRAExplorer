@@ -15,6 +15,7 @@ class Spectrum:
         power (array): Power for a given frequency calculated during spectral analysis
         spectral_bands (dict):  A dictionary containing the names and total power within each band. 
         By default returns the vlf, lf, hf and tp values, correspondng to very low frequency, low frequency, high frequency and total power. When true, ulf or ultra law frequency can be calculated as well.
+        LF_HF_ratio (float): Ratio of low frequency power to high frequency.
 
     '''
     def __init__(self, frequency, power, bands = [0.003, 0.04, 0.15, 0.4], mode = 'Hz', ulf = False):
@@ -92,6 +93,7 @@ class Spectrum:
             xlim (list): A list of values which is passed to determine the range of the x axis, full range shown by default
             color_bands (bool): Specifies if the spectral bands should be coloured
             ulf (bool): Determines if ultra low frequency should be displayed. False by defualt
+            spectrum_units (str): Allows the user to input the units of the power and y axis
             **kwargs: key word arguments which can be passed to the matplotlib.pyplots to change the appearance of the plot
 
         Returns:
@@ -102,9 +104,7 @@ class Spectrum:
             raise ValueError("Invalid mode type. Select either 'Rad' or 'Hz'")
         frequency, x_label = (self.frequency_hz, 'Frequency [Hz]') if mode == 'Hz' else (self.frequency_rad, 'Angular frequency [rad/s]') 
         fig, periodogram_plot = plt.subplots()
-        #periodogram_plot.plot(frequency, self.power, color = 'white', **kwargs, label = '_nolegend_')
-        xlim = plt.xlim() if xlim == [] else xlim
-        edge_cases = []
+
         if color_bands:
             if ulf:
                 bands = [0, 0.003, 0.04, 0.15, 0.4]
@@ -116,22 +116,22 @@ class Spectrum:
             for i in range(1, len(bands)):
                 #periodogram_plot.fill_between(x = frequency, y1 = self.power, where = (bands[i-1] < frequency)&(frequency < bands[i]), color = colors[i-1])
                 periodogram_plot.fill_between(x = frequency, y1 = self.power, where = (bands[i-1] < frequency)&(frequency < bands[i]), color = colors[i-1], interpolate= True)
-                #periodogram_plot.plot(x = frequency[bands[i-1], bands[i]], )
-                #short_freq = frequency[np.logical_and(frequency > bands[i - 1], frequency <= bands[i])]
-                #short_power = self.power[np.logical_and(frequency > bands[i - 1], frequency <= bands[i])]
-                #periodogram_plot.plot(short_freq, short_power, color = colors[i-1], label = '_nolegend_')
-                #edge_cases.append([short_freq[0], short_freq[-1]])
+                short_freq = frequency[np.logical_and(frequency > bands[i - 1], frequency <= bands[i])]
+                short_power = self.power[np.logical_and(frequency > bands[i - 1], frequency <= bands[i])]
+                periodogram_plot.plot(short_freq, short_power, color = colors[i-1], label = '_nolegend_')
                 #periodogram_plot.axvline(x = bands[i], ymin= 0, color = colors[i], label = '_nolegend_')
             #names = ['Spectrum']
             #names.extend(band_names)
             plt.legend(band_names, loc=0, frameon=True)
+        elif not color_bands:
+            periodogram_plot.plot(frequency, self.power, color = 'white', **kwargs, label = '_nolegend_')
+        
+        xlim = plt.xlim() if xlim == [] else xlim
         periodogram_plot.set_xlim(xlim[0], xlim[1])
         periodogram_plot.set_xlabel(x_label)
         periodogram_plot.set_ylabel(('Power ' + spectrum_units))
 
         return periodogram_plot
-        #return edge_cases
-
 
 
 class LombScargleSpectrum:
