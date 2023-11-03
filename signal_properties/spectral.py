@@ -124,7 +124,8 @@ class Spectrum:
             #names.extend(band_names)
             plt.legend(band_names, loc=0, frameon=True)
         elif not color_bands:
-            periodogram_plot.plot(frequency, self.power, color = 'white', **kwargs, label = '_nolegend_')
+            periodogram_plot.plot(frequency, self.power, **kwargs)
+            plt.legend(['Spectrum'], loc=0, frameon=True)
         
         xlim = plt.xlim() if xlim == [] else xlim
         periodogram_plot.set_xlim(xlim[0], xlim[1])
