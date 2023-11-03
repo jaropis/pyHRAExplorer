@@ -59,4 +59,6 @@ print(rr.LS_spectrum.spectral_bands, rr.LS_spectrum.spectral_bands_24h)
 #print(rr.LS_spectrum.spectrum.spectral_bands, rr.Welch_spectrum.spectrum.spectral_bands)
 
 rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Hz', ulf = True)
+#print(rr.LS_spectrum.spectrum.frequency_hz)
+#print(case)
 plt.show()

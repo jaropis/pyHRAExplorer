@@ -81,7 +81,7 @@ class Spectrum:
 
         return power_bands
 
-    def plot_spectrum(self, mode = 'Hz', xlim = [], color_bands = True, ulf = False, spectrum_units = '', **kwargs):
+    def plot_spectrum(self, mode = 'Hz', xlim = [0, 0.4], color_bands = True, ulf = False, spectrum_units = '', **kwargs):
         '''
         Method for plotting a periodogram
 
@@ -101,8 +101,9 @@ class Spectrum:
             raise ValueError("Invalid mode type. Select either 'Rad' or 'Hz'")
         frequency, x_label = (self.frequency_hz, 'Frequency [Hz]') if mode == 'Hz' else (self.frequency_rad, 'Angular frequency [rad/s]') 
         fig, periodogram_plot = plt.subplots()
-        periodogram_plot.plot(frequency, self.power, **kwargs)
+        #periodogram_plot.plot(frequency, self.power, color = 'white', **kwargs, label = '_nolegend_')
         xlim = plt.xlim() if xlim == [] else xlim
+        edge_cases = []
         if color_bands:
             if ulf:
                 bands = [0, 0.003, 0.04, 0.15, 0.4]
@@ -112,16 +113,23 @@ class Spectrum:
                 band_names = ['vlf', 'lf', 'hf']
             colors = ['#E69F00', '#56B4E9', '#F0E442', '#009E73', '#0072B2']
             for i in range(1, len(bands)):
-                periodogram_plot.fill_between(x = frequency, y1 = self.power, where = (bands[i-1] < frequency)&(frequency <= bands[i]), color = colors[i-1])
+                #periodogram_plot.fill_between(x = frequency, y1 = self.power, where = (bands[i-1] < frequency)&(frequency < bands[i]), color = colors[i-1])
+                periodogram_plot.fill_between(x = frequency, y1 = self.power, where = (bands[i-1] < frequency)&(frequency < bands[i]), color = colors[i-1], interpolate= True)
+                #periodogram_plot.plot(x = frequency[bands[i-1], bands[i]], )
+                #short_freq = frequency[np.logical_and(frequency > bands[i - 1], frequency <= bands[i])]
+                #short_power = self.power[np.logical_and(frequency > bands[i - 1], frequency <= bands[i])]
+                #periodogram_plot.plot(short_freq, short_power, color = colors[i-1], label = '_nolegend_')
+                #edge_cases.append([short_freq[0], short_freq[-1]])
                 #periodogram_plot.axvline(x = bands[i], ymin= 0, color = colors[i], label = '_nolegend_')
-            names = ['Spectrum']
-            names.extend(band_names)
-            plt.legend(names, loc=0, frameon=True)
+            #names = ['Spectrum']
+            #names.extend(band_names)
+            plt.legend(band_names, loc=0, frameon=True)
         periodogram_plot.set_xlim(xlim[0], xlim[1])
         periodogram_plot.set_xlabel(x_label)
         periodogram_plot.set_ylabel(('Power ' + spectrum_units))
 
         return periodogram_plot
+        #return edge_cases
 
 
 
