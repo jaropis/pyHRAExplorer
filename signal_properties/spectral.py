@@ -31,6 +31,7 @@ class Spectrum:
         self.frequency_rad, self.frequency_hz = self.frequency_conversion(frequency, mode) 
         self.power = power
         self.spectral_bands = self.get_bands((frequency, self.power))
+        self.LF_HF_ratio = self.spectral_bands['lf']/self.spectral_bands['hf']
 
     def frequency_conversion(self, frequency, mode):
         '''
