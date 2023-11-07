@@ -68,5 +68,31 @@ class TestRuns(unittest.TestCase):
         self.assertTrue(self.signal6.runs.acc_runs == [0, 0, 2])
         self.assertTrue(self.signal6.runs.neutral_runs == [0, 1])
 
+    def test_runs_shares(self):
+        # for signal1 there is 1 decelerating runs of length 4, as overall there is 4 runs we would expect the decelerating runs of length 1 to be 4/4 = 100.0% 
+        self.assertTrue(self.signal1.runs.runs_share == ([0.0, 0.0, 0.0, 100.0], [], []))
+        
+        # for signal2 there is 1 decelerating run of length 4 and 1 accelerating runs of length 4, with 8 total runs
+        # we would expect the decelerating and accelerating runs of length 4 to be 4/8 = 50% each
+        self.assertTrue(self.signal2.runs.runs_share == ([0.0, 0.0, 0.0, 50.0], [0.0, 0.0, 0.0, 50.0], []))
+        
+        # for signal3 there is 3 decelerating runs of length 1, 3 accelerating runs of length 1 and 1 accelerating run of length 2.
+        # as overall there is 8 runs we would expect the decelerating runs of length 1 to be 3/8 = 37.5%, 
+        # accelerating runs of length 1 to be 3/8 = 37.55 and acc reuns of len 2 to be (2*1)/8 = 25.0% of all runs
+        self.assertTrue(self.signal3.runs.runs_share == ([37.5], [37.5, 25.0], []))
+        
+        # for signal4 there is 1 decelerating run of length 2, 1 accelerating run of length 2 and 1 neutral run of length 2.
+        # as overall there is 6 runs we would expect all the runs of length 2 to be 2/6 = 33.3% each
+        self.assertTrue(self.signal4.runs.runs_share == ([0.0, 33.33], [0.0, 33.33], [0.0, 33.33]))
+
+        # for signal5 there is 1 decelerating run of length 2 and 1 accelerating run of length 2.
+        # as overall there is 4 runs we would expect both the acc and dec runs of length 2 to be 2/4 = 50.0% each.
+        self.assertTrue(self.signal5.runs.runs_share == ([0.0, 50.0], [0.0, 50.0], []))
+        
+        # for signal6 there is 1 decelerating run of length 2, 2 accelerating runs of length 3 and 1 neutral run of length 2,
+        # as overall there is 10 runs we would expect the decelerating runs of length 2 to be 2/10 = 20.0%, 
+        # accelerating runs of length 3 to be (2*3)/10 = 60.0% and neutral runs of len 2 to be 2/10 = 20% of all runs
+        self.assertTrue(self.signal6.runs.runs_share == ([0.0, 20.0], [0.0, 0.0, 60.0], [0.0, 20.0]))
+
 if __name__ == '__main__':
     unittest.main()
