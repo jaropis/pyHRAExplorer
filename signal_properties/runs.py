@@ -255,7 +255,7 @@ class Runs:
         return tuple(count_all_share)
     
     # Separete for now, can be merged with the actual method later 
-    def equalise_runs(self, runs, n = 10):
+    def equalise_runs(self, runs, n = 10, by_longest = False):
         '''
         Method for setting an equal output length for each direction, regardless of the longest run. 
 
@@ -266,6 +266,12 @@ class Runs:
         Returns:
             equal_runs (tuple): A tuple containing runs to the desired maximal length.
         '''
+        if by_longest:
+            lens = []
+            for run in runs:
+                lens.append(len(run))
+            n = max(lens)   
+
         equal_runs = []
         for run in runs:
             equal_run = run[:n] + [0]*(n - len(run))

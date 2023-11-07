@@ -99,5 +99,14 @@ class TestRuns(unittest.TestCase):
         length = 5
         # make sure that following equlaisation, the length of returned arrays is equal to the set length and to each other lengths (so all the length are equal)
         self.assertTrue(len(self.signal6.runs.equalise_runs(runs_share, n = length)[0]) == length and len(self.signal6.runs.equalise_runs(runs_share, n = length)[0]) == len(self.signal6.runs.equalise_runs(runs_share, n = length)[1]) == len(self.signal6.runs.equalise_runs(runs_share, n = length)[2]))
+        
+        # Check if when the by_longest option is true the outputed arrays all have the same lengths as the direction with the most runs
+        lens = []
+        for run in runs_share:
+            lens.append(len(run))
+            longest = max(lens)
+        # For signal6, accelarations have 3 different run lengths, so we would expect all of them to have length 3
+        self.assertTrue(len(self.signal6.runs.equalise_runs(runs_share, by_longest = True)[0]) == longest == 3 and len(self.signal6.runs.equalise_runs(runs_share, by_longest = True)[0]) == len(self.signal6.runs.equalise_runs(runs_share, by_longest = True)[1]) == len(self.signal6.runs.equalise_runs(runs_share, by_longest = True)[2]))
+
 if __name__ == '__main__':
     unittest.main()
