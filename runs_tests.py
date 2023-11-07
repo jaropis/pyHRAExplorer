@@ -94,5 +94,10 @@ class TestRuns(unittest.TestCase):
         # accelerating runs of length 3 to be (2*3)/10 = 60.0% and neutral runs of len 2 to be 2/10 = 20% of all runs
         self.assertTrue(self.signal6.runs.runs_share == ([0.0, 20.0], [0.0, 0.0, 60.0], [0.0, 20.0]))
 
+    def test_equalise_runs(self):
+        runs_share = self.signal6.runs.runs_share
+        length = 5
+        # make sure that following equlaisation, the length of returned arrays is equal to the set length and to each other lengths (so all the length are equal)
+        self.assertTrue(len(self.signal6.runs.equalise_runs(runs_share, n = length)[0]) == length and len(self.signal6.runs.equalise_runs(runs_share, n = length)[0]) == len(self.signal6.runs.equalise_runs(runs_share, n = length)[1]) == len(self.signal6.runs.equalise_runs(runs_share, n = length)[2]))
 if __name__ == '__main__':
     unittest.main()
