@@ -33,7 +33,8 @@ class Project:
         build a list of the files associated with the project, i.e. in the correct directory, with the correct
         extension
         """
-        return [item.split("/")[-1] for item in glob(self.path+'/*'+self.file_extension)]
+        #return [item.split("/")[-1] for item in glob(self.path+'/*'+self.file_extension)]
+        return [item.split("\\")[-1] for item in glob(self.path+'/*'+self.file_extension)]
 
     def set_Poincare(self):
         """
@@ -171,6 +172,7 @@ class Project:
         results_file = self.build_name(prefix="Poincare_")
         results = open(results_file, 'w')
         results.write(results_first_line)
+        all = []
         for file_result in self.project_results:
             file_name = file_result[0]
             temp_poincare_object = file_result[1]['Poincare'] # this is a dictionary - I select key Poincare
@@ -181,7 +183,10 @@ class Project:
                         str(temp_poincare_object.C2d) + "\t" + str(temp_poincare_object.C2a) + "\t" + str(temp_poincare_object.SDNNd) + "\t" + \
                         str(temp_poincare_object.SDNNa) + "\t" + str(temp_poincare_object.Cd) + "\t" + str(temp_poincare_object.Ca) + "\n"
             results.write(res_line)
+            all.append(res_line)
         results.close()
+        return(all, self.project_results)
+        
 
     def dump_runs(self):
         """
@@ -222,8 +227,7 @@ class Project:
         for file_result in self.project_results:
             file_name = file_result[0]
             temp_spectral_results_object = file_result[1]['LS_spectrum']
-            temp_spectral_results_for_file = temp_spectral_results_object.get_bands(cuts=bands,
-                                                                                  df=temp_spectral_results_object.frequency[1]-temp_spectral_results_object.frequency[0])
+            temp_spectral_results_for_file = temp_spectral_results_object.get_spectral_bands(cuts=bands)
             results.write("\t".join(map(str, temp_spectral_results_for_file))+"\n")
         results.close()
 
@@ -233,11 +237,11 @@ class Project:
         """
         this function builds the name of the results file - the aim is to leave the existing results files_list
         """
-        current_name = self.path + "/" + prefix + "results"+str(datetime.date.today())+".csv"
+        current_name = self.path + "/" + prefix + "results_"+str(datetime.date.today())+".csv"
         i = 1
         while (True):
             if os.path.exists(current_name):
-                current_name = self.path + "/" + prefix + "results" + str(datetime.date.today()) + "_" + str(i) + ".csv"
+                current_name = self.path + "/" + prefix + "results_" + str(datetime.date.today()) + "_" + str(i) + ".csv"
             else:
                 break
             i += 1

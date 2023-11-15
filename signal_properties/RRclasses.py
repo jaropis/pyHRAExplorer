@@ -119,8 +119,7 @@ class Signal:
                 annotation.append(int(float(line_content[column_annot])))
            
             if column_sample_to_sample !=-1 and column_sample_to_sample != column_signal: # Checks if the column
-                # sample to sample has been specified (what is it is in the first column?) maybe change default
-                # from 0 to -1?
+                # sample to sample has been specified (what is it is in the first column?) 
                 sample_to_sample.append(float(line_content[column_sample_to_sample]))
                 # added an option for using the sample to sample column with an increasing time (rather than sample to sample time)
                 # Changed the way sample to sample/timetrack is assigned
@@ -134,7 +133,7 @@ class Signal:
                     timetrack = cumsum(sample_to_sample)        
             else:
                 # To prevent the timetrack not being returned
-                timetrack = cumsum(sample_to_sample)
+                timetrack = cumsum(signal)/60000
         signal = array(signal)
         if column_sample_to_sample == column_signal:
             sample_to_sample = signal
