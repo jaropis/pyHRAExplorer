@@ -24,6 +24,7 @@ class Project:
         self.Poincare_state = False
         self.runs_state = False
         self.LS_spectrum_state = False
+        self.quality_state = False
 
         self.project_results = [] # this list of lists will hold the name of the file and the self.file_results for
         # each file eg. [[filename1, {Poincare: , runs: , LS_spectrum}], [filename2, {Poincare: , runs: , LS_spectrum}}
@@ -53,6 +54,12 @@ class Project:
         this means: calculate Lomb-Scargle spectrum
         """
         self.LS_spectrum_state = True
+
+    def set_quality(self):
+        """
+        this means: qulaity parameters (number of beats if each type)
+        """
+        self.quality_state = True
 
     def set_columns(self, column_signal=None, column_annotation=None, column_sample_to_sample=None):
         """
@@ -88,6 +95,7 @@ class Project:
         temp_poincare = None
         temp_LS_spectrum = None
         temp_runs = None
+        temp_quality = None
         # above: just to begin with something
         for file in self.files_list:
             temp_path = self.path + "/" + file
@@ -109,7 +117,10 @@ class Project:
             if self.LS_spectrum_state:
                 temp_signal.set_LS_spectrum()
                 temp_LS_spectrum = temp_signal.LS_spectrum
-            temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "LS_spectrum": temp_LS_spectrum}
+
+            if self.quality_state:
+                temp_quality = temp_signal.quality(temp_signal.annotation)
+            temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "LS_spectrum": temp_LS_spectrum, 'Quality': temp_quality}
             self.project_results.append([file, temp_file_results])
 
     # methods to finish
@@ -132,6 +143,7 @@ class Project:
             self.Poincare_state = bool(input_file.readline().split(':')[1].rstrip())
             self.runs_state = bool(input_file.readline().split(':')[1].rstrip())
             self.LS_spectrum_state = bool(input_file.readline().split(':')[1].rstrip())
+            self.quality_state = bool(input_file.readline().split(':')[1].rstrip())
             input_file.close()
             return(True)
         except Exception:
@@ -156,6 +168,7 @@ class Project:
             output_line += "Poincare state:" + str(int(self.Poincare_state)) + "\n"
             output_line += "runs state:" + str(int(self.runs_state)) + "\n"
             output_line += "LS_spectrum state:" + str(int(self.LS_spectrum_state)) + "\n"
+            output_line += "Quality state:" + str(int(self.quality_state)) + "\n"
             output_file.write(output_line)
             output_file.close()
             return True
@@ -230,6 +243,20 @@ class Project:
             temp_spectral_results_for_file = temp_spectral_results_object.get_spectral_bands(cuts=bands)
             results.write("\t".join(map(str, temp_spectral_results_for_file))+"\n")
         results.close()
+
+    def dump_quality(self):
+        results_first_line = 'file_name\tn_total\tn_sinus\tn_ventricular\tn_supraventricular\tn_artifact\tn_unknown\n'
+        results_file = self.build_name(prefix="Quality_")
+        results = open(results_file, 'w')
+        results.write(results_first_line)
+        for file_result in self.project_results:
+            file_name = file_result[0]
+            temp_quality_object = file_result[1]['Quality']
+            res_line = file_name + '\t' + '\t'.join([str(_) for _ in temp_quality_object]) + '\n'
+            print(res_line)
+            results.write(res_line)
+        results.close()
+        return(res_line)
 
     def build_name(self, prefix=""):
         import datetime
