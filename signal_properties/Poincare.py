@@ -53,7 +53,7 @@ class Poincare:
         # descriptors will be capital, methods lower case
         self.SD1 = self.sd1()
         self.SD2 = self.sd2()
-        self.SDNN, self.SD2_SD1 = self.sd1sd2()
+        self.SDNN, self.SD2_SD1 = self.sd2_sd1()
         self.meanRR = self.meanrr()
         self.CV = self.cv()
         # pNNn
@@ -160,7 +160,7 @@ class Poincare:
         #n = len(self.xii)
         #return(sqrt(var(self.xii - self.xi)/2 * (n/(n-1))))
 
-    def sd1sd2(self):
+    def sd2_sd1(self):
         '''
         Calculates the SDNN parameter for the signal using the xi and xii attributes of class Poincare.
 

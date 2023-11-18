@@ -24,6 +24,10 @@ class TestPoincareFiltering(unittest.TestCase):
         self.signal6 = Signal([[751, 802, 753, 804, 755, 806, 757, 808, 7059, 8010], [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]],
                   square_filter = (300, 2000), annotation_filter = (1,)) # testing square filter in the middle
         self.signal6.set_poincare()
+        # testing quality parameters
+        self.signal7 = Signal([[751, 802, 753, 804, 755, 806, 757, 808, 7059, 8010], [0, 0, 0, 1, 0, 2, 0, 1, 0, 0]], annotation_filter = (1,))
+        self.signal8 = Signal([[751, 802, 753, 804, 755, 806, 757, 808, 7059, 8010], [4, 0, 0, 1, 2, 2, 0, 1, 0, 3]], annotation_filter = (1,))
+        self.signal9 = Signal([[751, 802, 753, 804, 755, 806, 757, 808, 7059, 8010], [4, 0, 0, 0, 2, 2, 3, 1, 6, 6]], annotation_filter = (1,))
 
 
     def test_the_middle(self):
@@ -49,6 +53,20 @@ class TestPoincareFiltering(unittest.TestCase):
     def test_square_end_mixed(self):
         self.assertTrue((self.signal6.poincare.xi == array([751, 802, 755, 806, 757])).all())
         self.assertTrue((self.signal6.poincare.xii == array([802, 753, 806, 757, 808])).all())
+
+    def test_quality(self):
+        # Signal7: 10 beats total, 7 with '0' flag, 2 with '1' flag, 1 with '2' flag, 0 with '3' flag and 0 with unknown flag 
+        self.assertTrue((self.signal7.quality_counts == [10, 7, 2, 1, 0, 0]))
+        self.assertTrue((self.signal7.n_s == 7)) # number of sinus beats ('0' flag)
+                # Signal7: 10 beats total, 4 with '0' flag, 2 with '1' flag, 2 with '2' flag, 1 with '3' flag and 1 with unknown flag 
+        self.assertTrue((self.signal8.quality_counts == [10, 4, 2, 2, 1, 1]))
+        self.assertTrue((self.signal8.n_x == 1)) # number of artifacts (flag '3')
+                # Signal7: 10 beats total, 3 with '0' flag, 1 with '1' flag, 2 with '2' flag, 1 with '3' flag and 3 with unknown flag 
+        self.assertTrue((self.signal9.quality_counts == [10, 3, 1, 2, 1, 3]))
+        # is the sum of all flags equal to the toatla number of beats?
+        self.assertTrue((self.signal9.n_s + self.signal9.n_v + self.signal9.n_sv + self.signal9.n_x + self.signal9.n_u) == self.signal9.n_total)
+
+        
 
 if __name__ == '__main__':
     unittest.main()
