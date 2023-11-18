@@ -181,7 +181,8 @@ class Project:
         file in the project
         :return:
         """
-        results_first_line = "filename\tSDNN\tSD1\tSD2\tSD1d\tSD1a\tC1d\tC1a\tSD2d\tSD2a\tC2d\tC2a\tSDNNd\tSDNNa\tCd\tCa\n"
+        #results_first_line = "filename\tSDNN\tSD1\tSD2\tSD1d\tSD1a\tC1d\tC1a\tSD2d\tSD2a\tC2d\tC2a\tSDNNd\tSDNNa\tCd\tCa\n"
+        results_first_line = "filename\tSDNN\tSD1\tSD2\tSD2/SD1\tmeanRR\tpNN50\tSD1d\tC1d\tSD1a\tC1a\tSD1I\tND\tSD2d\tC2d\tSD2a\tC2a\tSD2I\tSDNNd\tCd\tSDNNa\tCa\tHRA1\tHRA2\tHRAT\tHRAN\tHRAcomp\tCS\tCSa\tCSd\tCLa\tCLd\n"
         results_file = self.build_name(prefix="Poincare_")
         results = open(results_file, 'w')
         results.write(results_first_line)
@@ -190,11 +191,28 @@ class Project:
             file_name = file_result[0]
             temp_poincare_object = file_result[1]['Poincare'] # this is a dictionary - I select key Poincare
             res_line = file_name + "\t"
-            res_line += str(temp_poincare_object.SDNN) + "\t" + str(temp_poincare_object.SD1) + "\t" + str(temp_poincare_object.SD2) + "\t" + \
+            '''res_line += str(temp_poincare_object.SDNN) + "\t" + str(temp_poincare_object.SD1) + "\t" + str(temp_poincare_object.SD2) + "\t" + \
                         str(temp_poincare_object.SD1d) + "\t" + str(temp_poincare_object.SD1a) + "\t" + str(temp_poincare_object.C1d) + "\t" + \
                         str(temp_poincare_object.C1a) + "\t" + str(temp_poincare_object.SD2d) + "\t" + str(temp_poincare_object.SD2a) + "\t" + \
                         str(temp_poincare_object.C2d) + "\t" + str(temp_poincare_object.C2a) + "\t" + str(temp_poincare_object.SDNNd) + "\t" + \
                         str(temp_poincare_object.SDNNa) + "\t" + str(temp_poincare_object.Cd) + "\t" + str(temp_poincare_object.Ca) + "\n"
+            '''
+            res_line += str(temp_poincare_object.SDNN) + "\t" + str(temp_poincare_object.SD1) + "\t" + str(temp_poincare_object.SD2) + "\t" + \
+                str(temp_poincare_object.SD2_SD1) + "\t" + str(temp_poincare_object.meanRR) + "\t" + str(temp_poincare_object.pNN50) + "\t"+ \
+                    "\t".join([str(_) for _ in temp_poincare_object.short_term_asymmetry()]) + "\t" + "\t".join([str(_) for _ in temp_poincare_object.long_term_asymmetry()]) + \
+                    "\t" + "\t".join([str(_) for _ in temp_poincare_object.total_asymmetry()]) + "\t" + "\t".join([str(_) for _ in temp_poincare_object.hra_forms()]) + \
+                    "\t" + "\t".join([str(_) for _ in temp_poincare_object.short_term_variability()]) + "\t" + "\t".join([str(_) for _ in temp_poincare_object.long_term_variability()]) + "\n"
+
+            '''
+            self.SD1d, self.C1d, self.SD1a, self.C1a, self.SD1I, self.ND = self.short_term_asymmetry()
+        self.SD2d, self.C2d, self.SD2a, self.C2a, self.SD2I = self.long_term_asymmetry()
+        self.SDNNd, self.Cd, self.SDNNa, self.Ca = self.total_asymmetry()
+        self.HRA1, self.HRA2, self.HRAT, self.HRAN, self.HRAcomp = self.hra_forms()
+        # HRV
+            # HRV
+            self.CS, self.CSa, self.CSd = self.short_term_variability()
+            self.CLa, self.CLd = self.long_term_variability()
+            '''
             results.write(res_line)
             all.append(res_line)
         results.close()

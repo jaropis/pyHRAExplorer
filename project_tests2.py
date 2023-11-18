@@ -6,17 +6,17 @@ from signal_properties.RRclasses import Signal
 import numpy as np
 
 test_project = Project(path=os.getcwd()+"/project/tests/test_files/", file_extension=".rea", column_signal=1, column_annot=2, column_sample_to_sample=1)
-#test_project.set_Poincare()
+test_project.set_Poincare()
 #test_project.set_runs()
 #test_project.set_LS_spectrum()
-test_project.set_quality()
+#test_project.set_quality()
 
 test_project.step_through_project_files()
 
-#y = test_project.dump_Poincare()
+y = test_project.dump_Poincare()
 #y = test_project.dump_runs()
 #y = test_project.dump_LS_spectrum()
-y = test_project.dump_quality()
+#y = test_project.dump_quality()
 print(y)
 '''
 path=os.getcwd()+"/project/tests/test_files"
