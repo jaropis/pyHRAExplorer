@@ -5,6 +5,135 @@ from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import pandas as pd
 
+class Spectrum:
+    '''
+    Class Spectrum for accessing, converting and plotting periodograms based on frequency and power
+
+    Attributes:
+        frequency_rad (array): Array with frequencies in rad/sec
+        frequency_hz (array): Array with frequencies in Hz
+        power (array): Power for a given frequency calculated during spectral analysis
+        spectral_bands (dict):  A dictionary containing the names and total power within each band. 
+        By default returns the vlf, lf, hf and tp values, correspondng to very low frequency, low frequency, high frequency and total power. When true, ulf or ultra law frequency can be calculated as well.
+        LF_HF_ratio (float): Ratio of low frequency power to high frequency.
+
+    '''
+    def __init__(self, frequency, power, bands = [0.003, 0.04, 0.15, 0.4], mode = 'Hz', ulf = False):
+        '''
+        Initializes class Spectrum
+
+        Args:
+            frequency (array): An array with frequencies tested during spectral analysis
+            power (array): Power at given frequencies calculated during spectral analysis
+            mode (str): Specifies if the inputed frequency is in Hz or Rad/sec, Hz by default
+            ulf (bool): Specifies if ultra low frequency should be calculated (for long term spectral analysis)
+        '''
+        
+        self.frequency_rad, self.frequency_hz = self.frequency_conversion(frequency, mode) 
+        self.power = power
+        self.spectral_bands = self.get_bands((frequency, self.power))
+        self.LF_HF_ratio = self.spectral_bands['lf']/self.spectral_bands['hf']
+
+    def frequency_conversion(self, frequency, mode):
+        '''
+        Method for converting a given frequency into a frequency in Rad and Hz. 
+
+        Args:
+            frequency (array): An array with frequencies tested during spectral analysis
+            mode (str): Specifies if the inputed frequency is in Hz or Rad/sec, Hz by default
+        '''
+        modes = ['Hz', 'Rad']
+        if mode not in modes:
+            raise ValueError("Invalid mode type. Select either 'Rad' or 'Hz'")
+        rad_frequency, hz_frequency = (frequency*2*np.pi, frequency) if mode == 'Hz' else (frequency, frequency/(2*np.pi)) if mode == 'Rad' else (None, None)
+
+        return rad_frequency, hz_frequency
+    
+    def get_bands(self, w_spectrum, bands=[0.003, 0.04, 0.15, 0.4], ulf=False):
+        '''
+        Method to calculate the spectral bands
+        
+        Args: 
+            w_spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in spectrum
+            bands (list): A list of bands for calculating the spectrum (in Hz)
+            ulf (bool): Determines if ultra low frequency should be calculated. False by defualt
+        
+        Returns: 
+            spectral_bands (dict): A dictionary with band names as keys and power in the corresponding bands as values
+        '''
+        #print("pierwsze bandy", bands, bands == [0.003, 0.04, 0.15, 0.4])
+        if not ulf and bands == [0.003, 0.04, 0.15, 0.4]:
+            bands = [0.04, 0.15, 0.4]
+            band_names = ["vlf", "lf", "hf"]
+        elif bands == [0.003, 0.04, 0.15, 0.4]:
+            band_names = ["ulf", "vlf", "lf", "hf"]
+        else:
+            band_names = [str(_) for _ in bands]
+        #print(bands, band_names)
+        extended_bands = [0]; extended_bands.extend(bands)
+        spectral_bands = []
+        for band_idx in range(1, len(extended_bands)):
+            spectral_bands.append(np.sum(np.abs(w_spectrum[1][np.logical_and(w_spectrum[0] > extended_bands[band_idx - 1],
+                                                                  w_spectrum[0] <= extended_bands[band_idx])])))
+
+        spectral_bands.append(np.sum(spectral_bands))
+        band_names.append("tp")
+        #results = pd.DataFrame([spectral_bands], columns=band_names)
+        power_bands = dict(zip(band_names, spectral_bands))
+
+        return power_bands
+
+    def plot_spectrum(self, mode = 'Hz', xlim = [0, 0.4], color_bands = True, ulf = False, spectrum_units = '', **kwargs):
+        '''
+        Method for plotting a periodogram
+
+        Args:
+            mode (str): Specifies the mode of the plot, in Hz by default but can be changed into rad/sec, changing the mode changes
+            the values and descriptions for the frequency (Hz = rad/sec / 2*pi)
+            xlim (list): A list of values which is passed to determine the range of the x axis, full range shown by default
+            color_bands (bool): Specifies if the spectral bands should be coloured
+            ulf (bool): Determines if ultra low frequency should be displayed. False by defualt
+            spectrum_units (str): Allows the user to input the units of the power and y axis
+            **kwargs: key word arguments which can be passed to the matplotlib.pyplots to change the appearance of the plot
+
+        Returns:
+            periodogram_plot (Axes): A plot showing the values of the periodogram against the frequency (either rad/sec or Hz)
+        '''
+        modes = ['Hz', 'Rad']
+        if mode not in modes:
+            raise ValueError("Invalid mode type. Select either 'Rad' or 'Hz'")
+        frequency, x_label = (self.frequency_hz, 'Frequency [Hz]') if mode == 'Hz' else (self.frequency_rad, 'Angular frequency [rad/s]') 
+        fig, periodogram_plot = plt.subplots()
+
+        if color_bands:
+            if ulf:
+                bands = [0, 0.003, 0.04, 0.15, 0.4]
+                band_names = ['ulf', 'vlf', 'lf', 'hf']
+            else:
+                bands = [0, 0.04, 0.15, 0.4]
+                band_names = ['vlf', 'lf', 'hf']
+            colors = ['#E69F00', '#56B4E9', '#F0E442', '#009E73', '#0072B2']
+            for i in range(1, len(bands)):
+                #periodogram_plot.fill_between(x = frequency, y1 = self.power, where = (bands[i-1] < frequency)&(frequency < bands[i]), color = colors[i-1])
+                periodogram_plot.fill_between(x = frequency, y1 = self.power, where = (bands[i-1] < frequency)&(frequency < bands[i]), color = colors[i-1], interpolate= True)
+                short_freq = frequency[np.logical_and(frequency > bands[i - 1], frequency <= bands[i])]
+                short_power = self.power[np.logical_and(frequency > bands[i - 1], frequency <= bands[i])]
+                periodogram_plot.plot(short_freq, short_power, color = colors[i-1], label = '_nolegend_')
+                #periodogram_plot.axvline(x = bands[i], ymin= 0, color = colors[i], label = '_nolegend_')
+            #names = ['Spectrum']
+            #names.extend(band_names)
+            plt.legend(band_names, loc=0, frameon=True)
+        elif not color_bands:
+            periodogram_plot.plot(frequency, self.power, **kwargs)
+            plt.legend(['Spectrum'], loc=0, frameon=True)
+        
+        xlim = plt.xlim() if xlim == [] else xlim
+        periodogram_plot.set_xlim(xlim[0], xlim[1])
+        periodogram_plot.set_xlabel(x_label)
+        periodogram_plot.set_ylabel(('Power ' + spectrum_units))
+
+        return periodogram_plot
+
 
 class LombScargleSpectrum:
     '''
@@ -33,6 +162,7 @@ class LombScargleSpectrum:
         self.periodogram, self.frequency = self.build_spectrum()
         self.spectral_bands = self.spectral_values()
         self.spectral_bands_24h = self.spectral_values(ulf = True)
+        self.spectrum = Spectrum(self.frequency, self.periodogram)
         #self.ulf, self.vlf, self.lf, self.hf, self.tp = self.spectral_bands.values
         # self.bands = self.get_bands(cuts=[0, 0.003, 0.04, 0.15, 0.4], df=self.frequency[1]-self.frequency[0]) # this
         # is basically the result which is expected in HRV - depending on the length of the recording the first two
@@ -286,9 +416,11 @@ class WelchSpectrum:
         #self.test_resample = self.resample_rr(self.interpolated_rr, signal.timetrack)
         self.resampled_timetrack, self.resampled_rr = self.resample_rr(self.interpolated_rr, self.timetrack)
         self.welch_spectrum = self.calculate_welch(self.resampled_rr)
+        self.onesided_welch_spectrum = self.onesided_ws(self.welch_spectrum)
         self.welch_bands = self.calculate_bands(self.welch_spectrum)
         self.welch_bands_24h = self.calculate_bands(self.welch_spectrum, ulf = True)
         self.welch_bands_ulf, self.welch_bands_vlf, self.welch_bands_lf, self.welch_bands_hf, self.welch_bands_tp = self.welch_bands_24h.values()
+        self.spectrum = Spectrum(self.onesided_welch_spectrum[0], self.onesided_welch_spectrum[1])
     
     def interpolate_non_sinus(self, signal):
         """
@@ -403,6 +535,12 @@ class WelchSpectrum:
                        noverlap= segment_min * 60 * fs * noverlap_frac, return_onesided=False, scaling='spectrum')
 
         return w_spectrum
+
+    def onesided_ws(self, w_spectrum):
+        onesided_freq = w_spectrum[0][w_spectrum[0] >= 0]
+        onesided_power = w_spectrum[1][w_spectrum[0] >= 0] * 2
+        return onesided_freq, onesided_power
+        
 
     def calculate_bands(self, w_spectrum, bands=[0.003, 0.04, 0.15, 0.4], ulf=False):
         '''
