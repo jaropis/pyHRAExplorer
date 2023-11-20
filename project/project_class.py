@@ -23,7 +23,8 @@ class Project:
         # these three flags say whether or not the specific method should be used
         self.Poincare_state = False
         self.runs_state = False
-        self.LS_spectrum_state = False
+        self.spectrum_state = False
+        #self.LS_spectrum_state = False
         self.quality_state = False
 
         self.project_results = [] # this list of lists will hold the name of the file and the self.file_results for
@@ -49,15 +50,24 @@ class Project:
         """
         self.runs_state = True
 
+    
+    def set_spectrum(self, type = 'LS'):
+        """
+        this means: calculate spectrum
+        """
+        self.spectrum_state = True
+        self.spectrum_type = type
+    '''
     def set_LS_spectrum(self):
         """
         this means: calculate Lomb-Scargle spectrum
         """
         self.LS_spectrum_state = True
+    '''
 
     def set_quality(self):
         """
-        this means: qulaity parameters (number of beats if each type)
+        this means: calculate quality parameters (number of beats if each type)
         """
         self.quality_state = True
 
@@ -93,7 +103,8 @@ class Project:
          does not want a specific type of result
         """
         temp_poincare = None
-        temp_LS_spectrum = None
+        temp_spectrum = None
+        #temp_LS_spectrum = None
         temp_runs = None
         temp_quality = None
         # above: just to begin with something
@@ -114,13 +125,22 @@ class Project:
             else:
                 temp_runs = None
 
+            if self.spectrum_state and self.spectrum_type == 'LS':
+                temp_signal.set_LS_spectrum()
+                temp_spectrum = temp_signal.LS_spectrum
+            elif self.spectrum_state and self.spectrum_type == 'Welch':
+                temp_signal.set_Welch_spectrum()
+                temp_spectrum = temp_signal.Welch_spectrum
+            
+            '''
             if self.LS_spectrum_state:
                 temp_signal.set_LS_spectrum()
                 temp_LS_spectrum = temp_signal.LS_spectrum
+            '''
 
             if self.quality_state:
                 temp_quality = temp_signal.quality(temp_signal.annotation)
-            temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "LS_spectrum": temp_LS_spectrum, 'Quality': temp_quality}
+            temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "Spectrum": temp_spectrum, 'Quality': temp_quality}
             self.project_results.append([file, temp_file_results])
 
     # methods to finish
@@ -167,7 +187,7 @@ class Project:
             output_line += "quotient filter:" + str(self.quotient_filter) + "\n"
             output_line += "Poincare state:" + str(int(self.Poincare_state)) + "\n"
             output_line += "runs state:" + str(int(self.runs_state)) + "\n"
-            output_line += "LS_spectrum state:" + str(int(self.LS_spectrum_state)) + "\n"
+            #output_line += "LS_spectrum state:" + str(int(self.LS_spectrum_state)) + "\n"
             output_line += "Quality state:" + str(int(self.quality_state)) + "\n"
             output_file.write(output_line)
             output_file.close()
@@ -245,22 +265,29 @@ class Project:
             results.write(res_line)
         results.close()
 
-    def dump_LS_spectrum(self, bands=[0, 0.003, 0.04, 0.15, 0.4]):
+    def dump_spectrum(self, bands=[0, 0.003, 0.04, 0.15, 0.4], ulf = True):
         """
         this method writes a csv/xlsx/ods file to the disk - this file contains the LS_spectrum for each
         file in the project
         :return:
         """
-        results_first_line = "VLF\tULF\tLF\tHF\tTP\n"
-        results_file = self.build_name(prefix="LS_spectrum_")
+        results_first_line = 'file_name\t'
+        if not ulf:
+            bands = [0, 0.04, 0.15, 0.4]
+            results_first_line += "ULF\tLF\tHF\tTP\tLF/HF\n"
+        else: 
+            results_first_line += "VLF\tULF\tLF\tHF\tTP\tLF/HF\n"
+        results_file = self.build_name(prefix=self.spectrum_type + "_spectrum_")
         results = open(results_file, 'w')
         results.write(results_first_line)
         for file_result in self.project_results:
             file_name = file_result[0]
-            temp_spectral_results_object = file_result[1]['LS_spectrum']
-            temp_spectral_results_for_file = temp_spectral_results_object.get_spectral_bands(cuts=bands)
-            results.write("\t".join(map(str, temp_spectral_results_for_file))+"\n")
+            temp_spectral_results_object = file_result[1]['Spectrum']
+            temp_spectral_results_for_file = list(temp_spectral_results_object.spectrum.get_bands(ulf = ulf).values())
+            results_line = file_name + '\t' + "\t".join(map(str, temp_spectral_results_for_file))+ "\t" + str(temp_spectral_results_object.spectrum.LF_HF_ratio) + "\n"
+            results.write(results_line)
         results.close()
+        return temp_spectral_results_for_file
 
     def dump_quality(self):
         results_first_line = 'file_name\tn_total\tn_sinus\tn_ventricular\tn_supraventricular\tn_artifact\tn_unknown\n'

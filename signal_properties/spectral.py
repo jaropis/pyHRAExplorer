@@ -29,9 +29,10 @@ class Spectrum:
             ulf (bool): Specifies if ultra low frequency should be calculated (for long term spectral analysis)
         '''
         
-        self.frequency_rad, self.frequency_hz = self.frequency_conversion(frequency, mode) 
+        self.frequency_rad, self.frequency_hz = self.frequency_conversion(frequency, mode)
+        self.frequency = frequency
         self.power = power
-        self.spectral_bands = self.get_bands((frequency, self.power))
+        self.spectral_bands = self.get_bands()
         self.LF_HF_ratio = self.spectral_bands['lf']/self.spectral_bands['hf']
 
     def frequency_conversion(self, frequency, mode):
@@ -49,12 +50,12 @@ class Spectrum:
 
         return rad_frequency, hz_frequency
     
-    def get_bands(self, w_spectrum, bands=[0.003, 0.04, 0.15, 0.4], ulf=False):
+    def get_bands(self, bands=[0.003, 0.04, 0.15, 0.4], ulf=False):
         '''
         Method to calculate the spectral bands
         
         Args: 
-            w_spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in spectrum
+            spectrum (tuple): A tuple containg the arrays corresponding to tested frequencies and the resulting power in spectrum
             bands (list): A list of bands for calculating the spectrum (in Hz)
             ulf (bool): Determines if ultra low frequency should be calculated. False by defualt
         
@@ -73,8 +74,8 @@ class Spectrum:
         extended_bands = [0]; extended_bands.extend(bands)
         spectral_bands = []
         for band_idx in range(1, len(extended_bands)):
-            spectral_bands.append(np.sum(np.abs(w_spectrum[1][np.logical_and(w_spectrum[0] > extended_bands[band_idx - 1],
-                                                                  w_spectrum[0] <= extended_bands[band_idx])])))
+            spectral_bands.append(np.sum(np.abs(self.power[np.logical_and(self.frequency > extended_bands[band_idx - 1],
+                                                                  self.frequency <= extended_bands[band_idx])])))
 
         spectral_bands.append(np.sum(spectral_bands))
         band_names.append("tp")
