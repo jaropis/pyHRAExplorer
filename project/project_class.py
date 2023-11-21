@@ -44,11 +44,12 @@ class Project:
         """
         self.Poincare_state = True
 
-    def set_runs(self):
+    def set_runs(self, runs_shares = False):
         """
         this means: calculate runs
         """
         self.runs_state = True
+        self.runs_shares = runs_shares
 
     
     def set_spectrum(self, type = 'LS'):
@@ -249,7 +250,10 @@ class Project:
         print(max_dec_len, max_acc_len, max_neutral_len)
         results_first_line = "file_name" + "\t" + "\t".join(["dec"+str(_+1) for _ in range(max_dec_len)]) + "\t"+ \
                      "\t".join(["acc" + str(_ + 1) for _ in range(max_acc_len)]) + "\t" + \
-                     "\t".join(["neutral" + str(_ + 1) for _ in range(max_neutral_len)]) + "\n"
+                     "\t".join(["neutral" + str(_ + 1) for _ in range(max_neutral_len)])
+        results_first_line += "\n" if not self.runs_shares else "\t" + "\t".join(["dec"+str(_+1)+"_share" for _ in range(max_dec_len)]) + "\t"+ \
+                     "\t".join(["acc" + str(_ + 1) + "_share" for _ in range(max_acc_len)]) + "\t" + \
+                     "\t".join(["neutral" + str(_ + 1) + "_share" for _ in range(max_neutral_len)]) + "\n"
         results_file = self.build_name(prefix="runs_")
         results = open(results_file, 'w')
         results.write(results_first_line)
@@ -260,7 +264,10 @@ class Project:
             res_line = file_name + "\t"
             res_line += "\t".join([str(_) for _ in (temp_runs_object.dec_runs + [0] * (max_dec_len - len(temp_runs_object.dec_runs)))]) + "\t" + \
                        "\t".join([str(_) for _ in (temp_runs_object.acc_runs + [0] * (max_acc_len - len(temp_runs_object.acc_runs)))]) + "\t" + \
-                        "\t".join([str(_) for _ in (temp_runs_object.neutral_runs + [0] * (max_neutral_len - len(temp_runs_object.neutral_runs)))]) + "\n"
+                        "\t".join([str(_) for _ in (temp_runs_object.neutral_runs + [0] * (max_neutral_len - len(temp_runs_object.neutral_runs)))])
+            res_line += "\n" if not self.runs_shares else "\t" + "\t".join([str(_) for _ in (temp_runs_object.dec_runs_share + [0] * (max_dec_len - len(temp_runs_object.dec_runs_share)))]) + "\t" + \
+                       "\t".join([str(_) for _ in (temp_runs_object.acc_runs_share + [0] * (max_acc_len - len(temp_runs_object.acc_runs_share)))]) + "\t" + \
+                        "\t".join([str(_) for _ in (temp_runs_object.neutral_runs_share + [0] * (max_neutral_len - len(temp_runs_object.neutral_runs)))]) + "\n"
             print(res_line)
             results.write(res_line)
         results.close()
@@ -287,7 +294,7 @@ class Project:
             results_line = file_name + '\t' + "\t".join(map(str, temp_spectral_results_for_file))+ "\t" + str(temp_spectral_results_object.spectrum.LF_HF_ratio) + "\n"
             results.write(results_line)
         results.close()
-        return temp_spectral_results_for_file
+        #return temp_spectral_results_for_file
 
     def dump_quality(self):
         results_first_line = 'file_name\tn_total\tn_sinus\tn_ventricular\tn_supraventricular\tn_artifact\tn_unknown\n'
