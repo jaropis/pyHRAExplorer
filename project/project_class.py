@@ -22,9 +22,9 @@ class Project:
 
         # these three flags say whether or not the specific method should be used
         self.Poincare_state = False
+        self.pnn_state = False
         self.runs_state = False
         self.spectrum_state = False
-        #self.LS_spectrum_state = False
         self.quality_state = False
 
         self.project_results = [] # this list of lists will hold the name of the file and the self.file_results for
@@ -43,6 +43,12 @@ class Project:
         this means: calculate the Poincare descriptors
         """
         self.Poincare_state = True
+
+    def set_pnn(self):
+        """
+        this means: calculate the pNN and pNN percent descriptors
+        """
+        self.pnn_state = True
 
     def set_runs(self, runs_shares = False):
         """
@@ -114,7 +120,7 @@ class Project:
             temp_signal = Signal(path_to_file=temp_path, column_annot=self.column_annot, column_signal=self.column_signal,
                                  column_sample_to_sample=self.column_sample_to_sample, annotation_filter=self.annotation_filter,
                                  square_filter=self.square_filter, quotient_filter=self.quotient_filter)
-            if self.Poincare_state:
+            if self.Poincare_state or self.pnn_state:
                 temp_signal.set_poincare()
                 temp_poincare = temp_signal.poincare
             else:
@@ -239,6 +245,32 @@ class Project:
         results.close()
         return(all, self.project_results)
         
+    def dump_pnn(self, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5):
+        max_pnn = max_pnn
+        results_file = self.build_name(prefix="PNN_")
+        results = open(results_file, 'w')
+        results_first_line = 'filename\t' + "\t".join("pNN_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step)) + \
+            "\t" + "\t".join("pNN_" + str(_/10) + "%" for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step))) + "\n"
+        results.write(results_first_line)
+        for file_result in self.project_results:
+            file_name = file_result[0]
+            res_line = file_name
+            temp_poincare_object = file_result[1]['Poincare']
+            res_line += "\t" + "\t".join(str(temp_poincare_object.pnnx(_)[0]) for _ in range(0, max_pnn + pnn_step, pnn_step)) + \
+             "\t" + "\t".join(str(temp_poincare_object.pnn_pro(_/10)[0]) for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step)))
+            '''
+            for n in range(0, max_pnn + pnn_step, pnn_step):
+                res_line += "\t" + str(temp_poincare_object.pnnx(x = n)[0])
+            for n in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step)):
+                res_line += "\t" + str(temp_poincare_object.pnn_pro(x = n/10)[0])
+            '''
+            res_line += "\n"
+            results.write(res_line)
+            #temp_poincare_object.pnnx()[0]
+            #temp_poincare_object.pnn_pro()[0]
+        results.close()
+        
+
 
     def dump_runs(self):
         """
