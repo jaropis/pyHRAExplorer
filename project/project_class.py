@@ -245,33 +245,40 @@ class Project:
         results.close()
         return(all, self.project_results)
         
-    def dump_pnn(self, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5):
+    def dump_pnn(self, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5, add_dec_acc = False):
         max_pnn = max_pnn
-        results_file = self.build_name(prefix="PNN_")
+        results_file = self.build_name(prefix="PNN_" if not add_dec_acc else "PNN_DEC_ACC_")
         results = open(results_file, 'w')
-        results_first_line = 'filename\t' + "\t".join("pNN_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step)) + \
-            "\t" + "\t".join("pNN_" + str(_/10) + "%" for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step))) + "\n"
+        results_first_line = 'filename\t' + "\t".join("pNN_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step))
+        # Adding optional PNNs for dec and acc 
+        results_first_line += "\t" if not add_dec_acc else "\t" + "\t".join("pNN_dec_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step)) + \
+        "\t" + "\t".join("pNN_acc_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step))
+        # Adding pNN%
+        results_first_line += "\t" + "\t".join("pNN_" + str(_/10) + "%" for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step)))
+        # Adding optional pNN% for dec and acc
+        results_first_line += "\n" if not add_dec_acc else "\t" + "\t".join("pNN_dec_" + str(_/10) + "%" for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step))) + \
+            "\t" + "\t".join("pNN_acc_" + str(_/10) + "%" for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step))) + "\n"
         results.write(results_first_line)
+        all_results = []
         for file_result in self.project_results:
             file_name = file_result[0]
             res_line = file_name
             temp_poincare_object = file_result[1]['Poincare']
-            res_line += "\t" + "\t".join(str(temp_poincare_object.pnnx(_)[0]) for _ in range(0, max_pnn + pnn_step, pnn_step)) + \
-             "\t" + "\t".join(str(temp_poincare_object.pnn_pro(_/10)[0]) for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step)))
-            '''
-            for n in range(0, max_pnn + pnn_step, pnn_step):
-                res_line += "\t" + str(temp_poincare_object.pnnx(x = n)[0])
-            for n in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step)):
-                res_line += "\t" + str(temp_poincare_object.pnn_pro(x = n/10)[0])
-            '''
-            res_line += "\n"
+            res_line += "\t" + "\t".join(str(temp_poincare_object.pnnx(_)[0]) for _ in range(0, max_pnn + pnn_step, pnn_step))
+            # Optional results for dec and acc
+            res_line += "\t" if not add_dec_acc else "\t" + "\t".join(str(temp_poincare_object.pnnx(_)[1]) for _ in range(0, max_pnn + pnn_step, pnn_step)) + \
+             "\t" + "\t".join(str(temp_poincare_object.pnnx(_)[2]) for _ in range(0, max_pnn + pnn_step, pnn_step)) + "\t"
+            res_line += "\t".join(str(temp_poincare_object.pnn_pro(_/10)[0]) for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step)))
+            # Optional results for dec and acc
+            res_line += "\n" if not add_dec_acc else "\t" + "\t".join(str(temp_poincare_object.pnn_pro(_/10)[1]) for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step))) + \
+            "\t" + "\t".join(str(temp_poincare_object.pnn_pro(_/10)[2]) for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step))) + "\n"
             results.write(res_line)
+            all_results.append(res_line)
             #temp_poincare_object.pnnx()[0]
             #temp_poincare_object.pnn_pro()[0]
         results.close()
+        return [results_first_line, all_results] 
         
-
-
     def dump_runs(self):
         """
         this method writes a csv/xlsx/ods file to the disk - this file contains the monotonic runs for each
@@ -304,7 +311,7 @@ class Project:
             results.write(res_line)
         results.close()
 
-    def dump_spectrum(self, bands=[0, 0.003, 0.04, 0.15, 0.4], ulf = True):
+    def dump_spectrum(self, bands=[0, 0.003, 0.04, 0.15, 0.4], ulf = True, dump = True):
         """
         this method writes a csv/xlsx/ods file to the disk - this file contains the LS_spectrum for each
         file in the project
@@ -317,16 +324,18 @@ class Project:
         else: 
             results_first_line += "VLF\tULF\tLF\tHF\tTP\tLF/HF\n"
         results_file = self.build_name(prefix=self.spectrum_type + "_spectrum_")
-        results = open(results_file, 'w')
-        results.write(results_first_line)
+        if dump : results = open(results_file, 'w'); results.write(results_first_line)
+        all_results = []
         for file_result in self.project_results:
             file_name = file_result[0]
             temp_spectral_results_object = file_result[1]['Spectrum']
             temp_spectral_results_for_file = list(temp_spectral_results_object.spectrum.get_bands(ulf = ulf).values())
             results_line = file_name + '\t' + "\t".join(map(str, temp_spectral_results_for_file))+ "\t" + str(temp_spectral_results_object.spectrum.LF_HF_ratio) + "\n"
-            results.write(results_line)
-        results.close()
+            if dump: results.write(results_line)
+            all_results.append(results_line)
+        if dump: results.close()
         #return temp_spectral_results_for_file
+        return(results_first_line, all_results)
 
     def dump_quality(self):
         results_first_line = 'file_name\tn_total\tn_sinus\tn_ventricular\tn_supraventricular\tn_artifact\tn_unknown\n'
@@ -337,10 +346,8 @@ class Project:
             file_name = file_result[0]
             temp_quality_object = file_result[1]['Quality']
             res_line = file_name + '\t' + '\t'.join([str(_) for _ in temp_quality_object]) + '\n'
-            print(res_line)
             results.write(res_line)
         results.close()
-        return(res_line)
 
     def build_name(self, prefix=""):
         import datetime
@@ -366,4 +373,5 @@ class Project:
         longest_acc_run = max([len(_[1]["runs"].acc_runs) for _ in self.project_results])
         longest_neutral_run = max([len(_[1]["runs"].neutral_runs) for _ in self.project_results])
         return longest_dec_run, longest_acc_run, longest_neutral_run
+
 

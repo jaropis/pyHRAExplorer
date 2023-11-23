@@ -8,14 +8,15 @@ import numpy as np
 test_project = Project(path=os.getcwd()+"/project/tests/test_files/", file_extension=".rea", column_signal=1, column_annot=2, column_sample_to_sample=1)
 test_project.set_Poincare()
 #test_project.set_runs(runs_shares = True)
-#test_project.set_spectrum(type = 'Welch')
+test_project.set_spectrum(type = 'Welch')
 #test_project.set_spectrum(type = 'Welch')
 #test_project.set_quality()
 
 test_project.step_through_project_files()
 
 #y = test_project.dump_Poincare()
-y = test_project.dump_pnn()
+#y = test_project.dump_pnn(max_pnn_pro = 20, add_dec_acc = True)
+#print(len(y[1]))
 #y = test_project.dump_runs()
 #y = test_project.dump_spectrum(ulf = False)
 #print(y.get_bands(ulf = False))
@@ -24,7 +25,7 @@ y = test_project.dump_pnn()
 #spectrum = test_project.project_results[1][1]['spectrum']
 #bands=[0, 0.003, 0.04, 0.15, 0.4]
 #ls_spec = spectrum.spectral_values(cuts=bands).values()
-
+test_project.dump_all()
 #print(y)
 '''
 path=os.getcwd()+"/project/tests/test_files"
@@ -55,3 +56,10 @@ temp_signal = Signal(path_to_file=temp_path, column_annot=column_annot, column_s
 bad_beats = np.where(temp_signal.annotation != 0)[0]
 filtered_timetrack = np.delete(temp_signal.timetrack, bad_beats)
 '''
+
+y = 'file_name\t123\t123\n'
+x = '123.rea\t123\t123\n'
+print(repr(y.strip('file_name\t \n')))
+print(repr(x[x.find('\t')+1:x.find('\n')]))
+
+print(test_project.files_list, test_project.project_results)
