@@ -59,7 +59,10 @@ filtered_timetrack = np.delete(temp_signal.timetrack, bad_beats)
 
 y = 'file_name\t123\t123\n'
 x = '123.rea\t123\t123\n'
-print(repr(y.strip('file_name\t \n')))
-print(repr(x[x.find('\t')+1:x.find('\n')]))
+#print(repr(y.strip('file_name\t \n')))
+#print(repr(x[x.find('\t')+1:x.find('\n')]))
 
-print(test_project.files_list, test_project.project_results)
+#print(test_project.files_list, test_project.project_results)
+for name in ['pnn']:
+            x = f'self.dump_'+name+'()'
+            print(x)

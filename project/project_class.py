@@ -202,7 +202,7 @@ class Project:
         except Exception:
             return False
 
-    def dump_Poincare(self):
+    def dump_Poincare(self, dump = False):
         """
         this method writes a csv/xlsx/ods file to the disk - this file contains the Poincare plot descriptors for each
         file in the project
@@ -211,8 +211,7 @@ class Project:
         #results_first_line = "filename\tSDNN\tSD1\tSD2\tSD1d\tSD1a\tC1d\tC1a\tSD2d\tSD2a\tC2d\tC2a\tSDNNd\tSDNNa\tCd\tCa\n"
         results_first_line = "filename\tSDNN\tSD1\tSD2\tSD2/SD1\tmeanRR\tpNN50\tSD1d\tC1d\tSD1a\tC1a\tSD1I\tND\tSD2d\tC2d\tSD2a\tC2a\tSD2I\tSDNNd\tCd\tSDNNa\tCa\tHRA1\tHRA2\tHRAT\tHRAN\tHRAcomp\tCS\tCSa\tCSd\tCLa\tCLd\n"
         results_file = self.build_name(prefix="Poincare_")
-        results = open(results_file, 'w')
-        results.write(results_first_line)
+        if dump: results = open(results_file, 'w'); results.write(results_first_line)
         all = []
         for file_result in self.project_results:
             file_name = file_result[0]
@@ -240,15 +239,14 @@ class Project:
             self.CS, self.CSa, self.CSd = self.short_term_variability()
             self.CLa, self.CLd = self.long_term_variability()
             '''
-            results.write(res_line)
+            if dump: results.write(res_line)
             all.append(res_line)
-        results.close()
-        return(all, self.project_results)
+        if dump: results.close()
+        return(results_first_line, all)
         
-    def dump_pnn(self, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5, add_dec_acc = False):
+    def dump_pnn(self, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5, add_dec_acc = False, dump = True):
         max_pnn = max_pnn
         results_file = self.build_name(prefix="PNN_" if not add_dec_acc else "PNN_DEC_ACC_")
-        results = open(results_file, 'w')
         results_first_line = 'filename\t' + "\t".join("pNN_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step))
         # Adding optional PNNs for dec and acc 
         results_first_line += "\t" if not add_dec_acc else "\t" + "\t".join("pNN_dec_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step)) + \
@@ -258,7 +256,7 @@ class Project:
         # Adding optional pNN% for dec and acc
         results_first_line += "\n" if not add_dec_acc else "\t" + "\t".join("pNN_dec_" + str(_/10) + "%" for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step))) + \
             "\t" + "\t".join("pNN_acc_" + str(_/10) + "%" for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step))) + "\n"
-        results.write(results_first_line)
+        if dump: results = open(results_file, 'w'); results.write(results_first_line)
         all_results = []
         for file_result in self.project_results:
             file_name = file_result[0]
@@ -272,14 +270,14 @@ class Project:
             # Optional results for dec and acc
             res_line += "\n" if not add_dec_acc else "\t" + "\t".join(str(temp_poincare_object.pnn_pro(_/10)[1]) for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step))) + \
             "\t" + "\t".join(str(temp_poincare_object.pnn_pro(_/10)[2]) for _ in range(5, int(10*(max_pnn_pro + pnn_pro_step)), int(10*pnn_pro_step))) + "\n"
-            results.write(res_line)
+            if dump: results.write(res_line)
             all_results.append(res_line)
             #temp_poincare_object.pnnx()[0]
             #temp_poincare_object.pnn_pro()[0]
-        results.close()
+        if dump: results.close()
         return [results_first_line, all_results] 
         
-    def dump_runs(self):
+    def dump_runs(self, dump = True):
         """
         this method writes a csv/xlsx/ods file to the disk - this file contains the monotonic runs for each
         file in the project
@@ -294,12 +292,11 @@ class Project:
                      "\t".join(["acc" + str(_ + 1) + "_share" for _ in range(max_acc_len)]) + "\t" + \
                      "\t".join(["neutral" + str(_ + 1) + "_share" for _ in range(max_neutral_len)]) + "\n"
         results_file = self.build_name(prefix="runs_")
-        results = open(results_file, 'w')
-        results.write(results_first_line)
+        if dump: results = open(results_file, 'w'); results.write(results_first_line)
+        all_results = []
         for file_result in self.project_results:
             file_name = file_result[0]
             temp_runs_object = file_result[1]['runs']  # this is a dictionary - I select key 'runs'
-            print(temp_runs_object.neutral_runs)
             res_line = file_name + "\t"
             res_line += "\t".join([str(_) for _ in (temp_runs_object.dec_runs + [0] * (max_dec_len - len(temp_runs_object.dec_runs)))]) + "\t" + \
                        "\t".join([str(_) for _ in (temp_runs_object.acc_runs + [0] * (max_acc_len - len(temp_runs_object.acc_runs)))]) + "\t" + \
@@ -307,9 +304,10 @@ class Project:
             res_line += "\n" if not self.runs_shares else "\t" + "\t".join([str(_) for _ in (temp_runs_object.dec_runs_share + [0] * (max_dec_len - len(temp_runs_object.dec_runs_share)))]) + "\t" + \
                        "\t".join([str(_) for _ in (temp_runs_object.acc_runs_share + [0] * (max_acc_len - len(temp_runs_object.acc_runs_share)))]) + "\t" + \
                         "\t".join([str(_) for _ in (temp_runs_object.neutral_runs_share + [0] * (max_neutral_len - len(temp_runs_object.neutral_runs)))]) + "\n"
-            print(res_line)
-            results.write(res_line)
-        results.close()
+            all_results.append(res_line)
+            if dump: results.write(res_line)
+        if dump: results.close()
+        return(results_first_line, all_results)
 
     def dump_spectrum(self, bands=[0, 0.003, 0.04, 0.15, 0.4], ulf = True, dump = True):
         """
@@ -337,17 +335,19 @@ class Project:
         #return temp_spectral_results_for_file
         return(results_first_line, all_results)
 
-    def dump_quality(self):
+    def dump_quality(self, dump = True):
         results_first_line = 'file_name\tn_total\tn_sinus\tn_ventricular\tn_supraventricular\tn_artifact\tn_unknown\n'
         results_file = self.build_name(prefix="Quality_")
-        results = open(results_file, 'w')
-        results.write(results_first_line)
+        if dump: results = open(results_file, 'w'); results.write(results_first_line)
+        all_results = []
         for file_result in self.project_results:
             file_name = file_result[0]
             temp_quality_object = file_result[1]['Quality']
             res_line = file_name + '\t' + '\t'.join([str(_) for _ in temp_quality_object]) + '\n'
-            results.write(res_line)
-        results.close()
+            if dump: results.write(res_line)
+            all_results.append(res_line)
+        if dump: results.close()
+        return(results_first_line, all_results)
 
     def build_name(self, prefix=""):
         import datetime
@@ -374,4 +374,40 @@ class Project:
         longest_neutral_run = max([len(_[1]["runs"].neutral_runs) for _ in self.project_results])
         return longest_dec_run, longest_acc_run, longest_neutral_run
 
+    def dump_all(self):
+        results_file = self.build_name(prefix="ALL_")
+        results = open(results_file, 'w')
 
+        Poincare = self.dump_Poincare(dump = False) if self.Poincare_state else None 
+        runs = self.dump_runs(dump = False) if self.runs_state else None 
+        spectrum = self.dump_spectrum(dump = False) if self.spectrum_state else None 
+        pnn = self.dump_pnn(dump = False) if self.pnn_state else None 
+        quality = self.dump_quality(dump = False) if self.quality_state else None
+
+        all_filenames = []
+        all_results = []
+        for result in [Poincare, runs, spectrum, pnn, quality]:
+            if result is not None:
+                all_filenames.append(result[0])
+                all_results.append(result[1])
+
+        #all_filenames.append()
+        #for name in ['Poincare', 'runs', 'spectral', 'pnn', 'quality']:
+        for name in ['pnn']:
+            x = f'self.dump_'+name+'()'
+            print(x)
+        #print(x)
+        #pnn = self.dump_pnn(dump = False)
+        #spectrum = self.dump_spectrum(dump = False)
+        
+
+        #states = {'Poincare': [self.Poincare_state, self.dump_Poincare()], 'runs' : [self.runs_state, self.dump_runs()], 'rest': [self.spectrum_state, self.pnn_state, self.quality_state]}
+        
+        spectrum = self.dump_spectrum(dump = False)
+        pnn = self.dump_pnn(dump = False)
+        first_line = "file_name" + "\t" + "\t".join((_[_.find('\t')+1:_.find('\n')]) for _ in all_filenames) + "\n"
+        results.write(first_line)
+        for n in range(0, len(self.files_list)):
+            result = self.files_list[n] + "\t" + "\t".join((_[_.find('\t')+1:_.find('\n')]) for _ in [res[n] for res in all_results]) + "\n"
+            results.write(result)
+        results.close()
