@@ -247,7 +247,7 @@ class Project:
     def dump_pnn(self, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5, add_dec_acc = False, dump = True):
         max_pnn = max_pnn
         results_file = self.build_name(prefix="PNN_" if not add_dec_acc else "PNN_DEC_ACC_")
-        results_first_line = 'filename\t' + "\t".join("pNN_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step))
+        results_first_line = 'filename\t' + "PNN_neutral" + "\t" + "\t".join("pNN_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step))
         # Adding optional PNNs for dec and acc 
         results_first_line += "\t" if not add_dec_acc else "\t" + "\t".join("pNN_dec_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step)) + \
         "\t" + "\t".join("pNN_acc_" + str(_) for _ in range(0, max_pnn + pnn_step, pnn_step))
@@ -262,7 +262,7 @@ class Project:
             file_name = file_result[0]
             res_line = file_name
             temp_poincare_object = file_result[1]['Poincare']
-            res_line += "\t" + "\t".join(str(temp_poincare_object.pnnx(_)[0]) for _ in range(0, max_pnn + pnn_step, pnn_step))
+            res_line += "\t" + str(temp_poincare_object.pNN_neutral) + "\t" + "\t".join(str(temp_poincare_object.pnnx(_)[0]) for _ in range(0, max_pnn + pnn_step, pnn_step))
             # Optional results for dec and acc
             res_line += "\t" if not add_dec_acc else "\t" + "\t".join(str(temp_poincare_object.pnnx(_)[1]) for _ in range(0, max_pnn + pnn_step, pnn_step)) + \
              "\t" + "\t".join(str(temp_poincare_object.pnnx(_)[2]) for _ in range(0, max_pnn + pnn_step, pnn_step)) + "\t"
@@ -275,7 +275,7 @@ class Project:
             #temp_poincare_object.pnnx()[0]
             #temp_poincare_object.pnn_pro()[0]
         if dump: results.close()
-        return [results_first_line, all_results] 
+        return [results_first_line, all_results]
         
     def dump_runs(self, dump = True):
         """
@@ -374,14 +374,14 @@ class Project:
         longest_neutral_run = max([len(_[1]["runs"].neutral_runs) for _ in self.project_results])
         return longest_dec_run, longest_acc_run, longest_neutral_run
 
-    def dump_all(self):
+    def dump_all(self, bands=[0, 0.003, 0.04, 0.15, 0.4], ulf = True, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5, add_dec_acc = False,):
         results_file = self.build_name(prefix="ALL_")
         results = open(results_file, 'w')
 
         Poincare = self.dump_Poincare(dump = False) if self.Poincare_state else None 
         runs = self.dump_runs(dump = False) if self.runs_state else None 
-        spectrum = self.dump_spectrum(dump = False) if self.spectrum_state else None 
-        pnn = self.dump_pnn(dump = False) if self.pnn_state else None 
+        spectrum = self.dump_spectrum(dump = False, bands = bands, ulf = ulf) if self.spectrum_state else None 
+        pnn = self.dump_pnn(dump = False, max_pnn = max_pnn, pnn_step = pnn_step, max_pnn_pro = max_pnn_pro, pnn_pro_step = pnn_pro_step, add_dec_acc = add_dec_acc) if self.pnn_state else None 
         quality = self.dump_quality(dump = False) if self.quality_state else None
 
         all_filenames = []
@@ -390,12 +390,7 @@ class Project:
             if result is not None:
                 all_filenames.append(result[0])
                 all_results.append(result[1])
-
-        #all_filenames.append()
-        #for name in ['Poincare', 'runs', 'spectral', 'pnn', 'quality']:
-        for name in ['pnn']:
-            x = f'self.dump_'+name+'()'
-            print(x)
+    
         #print(x)
         #pnn = self.dump_pnn(dump = False)
         #spectrum = self.dump_spectrum(dump = False)
@@ -403,8 +398,8 @@ class Project:
 
         #states = {'Poincare': [self.Poincare_state, self.dump_Poincare()], 'runs' : [self.runs_state, self.dump_runs()], 'rest': [self.spectrum_state, self.pnn_state, self.quality_state]}
         
-        spectrum = self.dump_spectrum(dump = False)
-        pnn = self.dump_pnn(dump = False)
+        #spectrum = self.dump_spectrum(dump = False)
+        #pnn = self.dump_pnn(dump = False)
         first_line = "file_name" + "\t" + "\t".join((_[_.find('\t')+1:_.find('\n')]) for _ in all_filenames) + "\n"
         results.write(first_line)
         for n in range(0, len(self.files_list)):
