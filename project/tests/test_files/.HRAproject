@@ -8,4 +8,6 @@ square filter:(-8000, 8000)
 quotient filter:-1
 Poincare state:1
 runs state:1
-LS_spectrum state:1
+Spectrum state:1
+Spectrum type:LS
+Quality state:0

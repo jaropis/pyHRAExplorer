@@ -215,8 +215,8 @@ class Project:
             output_line += "quotient filter:" + str(self.quotient_filter) + "\n"
             output_line += "Poincare state:" + str(int(self.Poincare_state)) + "\n"
             output_line += "runs state:" + str(int(self.runs_state)) + "\n"
-            output_line += "Spectrum state" + str(int(self.spectrum_state)) + "\n"
-            output_line += "Spectrum type" + self.spectrum_type + "\n"
+            output_line += "Spectrum state:" + str(int(self.spectrum_state)) + "\n"
+            output_line += "Spectrum type:" + self.spectrum_type + "\n"
             output_line += "Quality state:" + str(int(self.quality_state)) + "\n"
             output_file.write(output_line)
             output_file.close()
@@ -224,7 +224,7 @@ class Project:
         except Exception:
             return False
 
-    def dump_Poincare(self, dump = False):
+    def dump_Poincare(self, dump = True):
         """
         This method writes a csv/xlsx/ods file to the disk - this file contains the Poincare plot descriptors for each
         file in the project

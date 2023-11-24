@@ -7,7 +7,7 @@ class TestProject(unittest.TestCase):
         self.test_project = Project(path=os.getcwd()+"/project/tests/test_files", file_extension=".rea", column_signal=1, column_annot=2, column_sample_to_sample=1)
         self.test_project.set_Poincare()
         self.test_project.set_runs()
-        self.test_project.set_LS_spectrum()
+        self.test_project.set_spectrum()
         self.test_project.step_through_project_files()
         self.test_project2 = Project(path=os.getcwd()+"/project/tests/test_files", file_extension=".rea", column_signal=1, column_annot=2, column_sample_to_sample=1)
         self.test_project2.set_runs()
@@ -48,7 +48,7 @@ class TestProject(unittest.TestCase):
         os.remove(local_path)
 
     def test_dump_spectrum(self):
-        self.test_project.dump_LS_spectrum()
+        self.test_project.dump_spectrum()
 
     def test_build_name(self):
         """
