@@ -6,12 +6,12 @@ from signal_properties.RRclasses import Signal
 import numpy as np
 
 test_project = Project(path=os.getcwd()+"/project/tests/test_files/", file_extension=".rea", column_signal=1, column_annot=2, column_sample_to_sample=1)
-#test_project.set_Poincare()
+test_project.set_Poincare()
 test_project.set_pnn()
-#test_project.set_runs(runs_shares = True)
+test_project.set_runs()
+test_project.set_spectrum(spectrum_type= 'Welch')
 #test_project.set_spectrum(type = 'Welch')
-#test_project.set_spectrum(type = 'Welch')
-#test_project.set_quality()
+test_project.set_quality()
 
 test_project.step_through_project_files()
 
@@ -26,7 +26,7 @@ test_project.step_through_project_files()
 #spectrum = test_project.project_results[1][1]['spectrum']
 #bands=[0, 0.003, 0.04, 0.15, 0.4]
 #ls_spec = spectrum.spectral_values(cuts=bands).values()
-test_project.dump_all(max_pnn_pro=20, add_dec_acc=True)
+test_project.dump_all(max_pnn_pro=20, add_dec_acc=False)
 #print(y)
 '''
 path=os.getcwd()+"/project/tests/test_files"
