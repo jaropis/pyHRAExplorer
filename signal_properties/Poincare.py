@@ -268,15 +268,17 @@ class Poincare:
     
     def pnn_range(self, x1 = 0, x2 = 50, final = None):
         '''
-        Calculates the pNN based on the differences between consequtive RR intervals (xi and xii)
+        Calculates the pNN in the range of specified values
 
         Args:
-            x (int): The desired difference between the RR intervals, default 50
+            x1 (int): The start of the range
+            x2 (int): The end of the range
+            final (int): Determines if x1 should be used without x2 (range becomes x1 to infinity)
 
         Returns:
-            pNNX (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than X ms
-            pNNX_d (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than X ms and decelerate 
-            pNNX_a (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than X ms and accelerate
+            pnn_range (float): Proportion of consecutive RR intervals of normal (sinus) orign with differences between x1 and x2
+            pnn_range_d (float): Proportion of consecutive RR intervals of normal (sinus) orign with differences between x1 and x2
+            pnn_range_a (float): Proportion of consecutive RR intervals of normal (sinus) orign with differences between -x2 and -x1
         '''
         differences = self.xii - self.xi
         final = True if final == x1 else False
@@ -284,10 +286,10 @@ class Poincare:
             print('Invalid x value')
             return None, None, None
         else:
-            pnnX_d = 100*len(differences[(differences >= x1) & (differences < x2) if not final else (differences >= x1)])/len(self.xi)
-            pnnX_a = 100*len(differences[(-1*differences >= x1) & (-1*differences < x2) if not final else (-1*differences >= x1)])/len(self.xi)
-            pnnX = pnnX_d + pnnX_a
-            return pnnX, pnnX_d, pnnX_a
+            pnn_range_d = 100*len(differences[(differences >= x1) & (differences < x2) if not final else (differences >= x1)])/len(self.xi)
+            pnn_range_a = 100*len(differences[(-1*differences >= x1) & (-1*differences < x2) if not final else (-1*differences >= x1)])/len(self.xi)
+            pnn_range = pnn_range_d + pnn_range_a
+            return pnn_range, pnn_range_d, pnn_range_a
 
     
     def short_term_asymmetry(self):
