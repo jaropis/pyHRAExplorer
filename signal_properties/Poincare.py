@@ -266,6 +266,30 @@ class Poincare:
         
         return pnn_nu
     
+    def pnn_range(self, x1 = 0, x2 = 50, final = None):
+        '''
+        Calculates the pNN based on the differences between consequtive RR intervals (xi and xii)
+
+        Args:
+            x (int): The desired difference between the RR intervals, default 50
+
+        Returns:
+            pNNX (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than X ms
+            pNNX_d (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than X ms and decelerate 
+            pNNX_a (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than X ms and accelerate
+        '''
+        differences = self.xii - self.xi
+        final = True if final == x1 else False
+        if x1 < 0 or x2 < 0:
+            print('Invalid x value')
+            return None, None, None
+        else:
+            pnnX_d = 100*len(differences[(differences >= x1) & (differences < x2) if not final else (differences >= x1)])/len(self.xi)
+            pnnX_a = 100*len(differences[(-1*differences >= x1) & (-1*differences < x2) if not final else (-1*differences >= x1)])/len(self.xi)
+            pnnX = pnnX_d + pnnX_a
+            return pnnX, pnnX_d, pnnX_a
+
+    
     def short_term_asymmetry(self):
         '''
         Calculates the short-term asymmetry parameters for the signal using the xi and xii attributes of class Poincare, 

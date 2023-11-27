@@ -58,7 +58,12 @@ print(rr.LS_spectrum.spectral_bands, rr.LS_spectrum.spectral_bands_24h)
 
 #print(rr.LS_spectrum.spectrum.spectral_bands, rr.Welch_spectrum.spectrum.spectral_bands)
 #print(rr.LS_spectrum.spectrum.LF_HF_ratio)
-rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Hz', ulf = False, color_bands= False)
+#rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Hz', ulf = False, color_bands= False)
 #print(rr.LS_spectrum.spectrum.frequency_hz)
 #print(case)
-plt.show()
+#plt.show()
+start_x = 0
+stop_x = 30
+step = 10
+for x in range(start_x,stop_x+step,step):
+    print(str(x) + "-" + str(x+step) , rr.poincare.pnn_range(x1 = x, x2 = x+step))
