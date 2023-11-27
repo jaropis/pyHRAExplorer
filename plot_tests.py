@@ -67,3 +67,9 @@ stop_x = 30
 step = 10
 for x in range(start_x,stop_x+step,step):
     print(str(x) + "-" + str(x+step) , rr.poincare.pnn_range(x1 = x, x2 = x+step))
+
+pro_start = 0
+pro_end = 20
+step = 1
+for x in range(pro_start,pro_end+step,step):
+    print(str(x) + "-" + str(x+step) + "%", rr.poincare.pnn_range_pro(x1 = x, x2 = x+step))
