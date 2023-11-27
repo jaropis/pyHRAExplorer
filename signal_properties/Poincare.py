@@ -281,13 +281,13 @@ class Poincare:
             pnn_range_a (float): Proportion of consecutive RR intervals of normal (sinus) orign with differences between -x2 and -x1
         '''
         differences = self.xii - self.xi
-        final = True if final == x1 else False
+        add_final = True if final == x1 else False
         if x1 < 0 or x2 < 0:
             print('Invalid x value')
             return None, None, None
         else:
-            pnn_range_d = 100*len(differences[(differences >= x1) & (differences < x2) if not final else (differences >= x1)])/len(self.xi)
-            pnn_range_a = 100*len(differences[(-1*differences >= x1) & (-1*differences < x2) if not final else (-1*differences >= x1)])/len(self.xi)
+            pnn_range_d = 100*len(differences[(differences >= x1) & (differences < x2) if not add_final else (differences >= final)])/len(self.xi)
+            pnn_range_a = 100*len(differences[(-1*differences >= x1) & (-1*differences < x2) if not add_final else (-1*differences >= final)])/len(self.xi)
             pnn_range = pnn_range_d + pnn_range_a
             return pnn_range, pnn_range_d, pnn_range_a
         
@@ -307,15 +307,15 @@ class Poincare:
             pNN_range_a (float): Proportion of consecutive RR intervals of normal (sinus) orign that are decreased by X% or more compared to the previous beat
         '''
         changes = 100*self.xii/self.xi
-        final = True if final == x1 else False
+        add_final = True if final == x1 else False
         if x1 < 0 or x2 < 0:
             print('Invalid x value')
             return None, None, None
         else: 
-            pnn_range_d_pro = 100*len(where(changes - 100 > x1)[0])/len(self.xi)
-            pnn_range_d_pro = 100*len(changes[(changes - 100 >= x1) & (changes - 100 < x2) if not final else (changes - 100 >= x1)])/len(self.xi)
-            pnn_range_a_pro = 100*len(where(100 - changes > x1)[0])/len(self.xi)
-            pnn_range_a_pro = 100*len(changes[(100 - changes >= x1) & (100 - changes < x2) if not final else (100 - changes >= x1)])/len(self.xi)
+            #pnn_range_d_pro = 100*len(where(changes - 100 > x1)[0])/len(self.xi)
+            pnn_range_d_pro = 100*len(changes[(changes - 100 >= x1) & (changes - 100 < x2) if not add_final else (changes - 100 >= final)])/len(self.xi)
+            #pnn_range_a_pro = 100*len(where(100 - changes > x1)[0])/len(self.xi)
+            pnn_range_a_pro = 100*len(changes[(100 - changes >= x1) & (100 - changes < x2) if not add_final else (100 - changes >= final)])/len(self.xi)
             pnn_range_pro = pnn_range_d_pro + pnn_range_a_pro
             return pnn_range_pro, pnn_range_d_pro, pnn_range_a_pro
 

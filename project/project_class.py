@@ -303,6 +303,82 @@ class Project:
             #temp_poincare_object.pnn_pro()[0]
         if dump: results.close()
         return [results_first_line, all_results]
+    
+    def dump_pNN_range(self, start = 0, end = 100, step = 10, add_dec_acc = False, dump = False):
+        """
+        This method writes a csv/xlsx/ods file to the disk - this file contains the pNN within a specified range (atart <= pNN < end) 
+        for for each file in the project
+        
+        Arguments:
+            start (int): Start of pNN range
+            end (int): End of pNN range (end itself is not part of range)
+            final (int): Returns all >= x when specified (range x to inf)
+            add_dec_acc (bool): Determines if pNN in ranges also be calculated for decelerating and accelerating beats separately
+            dump (bool): Determines if the file is written (used when all the results are combined together)
+        
+        Returns:
+            results_first_line (str): A string with the header for the results
+            all_results (list): A list of all the strings with results for each file        
+        """
+        results_file = self.build_name(prefix="PNN_range_" if not add_dec_acc else "PNN_range_DEC_ACC_")
+        results_first_line = 'filename\t' + "\t".join("pNN_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + \
+        "\tpNN" + str(end) + "+"
+        # Adding optional PNNs for dec and acc 
+        results_first_line += "\n" if not add_dec_acc else "\t" + "\t".join("pNN_dec_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + \
+         "\tpNN_dec_" + str(end) + "+\t" + "\t".join("pNN_acc_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + "\tpNN_acc_" + str(end) + "+\n"
+        if dump: results = open(results_file, 'w'); results.write(results_first_line)
+        all_results = []
+        test = []
+        for file_result in self.project_results:
+            file_name = file_result[0]
+            res_line = file_name
+            temp_poincare_object = file_result[1]['Poincare']
+            res_line += "\t" + "\t".join(str(temp_poincare_object.pnn_range(x1 = _, x2 = _+step, final = end)[0]) for _ in range(start,end+step,step))
+            # Optional results for dec and acc
+            res_line += "\n" if not add_dec_acc else "\t" + "\t".join(str(temp_poincare_object.pnn_range(x1 = _, x2 = _+step, final = end)[1]) for _ in range(start,end+step,step)) + \
+             "\t" + "\t".join(str(temp_poincare_object.pnn_range(x1 = _, x2 = _+step, final = end)[2]) for _ in range(start,end+step,step)) + "\n"
+            if dump: results.write(res_line)
+            all_results.append(res_line)
+        if dump: results.close()
+        return [results_first_line, all_results]
+    
+    def dump_pNN_range_pro(self, start = 0, end = 10, step = 1, add_dec_acc = False, dump = False):
+        """
+        This method writes a csv/xlsx/ods file to the disk - this file contains the pNN within a specified % range (atart <= pNN < end) 
+        for for each file in the project
+        
+        Arguments:
+            start (int): Start of pNN % range
+            end (int): End of pNN % range (end itself is not part of range)
+            final (int): Returns all >= x when specified (range x to inf)
+            add_dec_acc (bool): Determines if pNN % in ranges also be calculated for decelerating and accelerating beats separately
+            dump (bool): Determines if the file is written (used when all the results are combined together)
+        
+        Returns:
+            results_first_line (str): A string with the header for the results
+            all_results (list): A list of all the strings with results for each file        
+        """
+        results_file = self.build_name(prefix="PNN_range_pro" if not add_dec_acc else "PNN_range_pro_DEC_ACC_")
+        results_first_line = 'filename\t' + "\t".join("pNN%_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + \
+        "\tpNN" + str(end) + "+"
+        # Adding optional PNNs for dec and acc 
+        results_first_line += "\n" if not add_dec_acc else "\t" + "\t".join("pNN%_dec_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + \
+         "\tpNN_dec_" + str(end) + "+\t" + "\t".join("pNN%_acc_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + "\tpNN_acc_" + str(end) + "+\n"
+        if dump: results = open(results_file, 'w'); results.write(results_first_line)
+        all_results = []
+        test = []
+        for file_result in self.project_results:
+            file_name = file_result[0]
+            res_line = file_name
+            temp_poincare_object = file_result[1]['Poincare']
+            res_line += "\t" + "\t".join(str(temp_poincare_object.pnn_range_pro(x1 = _, x2 = _+step, final = end)[0]) for _ in range(start,end+step,step))
+            # Optional results for dec and acc
+            res_line += "\n" if not add_dec_acc else "\t" + "\t".join(str(temp_poincare_object.pnn_range_pro(x1 = _, x2 = _+step, final = end)[1]) for _ in range(start,end+step,step)) + \
+             "\t" + "\t".join(str(temp_poincare_object.pnn_range_pro(x1 = _, x2 = _+step, final = end)[2]) for _ in range(start,end+step,step)) + "\n"
+            if dump: results.write(res_line)
+            all_results.append(res_line)
+        if dump: results.close()
+        return [results_first_line, all_results]
         
     def dump_runs(self, runs_shares = False, dump = True):
         """

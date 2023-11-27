@@ -26,8 +26,10 @@ test_project.step_through_project_files()
 #spectrum = test_project.project_results[1][1]['spectrum']
 #bands=[0, 0.003, 0.04, 0.15, 0.4]
 #ls_spec = spectrum.spectral_values(cuts=bands).values()
-test_project.dump_all(max_pnn_pro=20, add_dec_acc=False)
-#print(y)
+#test_project.dump_all(max_pnn_pro=20, add_dec_acc=False)
+#y = test_project.dump_pNN_range(end = 200, add_dec_acc=True, dump = True)
+y = test_project.dump_pNN_range_pro(end = 20, add_dec_acc=True, dump = True)
+print(y)
 '''
 path=os.getcwd()+"/project/tests/test_files"
 file_extension=".rea"
@@ -58,8 +60,8 @@ bad_beats = np.where(temp_signal.annotation != 0)[0]
 filtered_timetrack = np.delete(temp_signal.timetrack, bad_beats)
 '''
 
-y = 'file_name\t123\t123\n'
-x = '123.rea\t123\t123\n'
+#y = 'file_name\t123\t123\n'
+#x = '123.rea\t123\t123\n'
 #print(repr(y.strip('file_name\t \n')))
 #print(repr(x[x.find('\t')+1:x.find('\n')]))
 
