@@ -30,7 +30,8 @@ class Poincare:
         CV (float): Stores the value of the index of total variance normalized to the mean RR
         ND (float): (PI = Porta's index) the contribution of the number of HR decelerations to all normal heartbeats.
         pNN50 (float): Proportion of consecutive RR intervals of normal (sinus) orign that differ by more than 50ms
-        SD2/SD1 (float): The ratio of SD2 to SD1 that measures the balance between the long- and short-term HRV
+        pNN_neutral (float): Proportion of consecutive RR intervals of normal (sinus) orign that are the same
+        SD2_SD1 (float): The ratio of SD2 to SD1 that measures the balance between the long- and short-term HRV
         CS (float): Stores the value of the contribution of the short-term variance to the total HRV
         CSa (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR accelerations
         CSd (float): Stores the value of the contribution of the short-term variance to the total HRV derived from HR decelerations
@@ -58,6 +59,7 @@ class Poincare:
         self.CV = self.cv()
         # pNNn
         self.pNN50 = self.pnnx()[0]
+        self.pNN_neutral = self.pnn_neutral()
         # HRA
         self.SD1d, self.C1d, self.SD1a, self.C1a, self.SD1I, self.ND = self.short_term_asymmetry()
         self.SD2d, self.C2d, self.SD2a, self.C2a, self.SD2I = self.long_term_asymmetry()
@@ -257,7 +259,13 @@ class Poincare:
             pnnX_a_pro = 100*len(where(100 - changes > x)[0])/len(self.xi)
             pnnX_pro = pnnX_d_pro + pnnX_a_pro
             return pnnX_pro, pnnX_d_pro, pnnX_a_pro
-
+        
+    def pnn_neutral(self):
+        differences = self.xii - self.xi
+        pnn_nu = 100*len(where(differences == 0)[0])/len(self.xi)
+        
+        return pnn_nu
+    
     def short_term_asymmetry(self):
         '''
         Calculates the short-term asymmetry parameters for the signal using the xi and xii attributes of class Poincare, 
