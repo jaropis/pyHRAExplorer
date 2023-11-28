@@ -74,6 +74,13 @@ class Project:
         """
         self.pnn_state = True
 
+    def set_pnn_range(self):
+        """
+        When called this method sets the pNN state to True, This means: calculate the pNN ranges descriptors
+        """
+        self.pnn_range_state = True
+
+
     def set_runs(self):
         """
         When called this method sets the Runs state to True, This means: calculate runs
@@ -148,7 +155,7 @@ class Project:
             temp_signal = Signal(path_to_file=temp_path, column_annot=self.column_annot, column_signal=self.column_signal,
                                  column_sample_to_sample=self.column_sample_to_sample, annotation_filter=self.annotation_filter,
                                  square_filter=self.square_filter, quotient_filter=self.quotient_filter)
-            if self.Poincare_state or self.pnn_state:
+            if self.Poincare_state or self.pnn_state or self.pnn_range_state:
                 temp_signal.set_poincare()
                 temp_poincare = temp_signal.poincare
             else:
@@ -193,6 +200,7 @@ class Project:
             self.spectrum_state = bool(input_file.readline().split(':')[1].rstrip())
             self.quality_state = bool(input_file.readline().split(':')[1].rstrip())
             self.pnn_state = bool(input_file.readline().split(':')[1].rstrip())
+            self.pnn_range_state = bool(input_file.readline().split(':')[1].rstrip())
             input_file.close()
             return(True)
         except Exception:
@@ -218,6 +226,8 @@ class Project:
             output_line += "Spectrum state:" + str(int(self.spectrum_state)) + "\n"
             output_line += "Spectrum type:" + self.spectrum_type + "\n"
             output_line += "Quality state:" + str(int(self.quality_state)) + "\n"
+            output_line += "pNN state:" + str(int(self.pnn_state)) + "\n"
+            output_line += "pNN range state:" + str(int(self.pnn_range_state)) + "\n"
             output_file.write(output_line)
             output_file.close()
             return True
@@ -511,7 +521,7 @@ class Project:
         longest_neutral_run = max([len(_[1]["runs"].neutral_runs) for _ in self.project_results])
         return longest_dec_run, longest_acc_run, longest_neutral_run
 
-    def dump_all(self, bands=[0, 0.003, 0.04, 0.15, 0.4], ulf = True, runs_shares = False, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5, add_dec_acc = False,):
+    def dump_all(self, bands=[0, 0.003, 0.04, 0.15, 0.4], ulf = True, runs_shares = False, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5, add_dec_acc = False, start = 0, end = 100, step = 10, pnn_range_type = 'number'):
         """
         This method writes a csv/xlsx/ods file to the disk - this file contains all the results from analyses with active states
 
@@ -524,6 +534,7 @@ class Project:
             max_pnn_pro (int): Maximum pNN procent, 10% by deaulft
             pnn_pro_step (float): Step for each consequtive pNN%, 0.5 by default
             add_dec_acc (bool): Determines if pNN and pNN% should also be calculated for decelerating and accelerating beats separately
+            pnn_range_type (str): Determines if the used range is of procent or number type and calls the according method
             
         """
         results_file = self.build_name(prefix="ALL_")
@@ -533,6 +544,7 @@ class Project:
         runs = self.dump_runs(runs_shares = runs_shares, dump = False) if self.runs_state else None 
         spectrum = self.dump_spectrum(bands = bands, ulf = ulf, dump = False) if self.spectrum_state else None 
         pnn = self.dump_pnn(max_pnn = max_pnn, pnn_step = pnn_step, max_pnn_pro = max_pnn_pro, pnn_pro_step = pnn_pro_step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_state else None 
+        pnn_range = self.dump_pnn_range(start = start, end = end, step = step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_range_state and pnn_range_type == 'number' else self.dump_pNN_range_pro(start = start, end = end, step = step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_range_state and self.pnn_range_type == 'procent' else None
         quality = self.dump_quality(dump = False) if self.quality_state else None
 
         all_filenames = []
