@@ -36,15 +36,17 @@ class Project:
         self.column_annot = column_annot
         self.column_sample_to_sample = column_sample_to_sample
         self.quotient_filter = -1
-        self.square_filter=(-8000, 8000)
-        self.annotation_filter=()
+        self.square_filter = (-8000, 8000)
+        self.annotation_filter = ()
         self.files_list = self.get_files_list()
 
         # these three flags say whether or not the specific method should be used
         self.Poincare_state = False
         self.pnn_state = False
+        self.pnn_range_state = False
         self.runs_state = False
         self.spectrum_state = False
+        self.spectrum_type = 'None'
         self.quality_state = False
 
         self.project_results = [] # this list of lists will hold the name of the file and the self.file_results for
@@ -175,7 +177,7 @@ class Project:
                 temp_spectrum = temp_signal.Welch_spectrum
 
             if self.quality_state:
-                temp_quality = temp_signal.quality(temp_signal.annotation)
+                temp_quality = temp_signal.quality_counts
             temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "Spectrum": temp_spectrum, 'Quality': temp_quality}
             self.project_results.append([file, temp_file_results])
 
@@ -446,9 +448,9 @@ class Project:
         results_first_line = 'file_name\t'
         if not ulf:
             bands = [0, 0.04, 0.15, 0.4]
-            results_first_line += "ULF\tLF\tHF\tTP\tLF/HF\n"
+            results_first_line += "VLF\tLF\tHF\tTP\tLF/HF\n"
         else: 
-            results_first_line += "VLF\tULF\tLF\tHF\tTP\tLF/HF\n"
+            results_first_line += "ULF\tVLF\tLF\tHF\tTP\tLF/HF\n"
         results_file = self.build_name(prefix=self.spectrum_type + "_spectrum_")
         if dump : results = open(results_file, 'w'); results.write(results_first_line)
         all_results = []
@@ -544,12 +546,12 @@ class Project:
         runs = self.dump_runs(runs_shares = runs_shares, dump = False) if self.runs_state else None 
         spectrum = self.dump_spectrum(bands = bands, ulf = ulf, dump = False) if self.spectrum_state else None 
         pnn = self.dump_pnn(max_pnn = max_pnn, pnn_step = pnn_step, max_pnn_pro = max_pnn_pro, pnn_pro_step = pnn_pro_step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_state else None 
-        pnn_range = self.dump_pnn_range(start = start, end = end, step = step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_range_state and pnn_range_type == 'number' else self.dump_pNN_range_pro(start = start, end = end, step = step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_range_state and self.pnn_range_type == 'procent' else None
+        pnn_range = self.dump_pNN_range(start = start, end = end, step = step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_range_state and pnn_range_type == 'number' else self.dump_pNN_range_pro(start = start, end = end, step = step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_range_state and self.pnn_range_type == 'procent' else None
         quality = self.dump_quality(dump = False) if self.quality_state else None
 
         all_filenames = []
         all_results = []
-        for result in [Poincare, runs, spectrum, pnn, quality]:
+        for result in [Poincare, runs, spectrum, pnn, pnn_range, quality]:
             if result is not None:
                 all_filenames.append(result[0])
                 all_results.append(result[1])

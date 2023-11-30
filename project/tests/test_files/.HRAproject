@@ -1,5 +1,5 @@
 project name:None
-number of files:3
+number of files:4
 column signal:1
 column annotation:2
 column sample to sample:1
@@ -11,3 +11,5 @@ runs state:1
 Spectrum state:1
 Spectrum type:LS
 Quality state:0
+pNN state:0
+pNN range state:0
