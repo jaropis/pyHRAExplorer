@@ -266,6 +266,60 @@ class Poincare:
         
         return pnn_nu
     
+    def pnn_range(self, x1 = 0, x2 = 50, final = None):
+        '''
+        Calculates the pNN in the range of specified values
+
+        Args:
+            x1 (int): The start of the range
+            x2 (int): The end of the range
+            final (int): Determines if x1 should be used without x2 (range becomes x1 to infinity)
+
+        Returns:
+            pnn_range (float): Proportion of consecutive RR intervals of normal (sinus) orign with differences between x1 and x2
+            pnn_range_d (float): Proportion of consecutive RR intervals of normal (sinus) orign with differences between x1 and x2
+            pnn_range_a (float): Proportion of consecutive RR intervals of normal (sinus) orign with differences between -x2 and -x1
+        '''
+        differences = self.xii - self.xi
+        add_final = True if final == x1 else False
+        if x1 < 0 or x2 < 0:
+            print('Invalid x value')
+            return None, None, None
+        else:
+            pnn_range_d = 100*len(differences[(differences >= x1) & (differences < x2) if not add_final else (differences >= final)])/len(self.xi)
+            pnn_range_a = 100*len(differences[(-1*differences >= x1) & (-1*differences < x2) if not add_final else (-1*differences >= final)])/len(self.xi)
+            pnn_range = pnn_range_d + pnn_range_a
+            return pnn_range, pnn_range_d, pnn_range_a
+        
+    def pnn_range_pro(self, x1 = 0, x2 = 10, final = None):
+
+        '''
+        Calculates the pNN% based on the changes between consequtive RR intervals (xi and xii) within a specified range
+
+        Args:
+            x1 (int): The start of the range
+            x2 (int): The end of the range
+            final (int): Determines if x1 should be used without x2 (range becomes x1 to infinity)
+
+        Returns:
+            pNN_range (float): Proportion of consecutive RR intervals of normal (sinus) orign that are changed by more than X% compared to the previous beat
+            pNN_range_d (float): Proportion of consecutive RR intervals of normal (sinus) orign that are increased by X% or more compared to the previous beat
+            pNN_range_a (float): Proportion of consecutive RR intervals of normal (sinus) orign that are decreased by X% or more compared to the previous beat
+        '''
+        changes = 100*self.xii/self.xi
+        add_final = True if final == x1 else False
+        if x1 < 0 or x2 < 0:
+            print('Invalid x value')
+            return None, None, None
+        else: 
+            #pnn_range_d_pro = 100*len(where(changes - 100 > x1)[0])/len(self.xi)
+            pnn_range_d_pro = 100*len(changes[(changes - 100 >= x1) & (changes - 100 < x2) if not add_final else (changes - 100 >= final)])/len(self.xi)
+            #pnn_range_a_pro = 100*len(where(100 - changes > x1)[0])/len(self.xi)
+            pnn_range_a_pro = 100*len(changes[(100 - changes >= x1) & (100 - changes < x2) if not add_final else (100 - changes >= final)])/len(self.xi)
+            pnn_range_pro = pnn_range_d_pro + pnn_range_a_pro
+            return pnn_range_pro, pnn_range_d_pro, pnn_range_a_pro
+
+    
     def short_term_asymmetry(self):
         '''
         Calculates the short-term asymmetry parameters for the signal using the xi and xii attributes of class Poincare, 

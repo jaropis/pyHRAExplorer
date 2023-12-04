@@ -60,10 +60,11 @@ class Signal:
         self.quotient_filter = quotient_filter
         self.square_filter = square_filter
         self.annotation_filter = annotation_filter
-        self.signal, self.annotation, self.timetrack = self.read_data(path_to_file, column_signal, column_annot,
+        self.signal, self.unfiltered_annotation, self.timetrack = self.read_data(path_to_file, column_signal, column_annot,
                                                                              column_sample_to_sample)
-        self.n_total, self.n_s, self.n_v, self.n_sv, self.n_x, self.n_u = self.quality(self.annotation)
-        self.quality_counts = self.quality(self.annotation)
+        self.n_total, self.n_s, self.n_v, self.n_sv, self.n_x, self.n_u = self.quality(self.unfiltered_annotation)
+        self.quality_counts = self.quality(self.unfiltered_annotation)
+        self.annotation = self.unfiltered_annotation
         # here the data is filtered - this filtration will apply throughout the whole application
         self.filter_data()
 
@@ -161,6 +162,7 @@ class Signal:
         # now, let the filtering begin
         # beginning with the annotation filter
         # 16 henceforth means "bad"
+         # = self.annotation
         if len(self.annotation_filter)>0:
             for beat_type in self.annotation_filter:
                 self.annotation[where(self.annotation == beat_type)] = 16
@@ -196,6 +198,11 @@ class Signal:
         Returns:
             all_counts(list): List containing counts of each type of flag in the following order: all beats, sinus beats, ventricular beats, supraventricular beats, artifacts, unknown flags.
         '''
+        if len(self.annotation_filter)>0:
+            annotation = self.unfiltered_annotation
+        #print(len(self.annotation_filter))
+        #print(self.unfiltered_annotation[self.unfiltered_annotation>5])
+        
         all_flags = range(0, 4)
         flags, count = unique(annotation, return_counts=True)
         counts = dict(zip(flags, count))

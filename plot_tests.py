@@ -5,10 +5,12 @@ import scipy.signal as sc
 # PLACE FOR TESTS - WILL BE REMOVED 
 
 rr = Signal("C:/Users/k52672mg/OneDrive - The University of Manchester/Analysis/PIPS_HRAEXPLORER/test_files/0582a.rea", 1, 2, 0, square_filter=(500,1500), annotation_filter=(1, 2, 3))
+rr = Signal("C:/Users/k52672mg/OneDrive - The University of Manchester/Analysis/PIPS_HRAEXPLORER/HYPOL_RECORDINGS/ag016.rea", 1, 2, 0, square_filter=(500,1500), annotation_filter=(1, 2, 3))
 #rr = Signal("C:/Users/k52672mg/OneDrive - The University of Manchester/Analysis/PIPS_HRAEXPLORER/test_files/test_flags.txt", 1, 2, 0, square_filter=(500,1500), annotation_filter=(1, 2, 3))
 rr.set_poincare()
-rr.set_LS_spectrum()
-rr.set_Welch_spectrum()
+#rr.set_LS_spectrum()
+
+#rr.set_Welch_spectrum()
 #rr.set_runs()
 #rr.set_plots()
 #print(rr.poincare.pNN50, rr.poincare.pnnx(), rr.poincare.pnnx(100))
@@ -18,8 +20,8 @@ rr.set_Welch_spectrum()
 #print(rr.Welch_spectrum.resampled_rr, rr.Welch_spectrum.resampled_timetrack, rr.Welch_spectrum.interpolated_rr)
 #print(type(rr.Welch_spectrum.welch_spectrum))
 
-x = rr.Welch_spectrum.welch_bands
-xx = rr.Welch_spectrum.welch_bands_24h
+#x = rr.Welch_spectrum.welch_bands
+#xx = rr.Welch_spectrum.welch_bands_24h
 
 #print(rr.Welch_spectrum.welch_bands_ulf, rr.Welch_spectrum.welch_bands_vlf, rr.Welch_spectrum.welch_bands_lf, rr.Welch_spectrum.welch_bands_hf, rr.Welch_spectrum.welch_bands_tp, rr.poincare.SDNN**2, rr.poincare.SDNN**2/rr.Welch_spectrum.welch_bands_tp)
 
@@ -51,14 +53,33 @@ print(rr.LS_spectrum.spectral_values(), 'variance', numpy.var(rr.LS_spectrum.fil
 print(rr.LS_spectrum.spectral_bands, rr.LS_spectrum.spectral_bands_24h)
 '''
 
-
+print(rr.quality_counts, rr.poincare.pNN50)
 #rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Rad')
 #plt.show()
 
 
 #print(rr.LS_spectrum.spectrum.spectral_bands, rr.Welch_spectrum.spectrum.spectral_bands)
 #print(rr.LS_spectrum.spectrum.LF_HF_ratio)
-rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Hz', ulf = False, color_bands= False)
+#rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Hz', ulf = False, color_bands= False)
 #print(rr.LS_spectrum.spectrum.frequency_hz)
 #print(case)
-plt.show()
+#plt.show()
+'''
+
+start_x = 0
+stop_x = 100
+step = 10
+for x in range(start_x,stop_x+step,step):
+    print(str(x) + "-" + str(x+step) , rr.poincare.pnn_range(x1 = x, x2 = x+step, final = stop_x))
+
+x = []
+for i in range(0, 100, 10):
+    x.append(i)
+print(x)
+pro_start = 0
+pro_end = 20
+step = 1
+#for x in range(pro_start,pro_end+step,step):
+#    print(str(x) + "-" + str(x+step) + "%", rr.poincare.pnn_range_pro(x1 = x, x2 = x+step, final = pro_end))
+
+'''

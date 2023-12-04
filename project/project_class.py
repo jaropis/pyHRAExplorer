@@ -36,15 +36,17 @@ class Project:
         self.column_annot = column_annot
         self.column_sample_to_sample = column_sample_to_sample
         self.quotient_filter = -1
-        self.square_filter=(-8000, 8000)
-        self.annotation_filter=()
+        self.square_filter = (-8000, 8000)
+        self.annotation_filter = ()
         self.files_list = self.get_files_list()
 
         # these three flags say whether or not the specific method should be used
         self.Poincare_state = False
         self.pnn_state = False
+        self.pnn_range_state = False
         self.runs_state = False
         self.spectrum_state = False
+        self.spectrum_type = 'None'
         self.quality_state = False
 
         self.project_results = [] # this list of lists will hold the name of the file and the self.file_results for
@@ -73,6 +75,13 @@ class Project:
         When called this method sets the pNN state to True, This means: calculate the pNN and pNN percent descriptors
         """
         self.pnn_state = True
+
+    def set_pnn_range(self):
+        """
+        When called this method sets the pNN state to True, This means: calculate the pNN ranges descriptors
+        """
+        self.pnn_range_state = True
+
 
     def set_runs(self):
         """
@@ -148,7 +157,7 @@ class Project:
             temp_signal = Signal(path_to_file=temp_path, column_annot=self.column_annot, column_signal=self.column_signal,
                                  column_sample_to_sample=self.column_sample_to_sample, annotation_filter=self.annotation_filter,
                                  square_filter=self.square_filter, quotient_filter=self.quotient_filter)
-            if self.Poincare_state or self.pnn_state:
+            if self.Poincare_state or self.pnn_state or self.pnn_range_state:
                 temp_signal.set_poincare()
                 temp_poincare = temp_signal.poincare
             else:
@@ -168,7 +177,7 @@ class Project:
                 temp_spectrum = temp_signal.Welch_spectrum
 
             if self.quality_state:
-                temp_quality = temp_signal.quality(temp_signal.annotation)
+                temp_quality = temp_signal.quality_counts
             temp_file_results = {"Poincare": temp_poincare, "runs": temp_runs, "Spectrum": temp_spectrum, 'Quality': temp_quality}
             self.project_results.append([file, temp_file_results])
 
@@ -193,6 +202,7 @@ class Project:
             self.spectrum_state = bool(input_file.readline().split(':')[1].rstrip())
             self.quality_state = bool(input_file.readline().split(':')[1].rstrip())
             self.pnn_state = bool(input_file.readline().split(':')[1].rstrip())
+            self.pnn_range_state = bool(input_file.readline().split(':')[1].rstrip())
             input_file.close()
             return(True)
         except Exception:
@@ -218,6 +228,8 @@ class Project:
             output_line += "Spectrum state:" + str(int(self.spectrum_state)) + "\n"
             output_line += "Spectrum type:" + self.spectrum_type + "\n"
             output_line += "Quality state:" + str(int(self.quality_state)) + "\n"
+            output_line += "pNN state:" + str(int(self.pnn_state)) + "\n"
+            output_line += "pNN range state:" + str(int(self.pnn_range_state)) + "\n"
             output_file.write(output_line)
             output_file.close()
             return True
@@ -303,6 +315,82 @@ class Project:
             #temp_poincare_object.pnn_pro()[0]
         if dump: results.close()
         return [results_first_line, all_results]
+    
+    def dump_pNN_range(self, start = 0, end = 100, step = 10, add_dec_acc = False, dump = False):
+        """
+        This method writes a csv/xlsx/ods file to the disk - this file contains the pNN within a specified range (atart <= pNN < end) 
+        for for each file in the project
+        
+        Arguments:
+            start (int): Start of pNN range
+            end (int): End of pNN range (end itself is not part of range)
+            final (int): Returns all >= x when specified (range x to inf)
+            add_dec_acc (bool): Determines if pNN in ranges also be calculated for decelerating and accelerating beats separately
+            dump (bool): Determines if the file is written (used when all the results are combined together)
+        
+        Returns:
+            results_first_line (str): A string with the header for the results
+            all_results (list): A list of all the strings with results for each file        
+        """
+        results_file = self.build_name(prefix="PNN_range_" if not add_dec_acc else "PNN_range_DEC_ACC_")
+        results_first_line = 'filename\t' + "\t".join("pNN_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + \
+        "\tpNN" + str(end) + "+"
+        # Adding optional PNNs for dec and acc 
+        results_first_line += "\n" if not add_dec_acc else "\t" + "\t".join("pNN_dec_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + \
+         "\tpNN_dec_" + str(end) + "+\t" + "\t".join("pNN_acc_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + "\tpNN_acc_" + str(end) + "+\n"
+        if dump: results = open(results_file, 'w'); results.write(results_first_line)
+        all_results = []
+        test = []
+        for file_result in self.project_results:
+            file_name = file_result[0]
+            res_line = file_name
+            temp_poincare_object = file_result[1]['Poincare']
+            res_line += "\t" + "\t".join(str(temp_poincare_object.pnn_range(x1 = _, x2 = _+step, final = end)[0]) for _ in range(start,end+step,step))
+            # Optional results for dec and acc
+            res_line += "\n" if not add_dec_acc else "\t" + "\t".join(str(temp_poincare_object.pnn_range(x1 = _, x2 = _+step, final = end)[1]) for _ in range(start,end+step,step)) + \
+             "\t" + "\t".join(str(temp_poincare_object.pnn_range(x1 = _, x2 = _+step, final = end)[2]) for _ in range(start,end+step,step)) + "\n"
+            if dump: results.write(res_line)
+            all_results.append(res_line)
+        if dump: results.close()
+        return [results_first_line, all_results]
+    
+    def dump_pNN_range_pro(self, start = 0, end = 10, step = 1, add_dec_acc = False, dump = False):
+        """
+        This method writes a csv/xlsx/ods file to the disk - this file contains the pNN within a specified % range (atart <= pNN < end) 
+        for for each file in the project
+        
+        Arguments:
+            start (int): Start of pNN % range
+            end (int): End of pNN % range (end itself is not part of range)
+            final (int): Returns all >= x when specified (range x to inf)
+            add_dec_acc (bool): Determines if pNN % in ranges also be calculated for decelerating and accelerating beats separately
+            dump (bool): Determines if the file is written (used when all the results are combined together)
+        
+        Returns:
+            results_first_line (str): A string with the header for the results
+            all_results (list): A list of all the strings with results for each file        
+        """
+        results_file = self.build_name(prefix="PNN_range_pro" if not add_dec_acc else "PNN_range_pro_DEC_ACC_")
+        results_first_line = 'filename\t' + "\t".join("pNN%_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + \
+        "\tpNN" + str(end) + "+"
+        # Adding optional PNNs for dec and acc 
+        results_first_line += "\n" if not add_dec_acc else "\t" + "\t".join("pNN%_dec_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + \
+         "\tpNN_dec_" + str(end) + "+\t" + "\t".join("pNN%_acc_" + str(_) + "_" + str(_+step) for _ in range(start, end, step)) + "\tpNN_acc_" + str(end) + "+\n"
+        if dump: results = open(results_file, 'w'); results.write(results_first_line)
+        all_results = []
+        test = []
+        for file_result in self.project_results:
+            file_name = file_result[0]
+            res_line = file_name
+            temp_poincare_object = file_result[1]['Poincare']
+            res_line += "\t" + "\t".join(str(temp_poincare_object.pnn_range_pro(x1 = _, x2 = _+step, final = end)[0]) for _ in range(start,end+step,step))
+            # Optional results for dec and acc
+            res_line += "\n" if not add_dec_acc else "\t" + "\t".join(str(temp_poincare_object.pnn_range_pro(x1 = _, x2 = _+step, final = end)[1]) for _ in range(start,end+step,step)) + \
+             "\t" + "\t".join(str(temp_poincare_object.pnn_range_pro(x1 = _, x2 = _+step, final = end)[2]) for _ in range(start,end+step,step)) + "\n"
+            if dump: results.write(res_line)
+            all_results.append(res_line)
+        if dump: results.close()
+        return [results_first_line, all_results]
         
     def dump_runs(self, runs_shares = False, dump = True):
         """
@@ -360,9 +448,9 @@ class Project:
         results_first_line = 'file_name\t'
         if not ulf:
             bands = [0, 0.04, 0.15, 0.4]
-            results_first_line += "ULF\tLF\tHF\tTP\tLF/HF\n"
+            results_first_line += "VLF\tLF\tHF\tTP\tLF/HF\n"
         else: 
-            results_first_line += "VLF\tULF\tLF\tHF\tTP\tLF/HF\n"
+            results_first_line += "ULF\tVLF\tLF\tHF\tTP\tLF/HF\n"
         results_file = self.build_name(prefix=self.spectrum_type + "_spectrum_")
         if dump : results = open(results_file, 'w'); results.write(results_first_line)
         all_results = []
@@ -435,7 +523,7 @@ class Project:
         longest_neutral_run = max([len(_[1]["runs"].neutral_runs) for _ in self.project_results])
         return longest_dec_run, longest_acc_run, longest_neutral_run
 
-    def dump_all(self, bands=[0, 0.003, 0.04, 0.15, 0.4], ulf = True, runs_shares = False, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5, add_dec_acc = False,):
+    def dump_all(self, bands=[0, 0.003, 0.04, 0.15, 0.4], ulf = True, runs_shares = False, max_pnn = 100, pnn_step = 10, max_pnn_pro = 10, pnn_pro_step = 0.5, add_dec_acc = False, start = 0, end = 100, step = 10, pnn_range_type = 'number'):
         """
         This method writes a csv/xlsx/ods file to the disk - this file contains all the results from analyses with active states
 
@@ -448,6 +536,7 @@ class Project:
             max_pnn_pro (int): Maximum pNN procent, 10% by deaulft
             pnn_pro_step (float): Step for each consequtive pNN%, 0.5 by default
             add_dec_acc (bool): Determines if pNN and pNN% should also be calculated for decelerating and accelerating beats separately
+            pnn_range_type (str): Determines if the used range is of procent or number type and calls the according method
             
         """
         results_file = self.build_name(prefix="ALL_")
@@ -457,11 +546,12 @@ class Project:
         runs = self.dump_runs(runs_shares = runs_shares, dump = False) if self.runs_state else None 
         spectrum = self.dump_spectrum(bands = bands, ulf = ulf, dump = False) if self.spectrum_state else None 
         pnn = self.dump_pnn(max_pnn = max_pnn, pnn_step = pnn_step, max_pnn_pro = max_pnn_pro, pnn_pro_step = pnn_pro_step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_state else None 
+        pnn_range = self.dump_pNN_range(start = start, end = end, step = step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_range_state and pnn_range_type == 'number' else self.dump_pNN_range_pro(start = start, end = end, step = step, add_dec_acc = add_dec_acc, dump = False) if self.pnn_range_state and self.pnn_range_type == 'procent' else None
         quality = self.dump_quality(dump = False) if self.quality_state else None
 
         all_filenames = []
         all_results = []
-        for result in [Poincare, runs, spectrum, pnn, quality]:
+        for result in [Poincare, runs, spectrum, pnn, pnn_range, quality]:
             if result is not None:
                 all_filenames.append(result[0])
                 all_results.append(result[1])
