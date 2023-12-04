@@ -7,11 +7,11 @@ import scipy.signal as sc
 rr = Signal("C:/Users/k52672mg/OneDrive - The University of Manchester/Analysis/PIPS_HRAEXPLORER/test_files/0582a.rea", 1, 2, 0, square_filter=(500,1500), annotation_filter=(1, 2, 3))
 rr = Signal("C:/Users/k52672mg/OneDrive - The University of Manchester/Analysis/PIPS_HRAEXPLORER/HYPOL_RECORDINGS/ag016.rea", 1, 2, 0, square_filter=(500,1500), annotation_filter=(1, 2, 3))
 #rr = Signal("C:/Users/k52672mg/OneDrive - The University of Manchester/Analysis/PIPS_HRAEXPLORER/test_files/test_flags.txt", 1, 2, 0, square_filter=(500,1500), annotation_filter=(1, 2, 3))
-rr.set_poincare()
+#rr.set_poincare()
 #rr.set_LS_spectrum()
 
 #rr.set_Welch_spectrum()
-#rr.set_runs()
+rr.set_runs()
 #rr.set_plots()
 #print(rr.poincare.pNN50, rr.poincare.pnnx(), rr.poincare.pnnx(100))
 #14.316820903647251 14.316820903647251 0.43549265106151336
@@ -53,7 +53,7 @@ print(rr.LS_spectrum.spectral_values(), 'variance', numpy.var(rr.LS_spectrum.fil
 print(rr.LS_spectrum.spectral_bands, rr.LS_spectrum.spectral_bands_24h)
 '''
 
-print(rr.quality_counts, rr.poincare.pNN50)
+#print(rr.quality_counts, rr.poincare.pNN50)
 #rr.LS_spectrum.spectrum.plot_spectrum(mode = 'Rad')
 #plt.show()
 
@@ -83,3 +83,5 @@ step = 1
 #    print(str(x) + "-" + str(x+step) + "%", rr.poincare.pnn_range_pro(x1 = x, x2 = x+step, final = pro_end))
 
 '''
+
+print(rr.runs.entropy_results)

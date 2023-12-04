@@ -1,4 +1,4 @@
-from numpy import where
+from numpy import where, log
 from signal_properties.my_exceptions import WrongSignal
 
 
@@ -27,6 +27,7 @@ class Runs:
         self.runs = self.count_for_all(signal)
         self.dec_runs, self.acc_runs, self.neutral_runs = self.count_for_all(signal)
         self.runs_share = self.count_for_all_share(signal)
+        self.entropy_results = self.entropy(self.dec_runs, self.acc_runs, self.neutral_runs)
         self.dec_runs_share, self.acc_runs_share, self.neutral_runs_share = self.count_for_all_share(signal)
         #self.test = self.count_for_all_share(signal)
         # the algorithm is the same I used in the PCSS time series suit
@@ -278,6 +279,48 @@ class Runs:
             equal_runs.append(equal_run)
 
         return tuple(equal_runs)
+
+    def individual_entropy(self, counts, n):
+        full = 0
+        partial = 0
+        for i in range(1,len(counts)+1):
+            if counts[i-1] > 0:
+                partial = -1 * i * counts[i-1]/n * log(i * counts[i-1]/n)
+            full = full + partial
+        return full
+
+    def individual_entropy2(self, counts, n):
+        full = 0
+        partial = 0
+        for i in range(0,len(counts)):
+            if counts[i] > 0:
+                partial = -1 * counts[i]/n * log(counts[i]/n)
+            full = full + partial
+        return full
+
+
+    def entropy(self, nb_decelerations, nb_accelerations, nb_noChanges):
+        n = 0
+        for nb in nb_decelerations, nb_accelerations, nb_noChanges:
+            nb_sum = 0
+            for i in range(1, len(nb)+1):
+                nb_sum += i * nb[i-1]
+            n += nb_sum
+        #n = sum(nb_decelerations * range(1,len(nb_decelerations)+1), nb_accelerations * range(1,len(nb_accelerations)+1), nb_noChanges * range(1,len(nb_noChanges)+1))
+        HDR = self.individual_entropy(nb_decelerations, n)
+        HAR = self.individual_entropy(nb_accelerations, n)
+        HNO = self.individual_entropy(nb_noChanges, n)
+  
+        #n_22 = [a+b+c for a,b,c in zip(nb_decelerations, nb_accelerations, nb_noChanges)]
+        n_2 = sum(nb_decelerations) + sum(nb_decelerations) + sum(nb_noChanges)
+        #n_2 = sum(nb_decelerations,nb_accelerations, nb_noChanges)
+        HDR2 = self.individual_entropy2(nb_decelerations, n_2)
+        HAR2 = self.individual_entropy2(nb_accelerations, n_2)
+        HNO2 = self.individual_entropy2(nb_noChanges, n_2)
+        result = [HDR, HAR, HNO, HDR2, HAR2, HNO2]
+        #names(result) <- c("HDR", "HAR", "HNO", "HDR2", "HAR2", "HNO2")
+        return result
+        
 
 
 
